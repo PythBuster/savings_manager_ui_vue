@@ -12,5 +12,10 @@
   "overflow-envelope": "Sammelbox",
   "logs": "Logs",
   "priority-list": "Prioritätenliste",
-  "savings-settings": "Spareinstellungen"
+  "savings-settings": "Spareinstellungen",
+  "savings-amount": "Sparbetrag:",
+  "savings-cycle": "Zyklus:",
+  "allocated": "Verplant:",
+  "uncommitted": "Offen:",
+  "monthly": "Monatlich"
 }

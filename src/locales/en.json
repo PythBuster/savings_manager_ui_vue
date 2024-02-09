@@ -12,5 +12,10 @@
   "overflow-envelope": "Overflow",
   "logs": "Logs",
   "priority-list": "Priority list",
-  "savings-settings": "Savings settings"
+  "savings-settings": "Savings settings",
+  "savings-amount": "Savings amount:",
+  "savings-cycle": "Cycle:",
+  "allocated": "Allocated:",
+  "uncommitted": "Uncommitted:",
+  "monthly": "Monthly"
 }

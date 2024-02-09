@@ -17,17 +17,24 @@
     </v-menu>
   </v-app-bar>
   <v-navigation-drawer>
-    <v-list>
-      <v-list-item
-        v-for="(item, index) in menuItems"
-        :key="index"
-        @click="selectMenuItem(item)"
-      >
-        <v-list-item-title>{{ item.title }}</v-list-item-title>
-      </v-list-item>
-    </v-list>
+    <v-container class="fill-height">
+      <v-row class="fill-height">
+        <v-col class="d-flex flex-column">
+          <v-list>
+            <v-list-item
+              v-for="(item, index) in menuItems"
+              :key="index"
+              @click="selectMenuItem(item)"
+            >
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+          <div class="flex-grow-1"></div>
+          <SavingsSettings />
+        </v-col>
+      </v-row>
+    </v-container>
   </v-navigation-drawer>
-
   <v-main>
     <Overview />
   </v-main>
@@ -35,6 +42,7 @@
 
 <script setup>
 // t used for menuItems, otherwise $t globally available
+import SavingsSettings from '@/components/SavingsSettings.vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n({})
 
