@@ -1,0 +1,16 @@
+{
+  "hello": "Hello!",
+  "first": "First",
+  "second": "Second",
+  "firstview": "First view auf /",
+  "secondview": "Second view auf /second",
+  "toggle-theme": "Toggle theme",
+  "goal": "Goal: ",
+  "priority": "Priority: ",
+  "new-envelope": "Create new envelope...",
+  "my-envelopes": "My envelopes",
+  "overflow-envelope": "Overflow",
+  "logs": "Logs",
+  "priority-list": "Priority list",
+  "savings-settings": "Savings settings"
+}

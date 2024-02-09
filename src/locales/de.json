@@ -1,0 +1,16 @@
+{
+  "hello": "Hallo!",
+  "first": "Erste",
+  "second": "Zweite",
+  "firstview": "Erste Ansicht auf /",
+  "secondview": "Zweite Ansicht auf /second",
+  "toggle-theme": "Theme wechseln",
+  "goal": "Ziel: ",
+  "priority": "Priorität: ",
+  "new-envelope": "Neue Kasse anlegen...",
+  "my-envelopes": "Meine Kassen",
+  "overflow-envelope": "Sammelbox",
+  "logs": "Logs",
+  "priority-list": "Prioritätenliste",
+  "savings-settings": "Spareinstellungen"
+}
