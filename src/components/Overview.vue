@@ -36,10 +36,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-
 // Dummy data, API fetch not implemented yet
-const cardData = ref([
+const cardData = [
   {
     title: 'Notgroschen',
     priority: 1,
@@ -82,5 +80,5 @@ const cardData = ref([
     currentAmount: 0.0,
     increment: 20.0
   }
-])
+]
 </script>
