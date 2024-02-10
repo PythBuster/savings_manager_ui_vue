@@ -57,7 +57,7 @@ const { t } = useI18n({})
 const menuItems = [
   { title: t('my-envelopes'), path: '/' },
   { title: t('priority-list'), path: '/priority' },
-  { title: t('savings-settings') }
+  { title: t('savings-settings'), path: '/savingssettings' }
 ]
 
 const totalAmount = 2781.0
