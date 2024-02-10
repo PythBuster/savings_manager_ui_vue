@@ -33,7 +33,7 @@
               </v-list-item>
             </v-list>
             <div class="flex-grow-1"></div>
-            <SavingsSettings />
+            <SavingsSettingsOverview />
             <TotalSavings :totalAmount="totalAmount" />
           </v-col>
         </v-row>
@@ -51,6 +51,7 @@ import router from '@/router'
 
 // t used for menuItems, otherwise $t globally available
 import { useI18n } from 'vue-i18n'
+import SavingsSettingsOverview from './components/SavingsSettingsOverview.vue'
 const { t } = useI18n({})
 
 const menuItems = [
