@@ -4,9 +4,6 @@
       <v-col cols="auto" md="auto">
         <h1>{{ $t('envelope') + title }}</h1>
       </v-col>
-      <v-col cols="auto">
-        <v-btn>{{ $t('show-full-logs') }}</v-btn>
-      </v-col>
     </v-row>
 
     <v-row justify="space-between">
