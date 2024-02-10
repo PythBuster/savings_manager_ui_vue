@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row align="center" justify="space-between">
-      <v-col>
+      <v-col cols="auto" md="auto">
         <h1>{{ $t('envelope') + title }}</h1>
       </v-col>
       <v-col cols="auto">
@@ -10,7 +10,7 @@
     </v-row>
 
     <v-row justify="space-between">
-      <v-col cols="4">
+      <v-col cols="auto">
         <v-table>
           <tbody>
             <tr>
