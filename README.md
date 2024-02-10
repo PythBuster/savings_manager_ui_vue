@@ -1,5 +1,7 @@
 # Savings Manager
 
+Master branch automatically deployed at https://savings-manager-frontend.netlify.app/.
+
 ## Project setup
 
 ```
