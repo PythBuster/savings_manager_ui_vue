@@ -16,11 +16,11 @@
             </tr>
             <tr>
               <td>{{ $t('goal-amount') }}</td>
-              <td>{{ targetAmount }}</td>
+              <td>{{ formatCurrency(targetAmount) }}</td>
             </tr>
             <tr>
               <td>{{ $t('savings-amount') }}</td>
-              <td>{{ savingsAmount }}</td>
+              <td>{{ formatCurrency(savingsAmount) }}</td>
             </tr>
           </tbody>
         </v-table>
@@ -31,7 +31,9 @@
         <v-btn>{{ $t('transfer') }}</v-btn>
       </v-col>
       <v-col cols="auto" class="d-flex flex-column">
-        <v-btn class="mb-2">{{ $t('change-settings') }}</v-btn>
+        <v-btn @click="changeSettingsClicked" class="mb-2">{{
+          $t('change-settings')
+        }}</v-btn>
         <v-btn color="warning">{{ $t('delete-envelope') }}</v-btn>
       </v-col>
     </v-row>
@@ -39,6 +41,7 @@
   <LastTransactions />
 </template>
 <script setup>
+import router from '@/router'
 import { formatCurrency } from '@/utils'
 import { useRoute } from 'vue-router'
 import LastTransactions from './LastTransactions.vue'
@@ -47,6 +50,18 @@ const route = useRoute()
 const title = route.query.title
 
 const balance = formatCurrency(125.0)
-const targetAmount = formatCurrency(10000.0)
-const savingsAmount = formatCurrency(30.0)
+
+const targetAmount = 10000.0
+const savingsAmount = 30.0
+
+const changeSettingsClicked = () => {
+  router.push({
+    path: '/editenvelope',
+    query: {
+      title: title,
+      targetAmount: targetAmount,
+      savingsAmount: savingsAmount
+    }
+  })
+}
 </script>

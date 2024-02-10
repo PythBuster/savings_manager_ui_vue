@@ -40,5 +40,6 @@
   "new-envelope-settings": "Settings for the new envelope",
   "create-continue-priorities": "Create/continue to priority list",
   "envelope-name": "Name for the envelope",
-  "target-amount": "Target amount"
+  "target-amount": "Target amount",
+  "settings": "Settings"
 }

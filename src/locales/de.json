@@ -40,5 +40,6 @@
   "new-envelope-settings": "Einstellungen der neuen Kasse",
   "create-continue-priorities": "Anlegen/weiter zu Prioritätenliste",
   "envelope-name": "Name der Kasse",
-  "target-amount": "Zielbetrag"
+  "target-amount": "Zielbetrag",
+  "settings": "Einstellungen"
 }
