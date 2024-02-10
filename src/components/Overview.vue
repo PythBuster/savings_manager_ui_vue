@@ -29,7 +29,7 @@
     </v-row>
     <v-row>
       <v-col cols="6">
-        <OverflowEnvelope :currentAmount="1000" />
+        <OverflowEnvelope :currentAmount="currentAmount" />
       </v-col>
     </v-row>
   </v-container>
@@ -81,4 +81,5 @@ const cardData = [
     increment: 20.0
   }
 ]
+const currentAmount = 1000.0
 </script>
