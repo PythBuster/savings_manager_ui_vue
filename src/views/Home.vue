@@ -31,6 +31,7 @@
           </v-list>
           <div class="flex-grow-1"></div>
           <SavingsSettings />
+          <TotalSavings :totalAmount="totalAmount" />
         </v-col>
       </v-row>
     </v-container>
@@ -51,6 +52,8 @@ const menuItems = [
   { title: t('priority-list') },
   { title: t('savings-settings') }
 ]
+
+const totalAmount = 500.0
 
 const selectMenuItem = (item) => {
   console.log('Selected:', item.title)

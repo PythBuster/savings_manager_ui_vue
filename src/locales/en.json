@@ -17,5 +17,6 @@
   "savings-cycle": "Cycle:",
   "allocated": "Allocated:",
   "uncommitted": "Uncommitted:",
-  "monthly": "Monthly"
+  "monthly": "Monthly",
+  "total-savings": "Total savings:"
 }
