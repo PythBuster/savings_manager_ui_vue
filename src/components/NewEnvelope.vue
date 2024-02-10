@@ -1,5 +1,6 @@
 <template>
   <v-card
+    @click="CreateNewEnvelopenvelopeClicked"
     variant="tonal"
     min-height="180"
     class="d-flex flex-column align-center justify-center"
@@ -12,3 +13,12 @@
     </v-card-actions>
   </v-card>
 </template>
+<script setup>
+import router from '@/router'
+
+function CreateNewEnvelopenvelopeClicked() {
+  router.push({
+    path: '/createenvelope'
+  })
+}
+</script>

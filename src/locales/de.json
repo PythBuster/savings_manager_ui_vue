@@ -36,5 +36,9 @@
   "no-limit": "Kein Limit",
   "save": "Speichern",
   "up": "Hoch",
-  "down": "Runter"
+  "down": "Runter",
+  "new-envelope-settings": "Einstellungen der neuen Kasse",
+  "create-continue-priorities": "Anlegen/weiter zu Prioritätenliste",
+  "envelope-name": "Name der Kasse",
+  "target-amount": "Zielbetrag"
 }
