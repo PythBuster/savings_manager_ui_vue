@@ -34,5 +34,8 @@
   "amount": "Amount",
   "total": "Total",
   "last-transactions": "Last transactions:",
-  "no-limit": "No limit"
+  "no-limit": "No limit",
+  "save": "Save",
+  "up": "Up",
+  "down": "Down"
 }

@@ -56,14 +56,18 @@ const { t } = useI18n({})
 const menuItems = [
   { title: t('my-envelopes') },
   { title: t('logs') },
-  { title: t('priority-list') },
+  { title: t('priority-list'), path: '/priority' },
   { title: t('savings-settings') }
 ]
 
 const totalAmount = 2781.0
 
 const selectMenuItem = (item) => {
-  console.log('Selected:', item.title)
+  if (item.path) {
+    router.push({
+      path: item.path
+    })
+  }
 }
 
 function goHome() {

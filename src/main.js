@@ -11,6 +11,7 @@ import { registerPlugins } from '@/plugins'
 import App from '@/App.vue'
 import i18n from '@/i18n'
 import router from '@/router'
+import vClickOutside from 'v-click-outside'
 
 // Composables
 import { createApp } from 'vue'
@@ -18,5 +19,7 @@ import { createApp } from 'vue'
 const app = createApp(App).use(i18n).use(router)
 
 registerPlugins(app)
+
+app.directive('click-outside', vClickOutside.directive)
 
 app.mount('#app')

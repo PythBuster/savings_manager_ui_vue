@@ -34,5 +34,8 @@
   "amount": "Betrag",
   "total": "Gesamt",
   "last-transactions": "Letzte Transaktionen:",
-  "no-limit": "Kein Limit"
+  "no-limit": "Kein Limit",
+  "save": "Speichern",
+  "up": "Hoch",
+  "down": "Runter"
 }
