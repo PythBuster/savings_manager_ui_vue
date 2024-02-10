@@ -20,6 +20,7 @@
           :goal="card.goal"
           :currentAmount="card.currentAmount"
           :increment="card.increment"
+          :noLimit="card.noLimit"
         />
       </v-col>
 
@@ -43,43 +44,49 @@ const cardData = [
     priority: 1,
     goal: 10000.0,
     currentAmount: 125.0,
-    increment: 30.0
+    increment: 30.0,
+    noLimit: false
   },
   {
     title: 'Urlaub',
     priority: 2,
-    goal: 4000.0,
-    currentAmount: 400.0,
-    increment: 50.0
+    goal: 3500.0,
+    currentAmount: 25.0,
+    increment: 50.0,
+    noLimit: false
   },
   {
     title: 'PC',
     priority: 3,
     goal: 2000.0,
-    currentAmount: 150.0,
-    increment: 25.0
+    currentAmount: 400.0,
+    increment: 25.0,
+    noLimit: false
   },
   {
     title: 'Haushalt',
     priority: 4,
-    goal: 5000.0,
-    currentAmount: 600.0,
-    increment: 40.0
+    goal: 1000.0,
+    currentAmount: 105.0,
+    increment: 10.0,
+    noLimit: false
   },
   {
-    title: 'Haus',
+    title: 'Haustier',
     priority: 5,
-    goal: 250000.0,
-    currentAmount: 5000.0,
-    increment: 500.0
+    goal: 850.0,
+    currentAmount: 125.0,
+    increment: 5.0,
+    noLimit: false
   },
   {
     title: 'Bildung',
     priority: 6,
-    goal: 10000.0,
+    goal: 0,
     currentAmount: 0.0,
-    increment: 20.0
+    increment: 25.0,
+    noLimit: true // with noLimit set to false, the value in goal is disregarded in Envelope.vue
   }
 ]
-const currentAmount = 1000.0
+const currentAmount = 1000.5
 </script>

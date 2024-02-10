@@ -33,5 +33,6 @@
   "origin": "Herkunft/Ziel",
   "amount": "Betrag",
   "total": "Gesamt",
-  "last-transactions": "Letzte Transaktionen:"
+  "last-transactions": "Letzte Transaktionen:",
+  "no-limit": "Kein Limit"
 }

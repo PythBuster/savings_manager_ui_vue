@@ -33,5 +33,6 @@
   "origin": "Origin/Destination",
   "amount": "Amount",
   "total": "Total",
-  "last-transactions": "Last transactions:"
+  "last-transactions": "Last transactions:",
+  "no-limit": "No limit"
 }

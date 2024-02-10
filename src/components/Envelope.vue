@@ -11,7 +11,14 @@
         <v-card-subtitle>{{ $t('priority') }} {{ priority }}</v-card-subtitle>
       </v-card-item>
       <v-card-text>
-        <div>{{ $t('goal') }} {{ formatCurrency(goal) }}</div>
+        <div>
+          {{
+            !noLimit
+              ? $t('goal') + formatCurrency(goal)
+              : $t('goal') + $t('no-limit')
+          }}
+        </div>
+
         <div class="font-weight-bold">
           {{ formatCurrency(currentAmount) }}
         </div>
@@ -30,7 +37,8 @@ const props = defineProps({
   priority: Number,
   goal: Number,
   currentAmount: Number,
-  increment: Number
+  increment: Number,
+  noLimit: Boolean
 })
 
 function envelopeClicked() {

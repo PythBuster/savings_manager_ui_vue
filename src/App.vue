@@ -60,7 +60,7 @@ const menuItems = [
   { title: t('savings-settings') }
 ]
 
-const totalAmount = 500.0
+const totalAmount = 2781.0
 
 const selectMenuItem = (item) => {
   console.log('Selected:', item.title)
