@@ -55,7 +55,7 @@ import SavingsSettingsOverview from './components/SavingsSettingsOverview.vue'
 const { t } = useI18n({})
 
 const menuItems = [
-  { title: t('my-envelopes') },
+  { title: t('my-envelopes'), path: '/' },
   { title: t('logs') },
   { title: t('priority-list'), path: '/priority' },
   { title: t('savings-settings') }
