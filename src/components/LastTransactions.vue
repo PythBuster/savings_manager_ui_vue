@@ -10,11 +10,11 @@
             <v-table>
               <thead>
                 <tr>
-                  <th>{{ $t('date') }}</th>
-                  <th>{{ $t('info-text') }}</th>
-                  <th>{{ $t('origin') }}</th>
-                  <th>{{ $t('amount') }}</th>
-                  <th>{{ $t('total') }}</th>
+                  <th class="text-no-wrap">{{ $t('date') }}</th>
+                  <th class="text-no-wrap">{{ $t('info-text') }}</th>
+                  <th class="text-no-wrap">{{ $t('origin') }}</th>
+                  <th class="text-no-wrap">{{ $t('amount') }}</th>
+                  <th class="text-no-wrap">{{ $t('total') }}</th>
                 </tr>
               </thead>
               <tbody>
