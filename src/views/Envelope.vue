@@ -1,5 +1,5 @@
 <template>
   <v-main>
-    <Overview />
+    <EnvelopeOverview />
   </v-main>
 </template>

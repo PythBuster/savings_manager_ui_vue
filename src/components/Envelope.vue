@@ -1,5 +1,6 @@
 <template>
   <v-card
+    @click="envelopeClicked"
     variant="tonal"
     min-height="180"
     class="d-flex align-center justify-center"
@@ -21,13 +22,21 @@
 </template>
 
 <script setup>
+import router from '@/router'
 import { formatCurrency } from '@/utils'
 
-defineProps({
+const props = defineProps({
   title: String,
   priority: Number,
   goal: Number,
   currentAmount: Number,
   increment: Number
 })
+
+function envelopeClicked() {
+  router.push({
+    path: '/envelope',
+    query: { title: props.title }
+  })
+}
 </script>

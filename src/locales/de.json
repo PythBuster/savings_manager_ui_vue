@@ -18,5 +18,20 @@
   "allocated": "Verplant:",
   "uncommitted": "Offen:",
   "monthly": "Monatlich",
-  "total-savings": "Gesamtersparnis:"
+  "total-savings": "Gesamtersparnis:",
+  "envelope": "Kasse: ",
+  "show-full-logs": "Vollständige Logs ansehen",
+  "balance": "Kontostand:",
+  "goal-amount": "Zielbetrag:",
+  "deposit": "Einzahlen",
+  "withdraw": "Abheben",
+  "transfer": "Übertragen",
+  "change-settings": "Einstellungen bearbeiten",
+  "delete-envelope": "Kasse löschen",
+  "date": "Datum",
+  "info-text": "Beschreibung",
+  "origin": "Herkunft/Ziel",
+  "amount": "Betrag",
+  "total": "Gesamt",
+  "last-transactions": "Letzte Transaktionen:"
 }

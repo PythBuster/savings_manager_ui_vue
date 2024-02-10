@@ -18,5 +18,20 @@
   "allocated": "Allocated:",
   "uncommitted": "Uncommitted:",
   "monthly": "Monthly",
-  "total-savings": "Total savings:"
+  "total-savings": "Total savings:",
+  "envelope": "Envelope: ",
+  "show-full-logs": "Show full logs",
+  "balance": "Balance:",
+  "goal-amount": "Target amount:",
+  "deposit": "Deposit",
+  "withdraw": "Withdraw",
+  "transfer": "Transfer",
+  "change-settings": "Change settings",
+  "delete-envelope": "Delete envelope",
+  "date": "Date",
+  "info-text": "Description",
+  "origin": "Origin/Destination",
+  "amount": "Amount",
+  "total": "Total",
+  "last-transactions": "Last transactions:"
 }
