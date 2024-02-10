@@ -38,78 +38,16 @@
         <v-btn color="warning">{{ $t('delete-envelope') }}</v-btn>
       </v-col>
     </v-row>
-
-    <v-row>
-      <v-col>
-        <v-card>
-          <div>
-            <v-card-item>
-              <v-card-title>{{ $t('last-transactions') }}</v-card-title>
-            </v-card-item>
-            <v-table>
-              <thead>
-                <tr>
-                  <th>{{ $t('date') }}</th>
-                  <th>{{ $t('info-text') }}</th>
-                  <th>{{ $t('origin') }}</th>
-                  <th>{{ $t('amount') }}</th>
-                  <th>{{ $t('total') }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="item in transactionItems" :key="item.name">
-                  <td>{{ item.date }}</td>
-                  <td>{{ item.infotext }}</td>
-                  <td>{{ item.origin }}</td>
-                  <td>{{ item.amount }}</td>
-                  <td>{{ item.total }}</td>
-                </tr>
-              </tbody>
-            </v-table>
-          </div>
-        </v-card>
-      </v-col>
-    </v-row>
   </v-container>
+  <LastTransactions />
 </template>
 <script setup>
-import { formatCurrency, formatDate } from '@/utils'
+import { formatCurrency } from '@/utils'
 import { useRoute } from 'vue-router'
+import LastTransactions from './LastTransactions.vue'
 
 const route = useRoute()
 const title = route.query.title
-
-// Dummy data, API fetch not implemented yet
-const transactionItems = [
-  {
-    date: formatDate('2024-01-18'),
-    infotext: 'Übertrag',
-    origin: 'Urlaub',
-    amount: formatCurrency(-10.0),
-    total: formatCurrency(90.0)
-  },
-  {
-    date: formatDate('2024-01-20'),
-    infotext: 'Übertrag',
-    origin: 'Haushalt',
-    amount: formatCurrency(20.0),
-    total: formatCurrency(110.0)
-  },
-  {
-    date: formatDate('2024-01-28'),
-    infotext: 'Abbuchung',
-    origin: 'manuell',
-    amount: formatCurrency(-50.0),
-    total: formatCurrency(60.0)
-  },
-  {
-    date: formatDate('2024-02-01'),
-    infotext: 'Einzahlung',
-    origin: 'automatisch',
-    amount: formatCurrency(30.0),
-    total: formatCurrency(90.0)
-  }
-]
 
 const balance = formatCurrency(125.0)
 const targetAmount = formatCurrency(10000.0)
