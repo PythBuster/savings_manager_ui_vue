@@ -15,6 +15,7 @@
     <v-row>
       <v-col class="d-flex justify-end">
         <v-btn
+          @click="saveClicked"
           :disabled="
             newSaveAmount === null || isNaN(newSaveAmount) || newTitle === ''
           "
@@ -25,6 +26,7 @@
   </v-container>
 </template>
 <script setup>
+import router from '@/router'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -33,4 +35,11 @@ const route = useRoute()
 const newTitle = ref(route.query.title)
 const newTargetAmount = ref(route.query.targetAmount)
 const newSaveAmount = ref(route.query.savingsAmount)
+
+function saveClicked() {
+  router.push({
+    path: '/envelope',
+    query: { title: route.query.title }
+  })
+}
 </script>
