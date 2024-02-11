@@ -41,5 +41,8 @@
   "create-continue-priorities": "Create/continue to priority list",
   "envelope-name": "Name for the envelope",
   "target-amount": "Target amount",
-  "settings": "Settings"
+  "settings": "Settings",
+  "add-up": "Add up",
+  "fill-envelopes": "Fill envelopes",
+  "collect": "Collect"
 }

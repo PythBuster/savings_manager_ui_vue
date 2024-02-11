@@ -41,5 +41,8 @@
   "create-continue-priorities": "Anlegen/weiter zu Prioritätenliste",
   "envelope-name": "Name der Kasse",
   "target-amount": "Zielbetrag",
-  "settings": "Einstellungen"
+  "settings": "Einstellungen",
+  "add-up": "Aufaddieren",
+  "fill-envelopes": "Kassen füllen",
+  "collect": "Sammeln"
 }
