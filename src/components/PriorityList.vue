@@ -41,7 +41,12 @@
           </v-card-actions>
         </v-card>
       </v-col>
-      <v-col cols="12" sm="6" class="d-flex align-end justify-end">
+      <v-col
+        @click="saveClicked"
+        cols="12"
+        sm="6"
+        class="d-flex align-end justify-end"
+      >
         <v-btn>{{ $t('save') }}</v-btn>
       </v-col>
     </v-row>
@@ -49,6 +54,7 @@
 </template>
 
 <script setup>
+import router from '@/router'
 import { ref } from 'vue'
 
 const items = ref([
@@ -98,5 +104,11 @@ const moveDown = () => {
     items.value.splice(index + 1, 0, itemToMove)
     selectedIndex.value = index + 1
   }
+}
+
+function saveClicked() {
+  router.push({
+    path: '/'
+  })
 }
 </script>
