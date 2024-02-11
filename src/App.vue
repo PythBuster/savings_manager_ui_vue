@@ -69,7 +69,6 @@ import router from '@/router'
 
 // t used for menuItems and languageSelected(), otherwise $t globally available
 import { useI18n } from 'vue-i18n'
-import SavingsSettingsOverview from './components/SavingsSettingsOverview.vue'
 const { t, locale } = useI18n({})
 
 const selectedLanguage = ref(
