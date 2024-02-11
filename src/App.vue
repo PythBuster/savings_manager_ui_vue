@@ -81,7 +81,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import router from '@/router'
 import { useTheme } from 'vuetify'
 
@@ -98,11 +98,11 @@ const languages = [
   import.meta.env.VITE_VUE_APP_I18N_FALLBACK_LOCALE.toUpperCase()
 ]
 
-const menuItems = [
+const menuItems = computed(() => [
   { title: t('my-envelopes'), path: '/' },
   { title: t('priority-list'), path: '/priority' },
   { title: t('savings-settings'), path: '/savingssettings' }
-]
+])
 
 const totalAmount = 2781.0
 
