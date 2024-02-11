@@ -4,6 +4,23 @@
       <v-app-bar-title>
         <v-btn @click="goHome">Savings Manager</v-btn>
       </v-app-bar-title>
+
+      <v-menu offset-y>
+        <template v-slot:activator="{ props }">
+          <v-btn v-bind="props">{{ selectedLanguage }}</v-btn>
+        </template>
+        <v-list>
+          <v-list-item
+            v-for="(language, index) in languages"
+            :key="index"
+            :value="language"
+            class="d-flex justify-center"
+            @click="languageSelected(language)"
+            >{{ language }}</v-list-item
+          >
+        </v-list>
+      </v-menu>
+
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-app-bar-nav-icon v-bind="props"> </v-app-bar-nav-icon>
@@ -47,12 +64,21 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import router from '@/router'
 
-// t used for menuItems, otherwise $t globally available
+// t used for menuItems and languageSelected(), otherwise $t globally available
 import { useI18n } from 'vue-i18n'
 import SavingsSettingsOverview from './components/SavingsSettingsOverview.vue'
-const { t } = useI18n({})
+const { t, locale } = useI18n({})
+
+const selectedLanguage = ref(
+  import.meta.env.VITE_VUE_APP_I18N_LOCALE.toUpperCase()
+)
+const languages = [
+  import.meta.env.VITE_VUE_APP_I18N_LOCALE.toUpperCase(),
+  import.meta.env.VITE_VUE_APP_I18N_FALLBACK_LOCALE.toUpperCase()
+]
 
 const menuItems = [
   { title: t('my-envelopes'), path: '/' },
@@ -61,6 +87,11 @@ const menuItems = [
 ]
 
 const totalAmount = 2781.0
+
+function languageSelected(language) {
+  selectedLanguage.value = language
+  locale.value = language.toLowerCase()
+}
 
 const selectMenuItem = (item) => {
   if (item.path) {
