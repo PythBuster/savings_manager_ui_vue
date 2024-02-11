@@ -17,6 +17,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { formatCurrency } from '@/utils'
 
 // t used for tableItems, otherwise $t globally available
@@ -24,7 +25,7 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n({})
 
 // Dummy data, API fetch not implemented yet
-const tableItems = [
+let tableItems = computed(() => [
   {
     name: t('savings-amount'),
     data: formatCurrency(500.0)
@@ -41,5 +42,5 @@ const tableItems = [
     name: t('uncommitted'),
     data: formatCurrency(355.0)
   }
-]
+])
 </script>
