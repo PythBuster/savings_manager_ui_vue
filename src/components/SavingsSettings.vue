@@ -12,16 +12,25 @@
     </v-row>
     <v-row>
       <v-col class="d-flex justify-end">
-        <v-btn :disabled="saveAmount === null || isNaN(saveAmount)">{{
-          $t('save')
-        }}</v-btn>
+        <v-btn
+          @click="saveClicked"
+          :disabled="saveAmount === null || isNaN(saveAmount)"
+          >{{ $t('save') }}</v-btn
+        >
       </v-col>
     </v-row>
   </v-container>
 </template>
 <script setup>
+import router from '@/router'
 import { ref } from 'vue'
 
 // Dummy data
 const saveAmount = ref(500.0)
+
+function saveClicked() {
+  router.push({
+    path: '/'
+  })
+}
 </script>
