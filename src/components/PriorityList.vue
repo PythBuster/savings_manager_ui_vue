@@ -19,9 +19,7 @@
               @dragover.prevent
               @drop="drop(index)"
             >
-              <v-list-item-content>
-                {{ item.name }}
-              </v-list-item-content>
+              {{ item.name }}
             </v-list-item>
           </v-list>
           <v-card-actions>
