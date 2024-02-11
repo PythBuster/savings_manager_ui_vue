@@ -4,7 +4,25 @@
       <v-app-bar-title>
         <v-btn @click="goHome">Savings Manager</v-btn>
       </v-app-bar-title>
-
+      <v-menu offset-y>
+        <template v-slot:activator="{ props }">
+          <v-btn v-bind="props"><v-icon>mdi-theme-light-dark</v-icon></v-btn>
+        </template>
+        <v-list>
+          <v-list-item
+            class="d-flex justify-center"
+            @click="themeSelected('dark')"
+          >
+            <v-icon>mdi-weather-night</v-icon>
+          </v-list-item>
+          <v-list-item
+            class="d-flex justify-center"
+            @click="themeSelected('light')"
+          >
+            <v-icon>mdi-white-balance-sunny</v-icon>
+          </v-list-item>
+        </v-list>
+      </v-menu>
       <v-menu offset-y>
         <template v-slot:activator="{ props }">
           <v-btn v-bind="props">{{ selectedLanguage }}</v-btn>
@@ -20,7 +38,6 @@
           >
         </v-list>
       </v-menu>
-
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-app-bar-nav-icon v-bind="props"> </v-app-bar-nav-icon>
@@ -66,10 +83,12 @@
 <script setup>
 import { ref } from 'vue'
 import router from '@/router'
+import { useTheme } from 'vuetify'
 
 // t used for menuItems and languageSelected(), otherwise $t globally available
 import { useI18n } from 'vue-i18n'
 const { t, locale } = useI18n({})
+const theme = useTheme()
 
 const selectedLanguage = ref(
   import.meta.env.VITE_VUE_APP_I18N_LOCALE.toUpperCase()
@@ -98,6 +117,10 @@ const selectMenuItem = (item) => {
       path: item.path
     })
   }
+}
+
+function themeSelected(selectedTheme) {
+  theme.global.name.value = selectedTheme
 }
 
 function goHome() {
