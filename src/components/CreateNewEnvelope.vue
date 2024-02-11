@@ -26,13 +26,25 @@
   </v-container>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import router from '@/router'
+import { useI18n } from 'vue-i18n'
+
+// t used for envelopeName, otherwise $t globally available
+const { t, locale } = useI18n({})
 
 // Dummy data
 const saveAmount = ref(10.0)
 const targetAmount = ref()
-const envelopeName = ref('Neue Kasse')
+
+const envelopeName = ref(t('new-envelope2'))
+
+watch(
+  () => locale.value,
+  () => {
+    envelopeName.value = t('new-envelope2')
+  }
+)
 
 function createClicked() {
   router.push({
