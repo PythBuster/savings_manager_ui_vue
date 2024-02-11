@@ -26,7 +26,7 @@ defineProps({
 
 function OverflowEnvelopeClicked() {
   router.push({
-    path: '/editoverflow'
+    path: '/overflow'
   })
 }
 </script>
