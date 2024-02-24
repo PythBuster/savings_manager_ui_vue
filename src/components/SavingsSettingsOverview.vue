@@ -1,18 +1,16 @@
 <template>
   <v-card variant="outlined">
-    <div>
-      <v-card-item>
-        <v-card-title>{{ $t('savings-settings') }}</v-card-title>
-      </v-card-item>
-      <v-table>
-        <tbody>
-          <tr v-for="item in tableItems" :key="item.name">
-            <td>{{ item.name }}</td>
-            <td>{{ item.data }}</td>
-          </tr>
-        </tbody>
-      </v-table>
-    </div>
+    <v-card-item>
+      <v-card-title>{{ $t('savings-settings') }}</v-card-title>
+    </v-card-item>
+    <v-table>
+      <tbody>
+        <tr v-for="item in tableItems" :key="item.name">
+          <td>{{ item.name }}</td>
+          <td>{{ item.data }}</td>
+        </tr>
+      </tbody>
+    </v-table>
   </v-card>
 </template>
 
