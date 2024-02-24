@@ -1,35 +1,33 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col>
-        <v-card>
-          <v-card-item>
-            <v-card-title>{{ $t('last-transactions') }}</v-card-title>
-          </v-card-item>
-          <v-table>
-            <thead>
-              <tr>
-                <th class="text-no-wrap">{{ $t('date') }}</th>
-                <th class="text-no-wrap">{{ $t('info-text') }}</th>
-                <th class="text-no-wrap">{{ $t('origin') }}</th>
-                <th class="text-no-wrap">{{ $t('amount') }}</th>
-                <th class="text-no-wrap">{{ $t('total') }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in transactionItems" :key="item.name">
-                <td>{{ item.date }}</td>
-                <td>{{ item.infotext }}</td>
-                <td>{{ item.origin }}</td>
-                <td>{{ item.amount }}</td>
-                <td>{{ item.total }}</td>
-              </tr>
-            </tbody>
-          </v-table>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-row>
+    <v-col>
+      <v-card>
+        <v-card-item>
+          <v-card-title>{{ $t('last-transactions') }}</v-card-title>
+        </v-card-item>
+        <v-table>
+          <thead>
+            <tr>
+              <th class="text-no-wrap">{{ $t('date') }}</th>
+              <th class="text-no-wrap">{{ $t('info-text') }}</th>
+              <th class="text-no-wrap">{{ $t('origin') }}</th>
+              <th class="text-no-wrap">{{ $t('amount') }}</th>
+              <th class="text-no-wrap">{{ $t('total') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in transactionItems" :key="item.name">
+              <td>{{ item.date }}</td>
+              <td>{{ item.infotext }}</td>
+              <td>{{ item.origin }}</td>
+              <td>{{ item.amount }}</td>
+              <td>{{ item.total }}</td>
+            </tr>
+          </tbody>
+        </v-table>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 <script setup>
 import { formatCurrency, formatDate } from '@/utils'

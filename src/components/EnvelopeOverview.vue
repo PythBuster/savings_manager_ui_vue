@@ -36,14 +36,20 @@
         <v-btn color="warning">{{ $t('delete-envelope') }}</v-btn>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12" md="8">
+        <LastTransactions />
+      </v-col>
+      <v-col cols="12" md="4">
+        <BarChart />
+      </v-col>
+    </v-row>
   </v-container>
-  <LastTransactions />
 </template>
 <script setup>
 import router from '@/router'
 import { formatCurrency } from '@/utils'
 import { useRoute } from 'vue-router'
-import LastTransactions from './LastTransactions.vue'
 
 const route = useRoute()
 const title = route.query.title

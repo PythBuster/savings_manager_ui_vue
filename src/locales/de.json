@@ -45,5 +45,17 @@
   "settings": "Einstellungen",
   "add-up": "Aufaddieren",
   "fill-envelopes": "Kassen füllen",
-  "collect": "Sammeln"
+  "collect": "Sammeln",
+  "january": "Jan",
+  "february": "Feb",
+  "march": "Mär",
+  "april": "Apr",
+  "may": "Mai",
+  "june": "Jun",
+  "july": "Jul",
+  "august": "Aug",
+  "september": "Sep",
+  "october": "Oct",
+  "november": "Nov",
+  "december": "Dez"
 }
