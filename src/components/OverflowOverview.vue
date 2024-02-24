@@ -27,13 +27,16 @@
         }}</v-btn>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col>
+        <LastTransactions />
+      </v-col>
+    </v-row>
   </v-container>
-  <LastTransactions />
 </template>
 <script setup>
 import router from '@/router'
 import { formatCurrency } from '@/utils'
-import LastTransactions from './LastTransactions.vue'
 
 const balance = formatCurrency(125.0)
 
