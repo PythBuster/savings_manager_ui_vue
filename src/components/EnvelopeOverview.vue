@@ -2,7 +2,7 @@
   <v-container>
     <v-row align="center" justify="space-between">
       <v-col cols="auto" md="auto">
-        <h1>{{ $t('envelope') + title }}</h1>
+        <h1 class="text-h4">{{ $t('envelope') + title }}</h1>
       </v-col>
     </v-row>
 
