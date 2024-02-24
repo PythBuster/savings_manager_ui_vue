@@ -28,8 +28,11 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col cols="12" md="8">
         <LastTransactions />
+      </v-col>
+      <v-col cols="12" md="4">
+        <BarChart />
       </v-col>
     </v-row>
   </v-container>
