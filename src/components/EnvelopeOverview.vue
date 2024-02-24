@@ -1,11 +1,10 @@
 <template>
   <v-container>
-    <v-row align="center" justify="space-between">
+    <v-row>
       <v-col cols="auto" md="auto">
         <h1 class="text-h4">{{ $t('envelope') + title }}</h1>
       </v-col>
     </v-row>
-
     <v-row justify="space-between">
       <v-col cols="auto">
         <v-table>
