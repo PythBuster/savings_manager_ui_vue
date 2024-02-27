@@ -85,7 +85,7 @@ const cardData = [
     goal: 0,
     currentAmount: 0.0,
     increment: 25.0,
-    noLimit: true // with noLimit set to false, the value in goal is disregarded in Envelope.vue
+    noLimit: true // with noLimit set to true, the value in goal is disregarded in Envelope.vue
   }
 ]
 const currentAmount = 1000.5
