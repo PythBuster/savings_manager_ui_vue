@@ -1,4 +1,4 @@
-import { NetworkError, DataError } from '@/customerrors.js'
+import { DataError, APIError, DatabaseEmptyError } from '@/customerrors.js'
 
 const serverURL = import.meta.env.VITE_BACKEND_URL
 
@@ -11,14 +11,25 @@ const sendReceiveJsonHeaders = new Headers({
   'content-type': 'application/json'
 })
 
-function checkResponse(response) {
+async function checkResponse(response) {
   if (!response.ok) {
+    let errorDetails = null
+    if (response.status !== 500) {
+      try {
+        const errorResponse = await response.json()
+
+        errorDetails = errorResponse
+      } catch (error) {
+        console.error('Error parsing error response:', error)
+      }
+    }
+
     const message = `${response.status} ${response.statusText}`
-    throw new NetworkError(message)
+    throw new APIError(message, response.status, errorDetails)
   }
 }
 
-function validateMoneybox(jsonData) {
+async function validateMoneyBox(jsonData) {
   if (!jsonData || Object.keys(jsonData).length === 0) {
     throw new DataError('No result from API')
   }
@@ -36,27 +47,27 @@ function validateMoneybox(jsonData) {
  * @returns {Promise<Object>} - A promise that resolves to the JSON data containing the list of moneyboxes.
  */
 export async function getMoneyboxes() {
-  try {
-    const response = await fetch(`${serverURL}/api/moneyboxes`, {
-      method: 'GET',
-      headers: receiveJsonHeaders
-    })
+  const response = await fetch(`${serverURL}/api/moneyboxes`, {
+    method: 'GET',
+    headers: receiveJsonHeaders
+  })
 
-    checkResponse(response)
-
-    const jsonData = await response.json()
-
-    if (!jsonData || Object.keys(jsonData).length === 0) {
-      throw new DataError('No result from API')
-    }
-    if (!jsonData.moneyboxes) {
-      throw new DataError('Invalid data from API')
-    }
-
-    return jsonData
-  } catch (error) {
-    console.error(`${error.name}: ${error.message}`)
+  if (response.status === 204) {
+    throw new DatabaseEmptyError('Database is empty')
   }
+
+  await checkResponse(response)
+
+  const jsonData = await response.json()
+
+  if (!jsonData || Object.keys(jsonData).length === 0) {
+    throw new DataError('No result from API')
+  }
+  if (!jsonData.moneyboxes) {
+    throw new DataError('Invalid data from API')
+  }
+
+  return jsonData
 }
 
 /**
@@ -65,22 +76,18 @@ export async function getMoneyboxes() {
  * @returns {Promise<Object>} - A promise that resolves to the JSON data of the specified moneybox.
  */
 export async function getMoneybox(moneybox_id) {
-  try {
-    const response = await fetch(`${serverURL}/api/moneybox/${moneybox_id}`, {
-      method: 'GET',
-      headers: receiveJsonHeaders
-    })
+  const response = await fetch(`${serverURL}/api/moneybox/${moneybox_id}`, {
+    method: 'GET',
+    headers: receiveJsonHeaders
+  })
 
-    checkResponse(response)
+  await checkResponse(response)
 
-    const jsonData = await response.json()
+  const jsonData = await response.json()
 
-    validateMoneybox(jsonData)
+  await validateMoneyBox(jsonData)
 
-    return jsonData
-  } catch (error) {
-    console.error(`${error.name}: ${error.message}`)
-  }
+  return jsonData
 }
 
 /**
@@ -90,24 +97,20 @@ export async function getMoneybox(moneybox_id) {
  * @returns {Promise<Object>} - A promise that resolves to the JSON data of the updated moneybox.
  */
 export async function updateMoneybox(moneybox_id, newName) {
-  try {
-    const response = await fetch(`${serverURL}/api/moneybox/${moneybox_id}`, {
-      method: 'PATCH',
-      headers: sendReceiveJsonHeaders,
-      body: JSON.stringify({
-        name: newName
-      })
+  const response = await fetch(`${serverURL}/api/moneybox/${moneybox_id}`, {
+    method: 'PATCH',
+    headers: sendReceiveJsonHeaders,
+    body: JSON.stringify({
+      name: newName
     })
+  })
 
-    checkResponse(response)
-    const jsonData = await response.json()
+  await checkResponse(response)
+  const jsonData = await response.json()
 
-    validateMoneybox(jsonData)
+  await validateMoneyBox(jsonData)
 
-    return jsonData
-  } catch (error) {
-    console.error(`${error.name}: ${error.message}`)
-  }
+  return jsonData
 }
 
 /**
@@ -116,25 +119,21 @@ export async function updateMoneybox(moneybox_id, newName) {
  * @returns {Promise<Object>} - A promise that resolves to the JSON data of the newly created moneybox.
  */
 export async function addMoneybox(name) {
-  try {
-    const response = await fetch(`${serverURL}/api/moneybox`, {
-      method: 'POST',
-      headers: sendReceiveJsonHeaders,
-      body: JSON.stringify({
-        name: name
-      })
+  const response = await fetch(`${serverURL}/api/moneybox`, {
+    method: 'POST',
+    headers: sendReceiveJsonHeaders,
+    body: JSON.stringify({
+      name: name
     })
+  })
 
-    checkResponse(response)
+  await checkResponse(response)
 
-    const jsonData = await response.json()
+  const jsonData = await response.json()
 
-    validateMoneybox(jsonData)
+  await validateMoneyBox(jsonData)
 
-    return jsonData
-  } catch (error) {
-    console.error(`${error.name}: ${error.message}`)
-  }
+  return jsonData
 }
 
 /**
@@ -143,16 +142,12 @@ export async function addMoneybox(name) {
  * @returns {Promise<void>} - A promise that resolves when the moneybox is successfully deleted.
  */
 export async function deleteMoneybox(moneybox_id) {
-  try {
-    const response = await fetch(`${serverURL}/api/moneybox/${moneybox_id}`, {
-      method: 'DELETE',
-      headers: receiveJsonHeaders
-    })
+  const response = await fetch(`${serverURL}/api/moneybox/${moneybox_id}`, {
+    method: 'DELETE',
+    headers: receiveJsonHeaders
+  })
 
-    checkResponse(response)
-  } catch (error) {
-    console.error(`${error.name}: ${error.message}`)
-  }
+  await checkResponse(response)
 }
 
 /**
@@ -162,27 +157,23 @@ export async function deleteMoneybox(moneybox_id) {
  * @returns {Promise<Object>} - A promise that resolves to the JSON data of the moneybox after the deposit.
  */
 export async function depositIntoMoneybox(moneybox_id, balance) {
-  try {
-    const response = await fetch(
-      `${serverURL}/api/moneybox/${moneybox_id}/balance/add`,
-      {
-        method: 'POST',
-        headers: sendReceiveJsonHeaders,
-        body: JSON.stringify({
-          balance: balance
-        })
-      }
-    )
+  const response = await fetch(
+    `${serverURL}/api/moneybox/${moneybox_id}/balance/add`,
+    {
+      method: 'POST',
+      headers: sendReceiveJsonHeaders,
+      body: JSON.stringify({
+        balance: balance
+      })
+    }
+  )
 
-    checkResponse(response)
-    const jsonData = await response.json()
+  await checkResponse(response)
+  const jsonData = await response.json()
 
-    validateMoneybox(jsonData)
+  await validateMoneyBox(jsonData)
 
-    return jsonData
-  } catch (error) {
-    console.error(`${error.name}: ${error.message}`)
-  }
+  return jsonData
 }
 
 /**
@@ -192,27 +183,23 @@ export async function depositIntoMoneybox(moneybox_id, balance) {
  * @returns {Promise<Object>} - A promise that resolves to the JSON data of the moneybox after the withdrawal.
  */
 export async function withdrawFromMoneybox(moneybox_id, balance) {
-  try {
-    const response = await fetch(
-      `${serverURL}/api/moneybox/${moneybox_id}/balance/sub`,
-      {
-        method: 'POST',
-        headers: sendReceiveJsonHeaders,
-        body: JSON.stringify({
-          balance: balance
-        })
-      }
-    )
+  const response = await fetch(
+    `${serverURL}/api/moneybox/${moneybox_id}/balance/sub`,
+    {
+      method: 'POST',
+      headers: sendReceiveJsonHeaders,
+      body: JSON.stringify({
+        balance: balance
+      })
+    }
+  )
 
-    checkResponse(response)
-    const jsonData = await response.json()
+  await checkResponse(response)
+  const jsonData = await response.json()
 
-    validateMoneybox(jsonData)
+  await validateMoneyBox(jsonData)
 
-    return jsonData
-  } catch (error) {
-    console.error(`${error.name}: ${error.message}`)
-  }
+  return jsonData
 }
 
 /**
@@ -227,21 +214,17 @@ export async function transferFromMoneyboxToMoneybox(
   balance,
   new_moneybox_id
 ) {
-  try {
-    const response = await fetch(
-      `${serverURL}/api/moneybox/${moneybox_id}/balance/transfer`,
-      {
-        method: 'POST',
-        headers: sendReceiveJsonHeaders,
-        body: JSON.stringify({
-          balance: balance,
-          to_moneybox_id: new_moneybox_id
-        })
-      }
-    )
+  const response = await fetch(
+    `${serverURL}/api/moneybox/${moneybox_id}/balance/transfer`,
+    {
+      method: 'POST',
+      headers: sendReceiveJsonHeaders,
+      body: JSON.stringify({
+        balance: balance,
+        to_moneybox_id: new_moneybox_id
+      })
+    }
+  )
 
-    checkResponse(response)
-  } catch (error) {
-    console.error(`${error.name}: ${error.message}`)
-  }
+  await checkResponse(response)
 }
