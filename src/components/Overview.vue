@@ -14,16 +14,21 @@
         md="4"
         lg="3"
       >
+        <!-- Partly (random) dummy values, as the API fetch is not implemented yet -->
+        <!-- With noLimit set to true, the value in goal is disregarded in Envelope.vue -->
         <Envelope
-          :title="card.title"
-          :priority="card.priority"
-          :goal="card.goal"
-          :currentAmount="card.currentAmount"
-          :increment="card.increment"
-          :noLimit="card.noLimit"
+          :title="card.name"
+          :priority="card.priority || index + 1"
+          :goal="
+            card.goal || Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000
+          "
+          :currentAmount="card.balance"
+          :increment="
+            card.increment || Math.floor(Math.random() * (1000 - 100 + 1)) + 100
+          "
+          :noLimit="card.noLimit || Math.random() < 0.5"
         />
       </v-col>
-
       <v-col cols="12" sm="6" md="4" lg="3">
         <NewEnvelope />
       </v-col>
@@ -37,56 +42,14 @@
 </template>
 
 <script setup>
-// Dummy data, API fetch not implemented yet
-const cardData = [
-  {
-    title: 'Notgroschen',
-    priority: 1,
-    goal: 10000.0,
-    currentAmount: 125.0,
-    increment: 30.0,
-    noLimit: false
-  },
-  {
-    title: 'Urlaub',
-    priority: 2,
-    goal: 3500.0,
-    currentAmount: 25.0,
-    increment: 50.0,
-    noLimit: false
-  },
-  {
-    title: 'PC',
-    priority: 3,
-    goal: 2000.0,
-    currentAmount: 400.0,
-    increment: 25.0,
-    noLimit: false
-  },
-  {
-    title: 'Haushalt',
-    priority: 4,
-    goal: 1000.0,
-    currentAmount: 105.0,
-    increment: 10.0,
-    noLimit: false
-  },
-  {
-    title: 'Haustier',
-    priority: 5,
-    goal: 850.0,
-    currentAmount: 125.0,
-    increment: 5.0,
-    noLimit: false
-  },
-  {
-    title: 'Bildung',
-    priority: 6,
-    goal: 0,
-    currentAmount: 0.0,
-    increment: 25.0,
-    noLimit: true // with noLimit set to true, the value in goal is disregarded in Envelope.vue
-  }
-]
+import { onMounted, ref } from 'vue'
+import { getMoneyboxes } from '@/api.js'
+
+const cardData = ref([])
+
 const currentAmount = 1000.5
+
+onMounted(async () => {
+  cardData.value = (await getMoneyboxes()).moneyboxes
+})
 </script>
