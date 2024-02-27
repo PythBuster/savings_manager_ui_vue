@@ -7,7 +7,7 @@
     </v-row>
     <v-row>
       <v-col
-        v-for="(card, index) in cardData"
+        v-for="(card, index) in global.moneyboxes"
         :key="index"
         cols="12"
         sm="6"
@@ -50,6 +50,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { getMoneyboxes } from '@/api.js'
+import global from '@/global.js'
 import { useI18n } from 'vue-i18n'
 
 // t used for snackbarMessage, otherwise $t globally available
@@ -58,13 +59,13 @@ const { t } = useI18n({})
 const showSnackbar = ref(false)
 const snackbarMessage = ref('')
 
-const cardData = ref([])
-
+// Dummy data, API fetch not implemented yet
 const currentAmount = 1000.5
 
 onMounted(async () => {
   try {
-    cardData.value = (await getMoneyboxes()).moneyboxes
+    const data = await getMoneyboxes()
+    global.setMoneyboxes(data.moneyboxes)
   } catch (error) {
     console.error('Failed to fetch moneyboxes:', error)
     snackbarMessage.value = t('fetch-envelopes-fail')
