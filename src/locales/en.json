@@ -57,5 +57,7 @@
   "september": "Sep",
   "october": "Oct",
   "november": "Nov",
-  "december": "Dec"
+  "december": "Dec",
+  "fetch-envelopes-fail": "Error fetching envelopes.",
+  "close": "Close"
 }

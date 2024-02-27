@@ -57,5 +57,7 @@
   "september": "Sep",
   "october": "Oct",
   "november": "Nov",
-  "december": "Dez"
+  "december": "Dez",
+  "fetch-envelopes-fail": "Fehler beim Laden der Kassen.",
+  "close": "Schließen"
 }
