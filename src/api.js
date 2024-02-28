@@ -1,5 +1,6 @@
 import { DataError, APIError } from '@/customerrors.js'
 import { Moneybox } from '@/models.js'
+import global from '@/global.js'
 
 const serverURL = import.meta.env.VITE_BACKEND_URL
 
@@ -31,8 +32,10 @@ async function checkResponse(response) {
 }
 
 /**
- * Retrieves a list of moneyboxes from the server and modifies them with dummy values and priorities before converting to Moneybox instances.
- * @returns {Promise<Array<Moneybox>>} A promise that resolves with an array of Moneybox instances
+ * Fetches moneyboxes from the server, converts them to Moneybox instances,
+ * and updates the global store with these instances. Does not return any value.
+ * @async
+ * @returns {Promise<void>} A promise that resolves when the moneyboxes have been fetched and the store has been updated.
  */
 export async function getMoneyboxes() {
   const response = await fetch(`${serverURL}/api/moneyboxes`, {
@@ -56,16 +59,17 @@ export async function getMoneyboxes() {
   }
 
   // Add dummy values, since API fetch not implemented yet
-  const modifiedMoneyboxes = jsonData.moneyboxes.map((moneybox, index) => ({
-    ...moneybox,
-    goal: Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000,
-    increment: Math.floor(Math.random() * (1000 - 100 + 1)) + 100,
-    noLimit: Math.random() < 0.5,
-    priority: index + 1
-  }))
+  const modifiedMoneyboxes = jsonData.moneyboxes
+    .map((moneybox, index) => ({
+      ...moneybox,
+      goal: Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000,
+      increment: Math.floor(Math.random() * (1000 - 100 + 1)) + 100,
+      noLimit: Math.random() < 0.5,
+      priority: index + 1
+    }))
+    .map(Moneybox.fromJSON)
 
-  return modifiedMoneyboxes.map(Moneybox.fromJSON)
-  // return jsonData.moneyboxes.map(Moneybox.fromJSON)
+  global.setMoneyboxes(modifiedMoneyboxes)
 }
 
 /**
@@ -87,10 +91,10 @@ export async function getMoneybox(moneybox_id) {
 }
 
 /**
- * Updates the name of a specific moneybox.
- * @param {Moneybox} moneyboxInstance - The Moneybox instance to update
+ * Updates the name of a specific moneybox
+ * @param {Moneybox} moneyboxInstance - The Moneybox instance to update.
  * @param {string} newName - The new name for the moneybox.
- * @returns {Promise<Moneybox>} - A promise that resolves to the updated Moneybox instance
+ * @returns {Promise<void>} A promise that resolves once the moneybox has been updated.
  */
 export async function updateMoneybox(moneyboxInstance, newName) {
   const moneybox_id = moneyboxInstance.id
@@ -105,13 +109,13 @@ export async function updateMoneybox(moneyboxInstance, newName) {
   await checkResponse(response)
   const jsonData = await response.json()
 
-  return Moneybox.fromJSON(jsonData)
+  moneyboxInstance.updateProperty('name', jsonData.name)
 }
 
 /**
  * Adds a new moneybox with the specified name.
  * @param {string} name - The name of the new moneybox to create.
- * @returns {Promise<Moneybpx>} - A promise that resolves to a new Moneybox instance
+ * @returns {Promise<Moneybox>} - A promise that resolves to a new Moneybox instance
  */
 export async function addMoneybox(name) {
   const response = await fetch(`${serverURL}/api/moneybox`, {
@@ -126,7 +130,11 @@ export async function addMoneybox(name) {
 
   const jsonData = await response.json()
 
-  return Moneybox.fromJSON(jsonData)
+  const newMoneybox = Moneybox.fromJSON(jsonData)
+
+  global.addMoneybox(newMoneybox)
+
+  return newMoneybox
 }
 
 /**
@@ -143,13 +151,15 @@ export async function deleteMoneybox(moneyboxInstance) {
   })
 
   await checkResponse(response)
+
+  global.deleteMoneybox(moneyboxInstance)
 }
 
 /**
  * Deposits a specified amount into a moneybox.
  * @param {Moneybox} moneyboxInstance - The Moneybox to deposit into
  * @param {number} balance - The amount to deposit.
- * @returns {Promise<Moneybox>} - A promise that resolves to the Moneybox after the deposit
+ * @returns {Promise<void>} - A promise that resolves when the moneybox has been updated in the store.
  */
 export async function depositIntoMoneybox(moneyboxInstance, balance) {
   const moneybox_id = moneyboxInstance.id
@@ -168,14 +178,14 @@ export async function depositIntoMoneybox(moneyboxInstance, balance) {
   await checkResponse(response)
   const jsonData = await response.json()
 
-  return Moneybox.fromJSON(jsonData)
+  global.updateMoneybox(moneybox_id, 'balance', jsonData.balance)
 }
 
 /**
  * Withdraws a specified amount from a moneybox.
  * @param {Moneybox} moneyboxInstance - The Moneybox to withdraw from
  * @param {number} balance - The amount to withdraw.
- * @returns {Promise<Moneybox>} - A promise that resolves to the Moneybox after the withdrawal
+ * @returns {Promise<void>} - A promise that resolves when the moneybox has been updated in the store.
  */
 export async function withdrawFromMoneybox(moneyboxInstance, balance) {
   const moneybox_id = moneyboxInstance.id
@@ -194,7 +204,7 @@ export async function withdrawFromMoneybox(moneyboxInstance, balance) {
   await checkResponse(response)
   const jsonData = await response.json()
 
-  return Moneybox.fromJSON(jsonData)
+  global.updateMoneybox(moneybox_id, 'balance', jsonData.balance)
 }
 
 /**
@@ -225,4 +235,12 @@ export async function transferFromMoneyboxToMoneybox(
   )
 
   await checkResponse(response)
+
+  // API does not return updated balances, so we have to calculate them manually
+  // Consider refetching the moneyboxes from the server instead
+  const newSourceBalance = sourceMoneyboxInstance.balance - balance
+  global.updateMoneybox(sourceMoneyboxId, 'balance', newSourceBalance)
+
+  const newDestinationBalance = destinationMoneybox.balance + balance
+  global.updateMoneybox(destinationMoneyboxId, 'balance', newDestinationBalance)
 }

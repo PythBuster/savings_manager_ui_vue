@@ -51,9 +51,7 @@ const currentAmount = 1000.5
 
 onMounted(async () => {
   try {
-    const moneyboxes = await getMoneyboxes()
-
-    global.setMoneyboxes(moneyboxes)
+    await getMoneyboxes()
   } catch (error) {
     console.error('Failed to fetch moneyboxes:', error)
     snackbarMessage.value = t('fetch-envelopes-fail')
