@@ -67,9 +67,7 @@ export class Moneybox {
     if (typeof this[updateFunc] === 'function') {
       this[updateFunc](value)
     } else {
-      console.warn(
-        `Update function ${updateFunc} does not exist on Moneybox instance.`
-      )
+      throw new MoneyboxError('invalid update function')
     }
   }
 
