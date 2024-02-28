@@ -2,8 +2,6 @@
 
 Frontend (work in progress) for https://github.com/PythBuster/savings_manager
 
-Master branch automatically deployed at https://savings-manager-frontend.netlify.app/.
-
 ## Configuration
 
 Set `VITE_BACKEND_URL` in `.env` to the URL of the backend server.
