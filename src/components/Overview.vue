@@ -14,20 +14,7 @@
         md="4"
         lg="3"
       >
-        <!-- Partly (random) dummy values, as the API fetch is not implemented yet -->
-        <!-- With noLimit set to true, the value in goal is disregarded in Envelope.vue -->
-        <Envelope
-          :title="card.name"
-          :priority="card.priority || index + 1"
-          :goal="
-            card.goal || Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000
-          "
-          :currentAmount="card.balance"
-          :increment="
-            card.increment || Math.floor(Math.random() * (1000 - 100 + 1)) + 100
-          "
-          :noLimit="card.noLimit || Math.random() < 0.5"
-        />
+        <Envelope :id="card.id" />
       </v-col>
       <v-col cols="12" sm="6" md="4" lg="3">
         <NewEnvelope />
@@ -65,6 +52,16 @@ const currentAmount = 1000.5
 onMounted(async () => {
   try {
     const data = await getMoneyboxes()
+
+    // Assign dummy values, API fetch not implemented yet
+    let priority = 1
+    data.moneyboxes.forEach((moneybox) => {
+      moneybox.goal = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000
+      moneybox.increment = Math.floor(Math.random() * (1000 - 100 + 1)) + 100
+      moneybox.noLimit = Math.random() < 0.5
+      moneybox.priority = priority++
+    })
+
     global.setMoneyboxes(data.moneyboxes)
   } catch (error) {
     console.error('Failed to fetch moneyboxes:', error)

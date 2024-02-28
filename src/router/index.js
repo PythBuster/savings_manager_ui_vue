@@ -9,7 +9,7 @@ const router = createRouter({
       component: Home
     },
     {
-      path: '/envelope',
+      path: '/envelope/:id',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
@@ -37,7 +37,7 @@ const router = createRouter({
       component: () => import('@/views/CreateEnvelope.vue')
     },
     {
-      path: '/editenvelope',
+      path: '/editenvelope/:id',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.

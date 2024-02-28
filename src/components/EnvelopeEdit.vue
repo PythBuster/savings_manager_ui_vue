@@ -27,19 +27,24 @@
 </template>
 <script setup>
 import router from '@/router'
-import { ref } from 'vue'
-import { useRoute } from 'vue-router'
+import global from '@/global.js'
+import { ref, computed } from 'vue'
 
-const route = useRoute()
+const index = computed(() =>
+  global.moneyboxes.findIndex((item) => item.id === props.id)
+)
 
-const newTitle = ref(route.query.title)
-const newTargetAmount = ref(route.query.targetAmount)
-const newSaveAmount = ref(route.query.savingsAmount)
+const props = defineProps({
+  id: Number
+})
+
+const newTitle = ref(global.moneyboxes[index.value].name)
+const newTargetAmount = ref(global.moneyboxes[index.value].goal)
+const newSaveAmount = ref(global.moneyboxes[index.value].increment)
 
 function saveClicked() {
   router.push({
-    path: '/envelope',
-    query: { title: route.query.title }
+    path: `/envelope/${props.id}`
   })
 }
 </script>

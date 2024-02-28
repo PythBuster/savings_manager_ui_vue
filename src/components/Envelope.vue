@@ -8,21 +8,24 @@
     <v-row>
       <v-col>
         <v-card-item>
-          <v-card-title>{{ title }}</v-card-title>
-          <v-card-subtitle>{{ $t('priority') }} {{ priority }}</v-card-subtitle>
+          <v-card-title>{{ global.moneyboxes[index].name }}</v-card-title>
+          <v-card-subtitle
+            >{{ $t('priority') }}
+            {{ global.moneyboxes[index].priority }}</v-card-subtitle
+          >
         </v-card-item>
         <v-card-text>
           <p>
             {{
-              !noLimit
-                ? $t('goal') + formatCurrency(goal)
+              !global.moneyboxes[index].noLimit
+                ? $t('goal') + formatCurrency(global.moneyboxes[index].goal)
                 : $t('goal') + $t('no-limit')
             }}
           </p>
           <p class="font-weight-bold">
-            {{ formatCurrency(currentAmount) }}
+            {{ formatCurrency(global.moneyboxes[index].balance) }}
           </p>
-          <p>+{{ formatCurrency(increment) }}</p>
+          <p>+{{ formatCurrency(global.moneyboxes[index].increment) }}</p>
         </v-card-text>
       </v-col>
     </v-row>
@@ -30,22 +33,22 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+import global from '@/global.js'
 import router from '@/router'
 import { formatCurrency } from '@/utils'
 
+const index = computed(() =>
+  global.moneyboxes.findIndex((item) => item.id === props.id)
+)
+
 const props = defineProps({
-  title: String,
-  priority: Number,
-  goal: Number,
-  currentAmount: Number,
-  increment: Number,
-  noLimit: Boolean
+  id: Number
 })
 
 function envelopeClicked() {
   router.push({
-    path: '/envelope',
-    query: { title: props.title }
+    path: `/envelope/${props.id}`
   })
 }
 </script>

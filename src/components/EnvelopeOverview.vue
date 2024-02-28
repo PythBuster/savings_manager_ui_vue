@@ -2,7 +2,9 @@
   <v-container>
     <v-row>
       <v-col cols="auto" md="auto">
-        <h1 class="text-h4">{{ $t('envelope') + title }}</h1>
+        <h1 class="text-h4">
+          {{ $t('envelope') + global.moneyboxes[index].name }}
+        </h1>
       </v-col>
     </v-row>
     <v-row justify="space-between">
@@ -11,15 +13,21 @@
           <tbody>
             <tr>
               <td>{{ $t('balance') }}</td>
-              <td>{{ balance }}</td>
+              <td>{{ global.moneyboxes[index].balance }}</td>
             </tr>
             <tr>
               <td>{{ $t('goal-amount') }}</td>
-              <td>{{ formatCurrency(targetAmount) }}</td>
+              <td>
+                {{
+                  !global.moneyboxes[index].noLimit
+                    ? formatCurrency(global.moneyboxes[index].goal)
+                    : $t('no-limit')
+                }}
+              </td>
             </tr>
             <tr>
               <td>{{ $t('savings-amount') }}</td>
-              <td>{{ formatCurrency(savingsAmount) }}</td>
+              <td>{{ formatCurrency(global.moneyboxes[index].increment) }}</td>
             </tr>
           </tbody>
         </v-table>
@@ -47,26 +55,22 @@
   </v-container>
 </template>
 <script setup>
+import { computed } from 'vue'
+import global from '@/global.js'
 import router from '@/router'
 import { formatCurrency } from '@/utils'
-import { useRoute } from 'vue-router'
 
-const route = useRoute()
-const title = route.query.title
+const props = defineProps({
+  id: Number
+})
 
-const balance = formatCurrency(125.0)
-
-const targetAmount = 10000.0
-const savingsAmount = 30.0
+const index = computed(() =>
+  global.moneyboxes.findIndex((item) => item.id === props.id)
+)
 
 const changeSettingsClicked = () => {
   router.push({
-    path: '/editenvelope',
-    query: {
-      title: title,
-      targetAmount: targetAmount,
-      savingsAmount: savingsAmount
-    }
+    path: `/editenvelope/${props.id}`
   })
 }
 </script>
