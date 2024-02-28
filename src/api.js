@@ -1,4 +1,4 @@
-import { DataError, APIError, DatabaseEmptyError } from '@/customerrors.js'
+import { DataError, APIError } from '@/customerrors.js'
 
 const serverURL = import.meta.env.VITE_BACKEND_URL
 
@@ -44,7 +44,7 @@ async function validateMoneyBox(jsonData) {
 
 /**
  * Retrieves a list of moneyboxes from the server.
- * @returns {Promise<Object>} - A promise that resolves to the JSON data containing the list of moneyboxes.
+ * @returns {Promise<Array<{id: number, name: string, balance: number}>>} A promise that resolves with an array of moneybox objects, each object containing `id`, `name`, and `balance` properties.
  */
 export async function getMoneyboxes() {
   const response = await fetch(`${serverURL}/api/moneyboxes`, {
@@ -53,7 +53,7 @@ export async function getMoneyboxes() {
   })
 
   if (response.status === 204) {
-    throw new DatabaseEmptyError('Database is empty')
+    return []
   }
 
   await checkResponse(response)
@@ -67,7 +67,7 @@ export async function getMoneyboxes() {
     throw new DataError('Invalid data from API')
   }
 
-  return jsonData
+  return jsonData.moneyboxes
 }
 
 /**

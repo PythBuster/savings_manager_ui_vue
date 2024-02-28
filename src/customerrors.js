@@ -12,9 +12,3 @@ export class APIError extends Error {
     this.details = details
   }
 }
-export class DatabaseEmptyError extends Error {
-  constructor(message = 'databaseEmptyError') {
-    super(message)
-    this.name = 'databaseEmptyError'
-  }
-}
