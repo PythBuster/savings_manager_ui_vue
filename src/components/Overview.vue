@@ -53,15 +53,6 @@ onMounted(async () => {
   try {
     const moneyboxes = await getMoneyboxes()
 
-    // Assign dummy values, API fetch not implemented yet
-    let priority = 1
-    moneyboxes.forEach((moneybox) => {
-      moneybox.goal = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000
-      moneybox.increment = Math.floor(Math.random() * (1000 - 100 + 1)) + 100
-      moneybox.noLimit = Math.random() < 0.5
-      moneybox.priority = priority++
-    })
-
     global.setMoneyboxes(moneyboxes)
   } catch (error) {
     console.error('Failed to fetch moneyboxes:', error)

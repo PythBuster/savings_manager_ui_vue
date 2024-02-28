@@ -7,16 +7,12 @@ const moneyboxes = reactive([])
 function updateMoneybox(id, key, value) {
   const index = moneyboxes.findIndex((item) => item.id === id)
   if (index !== -1) {
-    moneyboxes[index][key] = value
+    moneyboxes[index].updateProperty(key, value)
   }
 }
 
 function setMoneyboxes(newMoneyboxes) {
-  moneyboxes.splice(0, moneyboxes.length)
-
-  for (const box of newMoneyboxes) {
-    moneyboxes.push(box)
-  }
+  moneyboxes.splice(0, moneyboxes.length, ...newMoneyboxes)
 }
 
 export default {
