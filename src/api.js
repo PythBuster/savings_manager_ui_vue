@@ -143,6 +143,10 @@ export async function addMoneybox(name) {
  * @returns {Promise<void>} - A promise that resolves when the moneybox is successfully deleted.
  */
 export async function deleteMoneybox(moneyboxInstance) {
+  if (!(moneyboxInstance instanceof Moneybox)) {
+    throw new DataError('Not an instance of Moneybox')
+  }
+
   const moneybox_id = moneyboxInstance.id
 
   const response = await fetch(`${serverURL}/api/moneybox/${moneybox_id}`, {

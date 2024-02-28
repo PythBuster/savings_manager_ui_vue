@@ -14,9 +14,7 @@ function addMoneybox(newMoneybox) {
 
 function deleteMoneybox(Moneybox) {
   const index = moneyboxes.findIndex((moneybox) => moneybox.id === Moneybox.id)
-  if (index !== -1) {
-    moneyboxes.splice(index, 1)
-  }
+  moneyboxes.splice(index, 1)
 }
 
 export default {
