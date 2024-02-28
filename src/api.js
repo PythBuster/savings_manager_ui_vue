@@ -178,7 +178,7 @@ export async function depositIntoMoneybox(moneyboxInstance, balance) {
   await checkResponse(response)
   const jsonData = await response.json()
 
-  global.updateMoneybox(moneybox_id, 'balance', jsonData.balance)
+  moneyboxInstance.updateProperty('balance', jsonData.balance)
 }
 
 /**
@@ -204,23 +204,23 @@ export async function withdrawFromMoneybox(moneyboxInstance, balance) {
   await checkResponse(response)
   const jsonData = await response.json()
 
-  global.updateMoneybox(moneybox_id, 'balance', jsonData.balance)
+  moneyboxInstance.updateProperty('balance', jsonData.balance)
 }
 
 /**
  * Transfers a specified amount from one moneybox to another.
  * @param {Moneybox} sourceMoneyboxInstance - The source Moneybox
  * @param {number} balance - The amount to transfer.
- * @param {Moneybox} destinationMoneybox - The destination Moneybox
+ * @param {Moneybox} destinationMoneyboxInstance - The destination Moneybox
  * @returns {Promise<void>} - A promise that resolves when the transfer is successfully completed.
  */
 export async function transferFromMoneyboxToMoneybox(
   sourceMoneyboxInstance,
   balance,
-  destinationMoneybox
+  destinationMoneyboxInstance
 ) {
   const sourceMoneyboxId = sourceMoneyboxInstance.id
-  const destinationMoneyboxId = destinationMoneybox.id
+  const destinationMoneyboxId = destinationMoneyboxInstance.id
 
   const response = await fetch(
     `${serverURL}/api/moneybox/${sourceMoneyboxId}/balance/transfer`,
@@ -239,8 +239,8 @@ export async function transferFromMoneyboxToMoneybox(
   // API does not return updated balances, so we have to calculate them manually
   // Consider refetching the moneyboxes from the server instead
   const newSourceBalance = sourceMoneyboxInstance.balance - balance
-  global.updateMoneybox(sourceMoneyboxId, 'balance', newSourceBalance)
+  sourceMoneyboxInstance.updateProperty('balance', newSourceBalance)
 
-  const newDestinationBalance = destinationMoneybox.balance + balance
-  global.updateMoneybox(destinationMoneyboxId, 'balance', newDestinationBalance)
+  const newDestinationBalance = destinationMoneyboxInstance.balance + balance
+  destinationMoneyboxInstance.updateProperty('balance', newDestinationBalance)
 }
