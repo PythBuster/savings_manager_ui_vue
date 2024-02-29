@@ -144,7 +144,7 @@ export async function addMoneybox(name) {
  */
 export async function deleteMoneybox(moneyboxInstance) {
   if (!(moneyboxInstance instanceof Moneybox)) {
-    throw new DataError('Not an instance of Moneybox')
+    throw new TypeError('Not an instance of Moneybox')
   }
 
   const moneybox_id = moneyboxInstance.id
