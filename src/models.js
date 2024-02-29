@@ -1,23 +1,18 @@
-import { MoneyboxError } from '@/customerrors.js'
-
-/**
- * Result page
- */
 export class Moneybox {
   /** @member {Number} balance */
-  balance
+  #balance
   /** @member {Number} goal */
-  goal
+  #goal
   /** @member {Number} id */
-  id
+  #id
   /** @member {Number} increment */
-  increment
+  #increment
   /** @member {String} name */
-  name
+  #name
   /** @member {Boolean} noLimit */
-  noLimit
+  #noLimit
   /** @member {Number} priority */
-  priority
+  #priority
 
   /**
    * Creates an instance of Moneybox.
@@ -30,13 +25,13 @@ export class Moneybox {
    * @param {Number} priority - The priority of the moneybox
    */
   constructor(id, name, balance, goal, increment, noLimit, priority) {
-    this.setId(id)
-    this.setName(name)
-    this.setBalance(balance)
-    this.setGoal(goal)
-    this.setIncrement(increment)
-    this.setNoLimit(noLimit)
-    this.setPriority(priority)
+    this.id = id
+    this.name = name
+    this.balance = balance
+    this.goal = goal
+    this.increment = increment
+    this.noLimit = noLimit
+    this.priority = priority
   }
 
   /**
@@ -44,7 +39,6 @@ export class Moneybox {
    * @param {Object} rawMoneybox A JSON object with properties matching the Moneybox class.
    * @returns {Moneybox} A new instance of Moneybox.
    */
-
   static fromJSON(rawMoneybox) {
     return new Moneybox(
       rawMoneybox.id,
@@ -57,73 +51,65 @@ export class Moneybox {
     )
   }
 
-  /**
-   * Updates a property of the Moneybox instance with a new value.
-   * @param {String} key The property name to update.
-   * @param {*} value The new value for the property.
-   */
-  updateProperty(key, value) {
-    const updateFunc = `set${key.charAt(0).toUpperCase() + key.slice(1)}`
-    if (typeof this[updateFunc] === 'function') {
-      this[updateFunc](value)
-    } else {
-      throw new MoneyboxError('invalid update function')
-    }
+  get id() {
+    return this.#id
+  }
+  set id(value) {
+    if (!Number.isInteger(value)) throw new TypeError('id must be an integer')
+    this.#id = value
   }
 
-  setId(value) {
-    if (Number.isInteger(value)) {
-      this.id = value
-    } else {
-      throw new MoneyboxError('id must be an integer')
-    }
+  get name() {
+    return this.#name
+  }
+  set name(value) {
+    if (typeof value !== 'string') throw new TypeError('name must be a string')
+    this.#name = value
   }
 
-  setName(value) {
-    if (typeof value === 'string') {
-      this.name = value
-    } else {
-      throw new MoneyboxError('name must be a string')
-    }
+  get balance() {
+    return this.#balance
+  }
+  set balance(value) {
+    if (typeof value !== 'number' || value < 0)
+      throw new RangeError('balance must be a number and >= 0')
+    this.#balance = value
   }
 
-  setBalance(value) {
-    if (typeof value === 'number' && value >= 0) {
-      this.balance = value
-    } else {
-      throw new MoneyboxError('balance must be a number and >= 0')
-    }
+  get goal() {
+    return this.#goal
+  }
+  set goal(value) {
+    if (isNaN(value))
+      throw new TypeError('Expected value for goal to be a number')
+    if (value < 0) throw new RangeError('Goal needs to be greater or equal 0')
+    this.#goal = value
   }
 
-  setGoal(value) {
-    if (typeof value === 'number' && value >= 0) {
-      this.goal = value
-    } else {
-      throw new MoneyboxError('goal must be a number and >= 0')
-    }
+  get increment() {
+    return this.#increment
+  }
+  set increment(value) {
+    if (typeof value !== 'number' || value < 0)
+      throw new RangeError('increment must be a number and >= 0')
+    this.#increment = value
   }
 
-  setIncrement(value) {
-    if (typeof value === 'number' && value >= 0) {
-      this.increment = value
-    } else {
-      throw new MoneyboxError('increment must be a number and >= 0')
-    }
+  get noLimit() {
+    return this.#noLimit
+  }
+  set noLimit(value) {
+    if (typeof value !== 'boolean')
+      throw new TypeError('noLimit must be a boolean')
+    this.#noLimit = value
   }
 
-  setNoLimit(value) {
-    if (typeof value === 'boolean') {
-      this.noLimit = value
-    } else {
-      throw new MoneyboxError('noLimit must be a boolean')
-    }
+  get priority() {
+    return this.#priority
   }
-
-  setPriority(value) {
-    if (Number.isInteger(value) && value >= 1) {
-      this.priority = value
-    } else {
-      throw new MoneyboxError('priority must be an integer and >= 1')
-    }
+  set priority(value) {
+    if (!Number.isInteger(value) || value < 1)
+      throw new RangeError('priority must be an integer and >= 1')
+    this.#priority = value
   }
 }

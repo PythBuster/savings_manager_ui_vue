@@ -109,7 +109,7 @@ export async function updateMoneybox(moneyboxInstance, newName) {
   await checkResponse(response)
   const jsonData = await response.json()
 
-  moneyboxInstance.updateProperty('name', jsonData.name)
+  moneyboxInstance.name = jsonData.name
 }
 
 /**
@@ -182,7 +182,7 @@ export async function depositIntoMoneybox(moneyboxInstance, balance) {
   await checkResponse(response)
   const jsonData = await response.json()
 
-  moneyboxInstance.updateProperty('balance', jsonData.balance)
+  moneyboxInstance.balance = jsonData.balance
 }
 
 /**
@@ -208,7 +208,7 @@ export async function withdrawFromMoneybox(moneyboxInstance, balance) {
   await checkResponse(response)
   const jsonData = await response.json()
 
-  moneyboxInstance.updateProperty('balance', jsonData.balance)
+  moneyboxInstance.balance = jsonData.balance
 }
 
 /**
@@ -243,8 +243,8 @@ export async function transferFromMoneyboxToMoneybox(
   // API does not return updated balances, so we have to calculate them manually
   // Consider refetching the moneyboxes from the server instead
   const newSourceBalance = sourceMoneyboxInstance.balance - balance
-  sourceMoneyboxInstance.updateProperty('balance', newSourceBalance)
+  sourceMoneyboxInstance.balance = newSourceBalance
 
   const newDestinationBalance = destinationMoneyboxInstance.balance + balance
-  destinationMoneyboxInstance.updateProperty('balance', newDestinationBalance)
+  destinationMoneyboxInstance.balance = newDestinationBalance
 }

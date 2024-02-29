@@ -12,9 +12,3 @@ export class APIError extends Error {
     this.details = details
   }
 }
-export class MoneyboxError extends Error {
-  constructor(message = 'MoneyboxError') {
-    super(message)
-    this.name = 'MoneyboxError'
-  }
-}
