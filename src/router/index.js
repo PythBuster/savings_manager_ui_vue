@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
-import { getMoneyboxes } from '@/api.js'
+import { getMoneyboxes, getMoneybox } from '@/api.js'
 import global from '@/global.js'
 
 const router = createRouter({
@@ -9,7 +9,7 @@ const router = createRouter({
     {
       path: '/',
       component: Home,
-      beforeEnter: async (to, from, next) => {
+      beforeEnter: async (_to, _from, next) => {
         if (!global.moneyboxesLoaded) {
           try {
             await getMoneyboxes()
@@ -30,7 +30,22 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/Envelope.vue')
+      component: () => import('@/views/Envelope.vue'),
+      beforeEnter: async (to, _from, next) => {
+        const id = Number(to.params.id)
+        if (!global.findMoneyboxById(id)) {
+          try {
+            global.addMoneybox(await getMoneybox(id))
+            next()
+          } catch (error) {
+            console.error(`Failed to fetch moneybox with id ${id}:`, error)
+            // TODO: Show error message to user or redirect to error page
+            next(false)
+          }
+        } else {
+          next()
+        }
+      }
     },
     {
       path: '/priority',
@@ -58,7 +73,22 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/EditEnvelope.vue')
+      component: () => import('@/views/EditEnvelope.vue'),
+      beforeEnter: async (to, _from, next) => {
+        const id = Number(to.params.id)
+        if (!global.findMoneyboxById(id)) {
+          try {
+            global.addMoneybox(await getMoneybox(id))
+            next()
+          } catch (error) {
+            console.error(`Failed to fetch moneybox with id ${id}:`, error)
+            // TODO: Show error message to user or redirect to error page
+            next(false)
+          }
+        } else {
+          next()
+        }
+      }
     },
     {
       path: '/overflow',
