@@ -3,6 +3,7 @@
 import { reactive, readonly } from 'vue'
 
 const moneyboxes = reactive([])
+const moneyboxesLoaded = false
 
 function setMoneyboxes(newMoneyboxes) {
   moneyboxes.splice(0, moneyboxes.length, ...newMoneyboxes)
@@ -19,6 +20,7 @@ function deleteMoneybox(Moneybox) {
 
 export default {
   moneyboxes: readonly(moneyboxes),
+  moneyboxesLoaded: moneyboxesLoaded,
   addMoneybox,
   deleteMoneybox,
   setMoneyboxes

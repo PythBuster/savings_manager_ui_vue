@@ -25,37 +25,12 @@
         <OverflowEnvelope :currentAmount="currentAmount" />
       </v-col>
     </v-row>
-    <v-snackbar v-model="showSnackbar" :timeout="5000" color="error">
-      {{ snackbarMessage }}
-      <template v-slot:actions>
-        <v-btn @click="showSnackbar = false">{{ $t('close') }}</v-btn>
-      </template>
-    </v-snackbar>
   </v-container>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import { getMoneyboxes } from '@/api.js'
 import global from '@/global.js'
-import { useI18n } from 'vue-i18n'
-
-// t used for snackbarMessage, otherwise $t globally available
-const { t } = useI18n({})
-
-const showSnackbar = ref(false)
-const snackbarMessage = ref('')
 
 // Dummy data, API fetch not implemented yet
 const currentAmount = 1000.5
-
-onMounted(async () => {
-  try {
-    await getMoneyboxes()
-  } catch (error) {
-    console.error('Failed to fetch moneyboxes:', error)
-    snackbarMessage.value = t('fetch-envelopes-fail')
-    showSnackbar.value = true
-  }
-})
 </script>
