@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="auto" md="auto">
         <h1 class="text-h4">
-          {{ $t('envelope') + global.moneyboxes[index].name }}
+          {{ $t('envelope') + global.findMoneyboxById(id).name }}
         </h1>
       </v-col>
     </v-row>
@@ -13,21 +13,23 @@
           <tbody>
             <tr>
               <td>{{ $t('balance') }}</td>
-              <td>{{ global.moneyboxes[index].balance }}</td>
+              <td>{{ global.findMoneyboxById(id).balance }}</td>
             </tr>
             <tr>
               <td>{{ $t('goal-amount') }}</td>
               <td>
                 {{
-                  !global.moneyboxes[index].noLimit
-                    ? formatCurrency(global.moneyboxes[index].goal)
+                  !global.findMoneyboxById(id).noLimit
+                    ? formatCurrency(global.findMoneyboxById(id).goal)
                     : $t('no-limit')
                 }}
               </td>
             </tr>
             <tr>
               <td>{{ $t('savings-amount') }}</td>
-              <td>{{ formatCurrency(global.moneyboxes[index].increment) }}</td>
+              <td>
+                {{ formatCurrency(global.findMoneyboxById(id).increment) }}
+              </td>
             </tr>
           </tbody>
         </v-table>
@@ -57,7 +59,6 @@
   </v-container>
 </template>
 <script setup>
-import { computed } from 'vue'
 import global from '@/global.js'
 import router from '@/router'
 import { formatCurrency } from '@/utils'
@@ -66,10 +67,6 @@ import { deleteMoneybox } from '@/api.js'
 const props = defineProps({
   id: Number
 })
-
-const index = computed(() =>
-  global.moneyboxes.findIndex((item) => item.id === props.id)
-)
 
 async function changeSettingsClicked() {
   router.push({

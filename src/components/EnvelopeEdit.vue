@@ -28,20 +28,16 @@
 <script setup>
 import router from '@/router'
 import global from '@/global.js'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { updateMoneybox } from '@/api.js'
-
-const index = computed(() =>
-  global.moneyboxes.findIndex((item) => item.id === props.id)
-)
 
 const props = defineProps({
   id: Number
 })
 
-const newTitle = ref(global.moneyboxes[index.value].name)
-const newTargetAmount = ref(global.moneyboxes[index.value].goal)
-const newSaveAmount = ref(global.moneyboxes[index.value].increment)
+const newTitle = ref(global.findMoneyboxById(props.id).name)
+const newTargetAmount = ref(global.findMoneyboxById(props.id).goal)
+const newSaveAmount = ref(global.findMoneyboxById(props.id).increment)
 
 async function saveClicked() {
   await updateMoneybox(global.findMoneyboxById(props.id), newTitle.value)
