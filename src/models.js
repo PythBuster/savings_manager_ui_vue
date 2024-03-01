@@ -1,18 +1,18 @@
 export class Moneybox {
   /** @member {Number} balance */
-  #balance
+  _balance
   /** @member {Number} goal */
-  #goal
+  _goal
   /** @member {Number} id */
-  #id
+  _id
   /** @member {Number} increment */
-  #increment
+  _increment
   /** @member {String} name */
-  #name
+  _name
   /** @member {Boolean} noLimit */
-  #noLimit
+  _noLimit
   /** @member {Number} priority */
-  #priority
+  _priority
 
   /**
    * Creates an instance of Moneybox.
@@ -52,64 +52,64 @@ export class Moneybox {
   }
 
   get id() {
-    return this.#id
+    return this._id
   }
   set id(value) {
     if (!Number.isInteger(value)) throw new TypeError('id must be an integer')
-    this.#id = value
+    this._id = value
   }
 
   get name() {
-    return this.#name
+    return this._name
   }
   set name(value) {
     if (typeof value !== 'string') throw new TypeError('name must be a string')
-    this.#name = value
+    this._name = value
   }
 
   get balance() {
-    return this.#balance
+    return this._balance
   }
   set balance(value) {
     if (typeof value !== 'number' || value < 0)
       throw new RangeError('balance must be a number and >= 0')
-    this.#balance = value
+    this._balance = value
   }
 
   get goal() {
-    return this.#goal
+    return this._goal
   }
   set goal(value) {
     if (isNaN(value))
       throw new TypeError('Expected value for goal to be a number')
     if (value < 0) throw new RangeError('Goal needs to be greater or equal 0')
-    this.#goal = value
+    this._goal = value
   }
 
   get increment() {
-    return this.#increment
+    return this._increment
   }
   set increment(value) {
     if (typeof value !== 'number' || value < 0)
       throw new RangeError('increment must be a number and >= 0')
-    this.#increment = value
+    this._increment = value
   }
 
   get noLimit() {
-    return this.#noLimit
+    return this._noLimit
   }
   set noLimit(value) {
     if (typeof value !== 'boolean')
       throw new TypeError('noLimit must be a boolean')
-    this.#noLimit = value
+    this._noLimit = value
   }
 
   get priority() {
-    return this.#priority
+    return this._priority
   }
   set priority(value) {
     if (!Number.isInteger(value) || value < 1)
       throw new RangeError('priority must be an integer and >= 1')
-    this.#priority = value
+    this._priority = value
   }
 }
