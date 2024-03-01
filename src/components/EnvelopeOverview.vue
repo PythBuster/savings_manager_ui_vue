@@ -41,7 +41,9 @@
         <v-btn @click="changeSettingsClicked" class="mb-2">{{
           $t('change-settings')
         }}</v-btn>
-        <v-btn color="warning">{{ $t('delete-envelope') }}</v-btn>
+        <v-btn @click="deleteClicked" color="warning">{{
+          $t('delete-envelope')
+        }}</v-btn>
       </v-col>
     </v-row>
     <v-row>
@@ -59,6 +61,7 @@ import { computed } from 'vue'
 import global from '@/global.js'
 import router from '@/router'
 import { formatCurrency } from '@/utils'
+import { deleteMoneybox } from '@/api.js'
 
 const props = defineProps({
   id: Number
@@ -68,9 +71,18 @@ const index = computed(() =>
   global.moneyboxes.findIndex((item) => item.id === props.id)
 )
 
-const changeSettingsClicked = () => {
+async function changeSettingsClicked() {
   router.push({
     path: `/editenvelope/${props.id}`
   })
+}
+
+// add are you sure dialog
+async function deleteClicked() {
+  // push first, otherwise logic needed to not render the deleted envelope before push activates
+  router.push({
+    path: '/'
+  })
+  await deleteMoneybox(global.findMoneyboxById(props.id))
 }
 </script>

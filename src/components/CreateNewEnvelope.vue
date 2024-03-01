@@ -28,6 +28,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import router from '@/router'
+import { addMoneybox } from '@/api.js'
 import { useI18n } from 'vue-i18n'
 
 // t used for envelopeName, otherwise $t globally available
@@ -46,7 +47,9 @@ watch(
   }
 )
 
-function createClicked() {
+async function createClicked() {
+  await addMoneybox(envelopeName.value)
+
   router.push({
     path: '/priority'
   })

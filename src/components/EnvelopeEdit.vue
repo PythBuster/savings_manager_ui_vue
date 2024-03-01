@@ -29,6 +29,7 @@
 import router from '@/router'
 import global from '@/global.js'
 import { ref, computed } from 'vue'
+import { updateMoneybox } from '@/api.js'
 
 const index = computed(() =>
   global.moneyboxes.findIndex((item) => item.id === props.id)
@@ -42,7 +43,9 @@ const newTitle = ref(global.moneyboxes[index.value].name)
 const newTargetAmount = ref(global.moneyboxes[index.value].goal)
 const newSaveAmount = ref(global.moneyboxes[index.value].increment)
 
-function saveClicked() {
+async function saveClicked() {
+  await updateMoneybox(global.findMoneyboxById(props.id), newTitle.value)
+
   router.push({
     path: `/envelope/${props.id}`
   })
