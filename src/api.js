@@ -87,6 +87,12 @@ export async function getMoneybox(moneybox_id) {
 
   const jsonData = await response.json()
 
+  // Add dummy values, since API fetch not implemented yet
+  jsonData.goal = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000
+  jsonData.increment = Math.floor(Math.random() * (1000 - 100 + 1)) + 100
+  jsonData.noLimit = Math.random() < 0.5
+  jsonData.priority = global.moneyboxes.length + 1
+
   return Moneybox.fromJSON(jsonData)
 }
 
@@ -129,6 +135,12 @@ export async function addMoneybox(name) {
   await checkResponse(response)
 
   const jsonData = await response.json()
+
+  // Add dummy values, since API fetch not implemented yet
+  jsonData.goal = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000
+  jsonData.increment = Math.floor(Math.random() * (1000 - 100 + 1)) + 100
+  jsonData.noLimit = Math.random() < 0.5
+  jsonData.priority = global.moneyboxes.length + 1
 
   const newMoneybox = Moneybox.fromJSON(jsonData)
 
