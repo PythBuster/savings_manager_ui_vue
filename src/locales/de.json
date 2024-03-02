@@ -63,5 +63,8 @@
   "delete-envelope-question-1": "Bist Du sicher, dass Du die Kasse ",
   "delete-envelope-question-2": " löschen möchtest?",
   "delete": "Löschen",
-  "cancel": "Abbrechen"
+  "cancel": "Abbrechen",
+  "error-duplicate-name-1": "Eine Kasse mit dem Namen '",
+  "error-duplicate-name-2": "' existiert bereits. Bitte wähle einen anderen Namen.",
+  "error-must-be-string": "Der Name der Kasse muss ein String sein."
 }
