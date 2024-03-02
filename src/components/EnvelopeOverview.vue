@@ -87,7 +87,7 @@
     <ErrorDialog
       v-model="showErrorDialog"
       :error-message="errorMessage"
-      @update:modelValue="showErrorDialog = $event"
+      @update:modelValue="handleErrorDialogClose($event)"
     ></ErrorDialog>
   </v-container>
 </template>
@@ -111,6 +111,13 @@ const props = defineProps({
 
 const showErrorDialog = ref(false)
 const errorMessage = ref('')
+
+function handleErrorDialogClose(value) {
+  showErrorDialog.value = value
+  if (!value) {
+    dialogVisible.value = false
+  }
+}
 
 async function changeSettingsClicked() {
   router.push({
