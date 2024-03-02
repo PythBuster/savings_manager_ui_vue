@@ -59,7 +59,6 @@
     <v-dialog
       v-if="global.findMoneyboxById(id)"
       v-model="dialogVisible"
-      persistent
       max-width="500px"
     >
       <v-card>

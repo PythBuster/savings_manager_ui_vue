@@ -1,6 +1,9 @@
-<!-- ErrorDialog.vue -->
 <template>
-  <v-dialog :model-value="modelValue" persistent max-width="500px">
+  <v-dialog
+    :model-value="modelValue"
+    max-width="500px"
+    @update:model-value="updateVisibilityState"
+  >
     <v-card>
       <v-card-title class="headline">{{ $t('error') }}</v-card-title>
       <v-card-text>{{ errorMessage }}</v-card-text>
@@ -22,5 +25,9 @@ const emit = defineEmits(['update:modelValue'])
 
 function closeDialog() {
   emit('update:modelValue', false)
+}
+
+function updateVisibilityState(value) {
+  emit('update:modelValue', value)
 }
 </script>
