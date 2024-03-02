@@ -37,7 +37,7 @@ import { addMoneybox } from '@/api.js'
 import { useI18n } from 'vue-i18n'
 import { APIError } from '@/customerrors'
 
-// t used for envelopeName, otherwise $t globally available
+// t used for envelopeName and error dialog, otherwise $t globally available
 const { t, locale } = useI18n({})
 
 // Dummy data
