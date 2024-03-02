@@ -62,7 +62,7 @@
           $t('delete-envelope')
         }}</v-card-title>
         <v-card-text>
-          <span class="subtitle-1">{{ $t('delete-envelope-question-1') }}</span>
+          {{ $t('delete-envelope-question-1') }}
           <span class="font-weight-bold">{{
             global.findMoneyboxById(id).name
           }}</span
