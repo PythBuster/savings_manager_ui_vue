@@ -81,7 +81,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import router from '@/router'
 import { useTheme } from 'vuetify'
 import Cookies from 'js-cookie'
@@ -116,6 +116,7 @@ const totalAmount = 2781.0
 
 function languageSelected(language) {
   selectedLanguage.value = language
+  Cookies.set('locale', language)
   locale.value = language.toLowerCase()
 }
 
@@ -137,4 +138,12 @@ function goHome() {
     path: '/'
   })
 }
+
+onMounted(() => {
+  const savedLocale = Cookies.get('locale')
+  if (savedLocale) {
+    locale.value = savedLocale.toLowerCase()
+    selectedLanguage.value = savedLocale
+  }
+})
 </script>
