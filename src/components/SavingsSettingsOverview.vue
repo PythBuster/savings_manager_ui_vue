@@ -25,7 +25,7 @@ const { t } = useI18n({})
 // Dummy data, API fetch not implemented yet
 let tableItems = computed(() => [
   {
-    name: t('savings-amount'),
+    name: t('savings-amount') + ':',
     data: formatCurrency(0.0)
   },
   {

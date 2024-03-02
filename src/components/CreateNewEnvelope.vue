@@ -9,7 +9,7 @@
       <v-col cols="12" sm="6">
         <v-text-field :label="$t('envelope-name')" v-model="envelopeName" />
         <CurrencyInput :label="$t('target-amount')" v-model="targetAmount" />
-        <CurrencyInput :label="$t('savings-amount2')" v-model="saveAmount" />
+        <CurrencyInput :label="$t('savings-amount')" v-model="saveAmount" />
       </v-col>
     </v-row>
     <v-row>
@@ -72,7 +72,9 @@ async function createClicked() {
   } catch (error) {
     if (error instanceof APIError) {
       if (error.status === 405) {
-        errorMessage.value = `${t('error-duplicate-name-1')}${envelopeName.value}${t('error-duplicate-name-2')}`
+        errorMessage.value = t('error-duplicate-name', {
+          name: envelopeName.value
+        })
       } else if (error.status === 422) {
         errorMessage.value = t('error-must-be-string')
       } else if (error.status === 500) {

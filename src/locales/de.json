@@ -1,9 +1,4 @@
 {
-  "hello": "Hallo!",
-  "first": "Erste",
-  "second": "Zweite",
-  "firstview": "Erste Ansicht auf /",
-  "secondview": "Zweite Ansicht auf /second",
   "toggle-theme": "Theme wechseln",
   "goal": "Ziel: ",
   "priority": "Priorität: ",
@@ -13,8 +8,7 @@
   "overflow-envelope": "Sammelbox",
   "priority-list": "Prioritätenliste",
   "savings-settings": "Spareinstellungen",
-  "savings-amount": "Sparbetrag:",
-  "savings-amount2": "Sparbetrag",
+  "savings-amount": "Sparbetrag",
   "savings-cycle": "Zyklus:",
   "allocated": "Verplant:",
   "uncommitted": "Offen:",
@@ -64,7 +58,6 @@
   "delete-envelope-question-2": " löschen möchtest?",
   "delete": "Löschen",
   "cancel": "Abbrechen",
-  "error-duplicate-name-1": "Eine Kasse mit dem Namen '",
-  "error-duplicate-name-2": "' existiert bereits. Bitte wähle einen anderen Namen.",
+  "error-duplicate-name": "Eine Kasse mit dem Namen '{name}' existiert bereits. Bitte wähle einen anderen Namen.",
   "error-must-be-string": "Der Name der Kasse muss ein String sein."
 }

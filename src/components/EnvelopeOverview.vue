@@ -26,7 +26,7 @@
               </td>
             </tr>
             <tr>
-              <td>{{ $t('savings-amount') }}</td>
+              <td>{{ $t('savings-amount') }}:</td>
               <td>
                 {{ formatCurrency(global.findMoneyboxById(id).increment) }}
               </td>

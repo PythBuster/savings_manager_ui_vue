@@ -1,9 +1,4 @@
 {
-  "hello": "Hello!",
-  "first": "First",
-  "second": "Second",
-  "firstview": "First view auf /",
-  "secondview": "Second view auf /second",
   "toggle-theme": "Toggle theme",
   "goal": "Goal: ",
   "priority": "Priority: ",
@@ -13,8 +8,7 @@
   "overflow-envelope": "Overflow",
   "priority-list": "Priority list",
   "savings-settings": "Savings settings",
-  "savings-amount": "Savings amount:",
-  "savings-amount2": "Savings amount",
+  "savings-amount": "Savings amount",
   "savings-cycle": "Cycle:",
   "allocated": "Allocated:",
   "uncommitted": "Uncommitted:",
@@ -64,7 +58,6 @@
   "delete-envelope-question-2": "",
   "delete": "Delete",
   "cancel": "Cancel",
-  "error-duplicate-name-1": "An envelope with the name '",
-  "error-duplicate-name-2": "' already exists. Please choose a different name.",
+  "error-duplicate-name": "An envelope with the name '{name}' already exists. Please choose a different name.",
   "error-must-be-string": "The name of the envelope must be a string."
 }

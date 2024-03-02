@@ -7,7 +7,7 @@
     </v-row>
     <v-row class="mt-16">
       <v-col cols="12" sm="6">
-        <CurrencyInput :label="$t('savings-amount2')" v-model="saveAmount" />
+        <CurrencyInput :label="$t('savings-amount')" v-model="saveAmount" />
       </v-col>
     </v-row>
     <v-row>

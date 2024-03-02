@@ -9,7 +9,7 @@
       <v-col cols="12" sm="6">
         <v-text-field :label="$t('envelope-name')" v-model="newTitle" />
         <CurrencyInput :label="$t('target-amount')" v-model="newTargetAmount" />
-        <CurrencyInput :label="$t('savings-amount2')" v-model="newSaveAmount" />
+        <CurrencyInput :label="$t('savings-amount')" v-model="newSaveAmount" />
       </v-col>
     </v-row>
     <v-row>
