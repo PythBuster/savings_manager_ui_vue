@@ -84,11 +84,19 @@
 import { ref, computed } from 'vue'
 import router from '@/router'
 import { useTheme } from 'vuetify'
+import Cookies from 'js-cookie'
 
 // t used for menuItems and languageSelected(), otherwise $t globally available
 import { useI18n } from 'vue-i18n'
-const { t, locale } = useI18n({})
+
 const theme = useTheme()
+
+const savedTheme = Cookies.get('theme')
+if (savedTheme) {
+  theme.global.name.value = savedTheme
+}
+
+const { t, locale } = useI18n({})
 
 const selectedLanguage = ref(
   import.meta.env.VITE_VUE_APP_I18N_LOCALE.toUpperCase()
@@ -121,6 +129,7 @@ const selectMenuItem = (item) => {
 
 function themeSelected(selectedTheme) {
   theme.global.name.value = selectedTheme
+  Cookies.set('theme', selectedTheme)
 }
 
 function goHome() {
