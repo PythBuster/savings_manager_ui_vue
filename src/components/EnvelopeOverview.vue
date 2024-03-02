@@ -119,13 +119,13 @@ function handleErrorDialogClose(value) {
   }
 }
 
-async function changeSettingsClicked() {
+function changeSettingsClicked() {
   router.push({
     path: `/editenvelope/${props.id}`
   })
 }
 
-async function deleteClicked() {
+function deleteClicked() {
   dialogVisible.value = true
 }
 
