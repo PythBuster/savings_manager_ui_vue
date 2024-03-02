@@ -1,13 +1,13 @@
 <template>
   <v-container>
-    <v-row>
+    <v-row v-if="global.findMoneyboxById(id)">
       <v-col cols="auto" md="auto">
         <h1 class="text-h4">
           {{ $t('envelope') + global.findMoneyboxById(id).name }}
         </h1>
       </v-col>
     </v-row>
-    <v-row justify="space-between">
+    <v-row v-if="global.findMoneyboxById(id)" justify="space-between">
       <v-col cols="auto">
         <v-table>
           <tbody>
@@ -56,7 +56,12 @@
         <BarChart />
       </v-col>
     </v-row>
-    <v-dialog v-model="dialogVisible" persistent max-width="500px">
+    <v-dialog
+      v-if="global.findMoneyboxById(id)"
+      v-model="dialogVisible"
+      persistent
+      max-width="500px"
+    >
       <v-card>
         <v-card-title class="headline">{{
           $t('delete-envelope')
@@ -105,10 +110,11 @@ async function deleteClicked() {
 }
 
 async function confirmDelete() {
+  await deleteMoneybox(global.findMoneyboxById(props.id))
+  dialogVisible.value = false
+
   router.push({
     path: '/'
   })
-  await deleteMoneybox(global.findMoneyboxById(props.id))
-  dialogVisible.value = false
 }
 </script>
