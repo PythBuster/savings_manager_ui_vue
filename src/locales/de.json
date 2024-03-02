@@ -59,5 +59,6 @@
   "delete": "Löschen",
   "cancel": "Abbrechen",
   "error-duplicate-name": "Eine Kasse mit dem Namen '{name}' existiert bereits. Bitte wähle einen anderen Namen.",
-  "error-must-be-string": "Der Name der Kasse muss ein String sein."
+  "error-must-be-string": "Der Name der Kasse muss ein String sein.",
+  "error": "Fehler"
 }

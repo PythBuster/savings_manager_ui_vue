@@ -25,7 +25,7 @@
     </v-row>
     <v-dialog v-model="showErrorDialog" persistent max-width="500px">
       <v-card>
-        <v-card-title class="headline">Error</v-card-title>
+        <v-card-title class="headline">{{ $t('error') }}</v-card-title>
         <v-card-text>{{ errorMessage }}</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
