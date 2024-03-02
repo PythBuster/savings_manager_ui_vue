@@ -23,18 +23,11 @@
         >
       </v-col>
     </v-row>
-    <v-dialog v-model="showErrorDialog" persistent max-width="500px">
-      <v-card>
-        <v-card-title class="headline">{{ $t('error') }}</v-card-title>
-        <v-card-text>{{ errorMessage }}</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="showErrorDialog = false"
-            >OK</v-btn
-          >
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <ErrorDialog
+      v-model="showErrorDialog"
+      :error-message="errorMessage"
+      @update:modelValue="showErrorDialog = $event"
+    ></ErrorDialog>
   </v-container>
 </template>
 <script setup>
