@@ -70,10 +70,10 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="dialogVisible = false">{{
+          <v-btn color="blue darken-1" @click="dialogVisible = false">{{
             $t('cancel')
           }}</v-btn>
-          <v-btn color="red darken-1" text @click="confirmDelete">{{
+          <v-btn color="red darken-1" @click="confirmDelete">{{
             $t('delete')
           }}</v-btn>
         </v-card-actions>
