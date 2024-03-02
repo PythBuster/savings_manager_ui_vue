@@ -60,5 +60,6 @@
   "cancel": "Cancel",
   "error-duplicate-name": "An envelope with the name '{name}' already exists. Please choose a different name.",
   "error-must-be-string": "The name of the envelope must be a string.",
-  "error": "Error"
+  "error": "Error",
+  "error-not-found": "An envelope with the name '{name}' could not be found."
 }

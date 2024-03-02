@@ -60,5 +60,6 @@
   "cancel": "Abbrechen",
   "error-duplicate-name": "Eine Kasse mit dem Namen '{name}' existiert bereits. Bitte wähle einen anderen Namen.",
   "error-must-be-string": "Der Name der Kasse muss ein String sein.",
-  "error": "Fehler"
+  "error": "Fehler",
+  "error-not-found": "Eine Kasse mit dem Namen '{name}' wurde nicht gefunden."
 }

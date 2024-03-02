@@ -84,6 +84,11 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <ErrorDialog
+      v-model="showErrorDialog"
+      :error-message="errorMessage"
+      @update:modelValue="showErrorDialog = $event"
+    ></ErrorDialog>
   </v-container>
 </template>
 <script setup>
@@ -92,12 +97,20 @@ import global from '@/global.js'
 import router from '@/router'
 import { formatCurrency } from '@/utils'
 import { deleteMoneybox } from '@/api.js'
+import { useI18n } from 'vue-i18n'
+import { APIError } from '@/customerrors'
+
+// t used for error dialog, otherwise $t globally available
+const { t } = useI18n({})
 
 const dialogVisible = ref(false)
 
 const props = defineProps({
   id: Number
 })
+
+const showErrorDialog = ref(false)
+const errorMessage = ref('')
 
 async function changeSettingsClicked() {
   router.push({
@@ -110,11 +123,28 @@ async function deleteClicked() {
 }
 
 async function confirmDelete() {
-  await deleteMoneybox(global.findMoneyboxById(props.id))
-  dialogVisible.value = false
+  try {
+    await deleteMoneybox(global.findMoneyboxById(props.id))
+    dialogVisible.value = false
 
-  router.push({
-    path: '/'
-  })
+    router.push({
+      path: '/'
+    })
+  } catch (error) {
+    if (error instanceof APIError) {
+      if (error.status === 404) {
+        errorMessage.value = t('error-not-found', {
+          name: global.findMoneyboxById(props.id).name
+        })
+      } else if (error.status === 422) {
+        errorMessage.value = t('error-must-be-string')
+      } else if (error.status === 500) {
+        errorMessage.value = error.message
+      }
+    } else {
+      errorMessage.value = error
+    }
+    showErrorDialog.value = true
+  }
 }
 </script>
