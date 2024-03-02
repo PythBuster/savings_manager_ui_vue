@@ -59,5 +59,9 @@
   "november": "Nov",
   "december": "Dez",
   "fetch-envelopes-fail": "Fehler beim Laden der Kassen.",
-  "close": "Schließen"
+  "close": "Schließen",
+  "delete-envelope-question-1": "Bist Du sicher, dass Du die Kasse ",
+  "delete-envelope-question-2": " löschen möchtest?",
+  "delete": "Löschen",
+  "cancel": "Abbrechen"
 }

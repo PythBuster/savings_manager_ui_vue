@@ -59,5 +59,9 @@
   "november": "Nov",
   "december": "Dec",
   "fetch-envelopes-fail": "Error fetching envelopes.",
-  "close": "Close"
+  "close": "Close",
+  "delete-envelope-question-1": "Are you sure you want to delete ",
+  "delete-envelope-question-2": "",
+  "delete": "Delete",
+  "cancel": "Cancel"
 }

@@ -56,13 +56,39 @@
         <BarChart />
       </v-col>
     </v-row>
+    <v-dialog v-model="dialogVisible" persistent max-width="500px">
+      <v-card>
+        <v-card-title class="headline">{{
+          $t('delete-envelope')
+        }}</v-card-title>
+        <v-card-text>
+          <span class="subtitle-1">{{ $t('delete-envelope-question-1') }}</span>
+          <span class="font-weight-bold">{{
+            global.findMoneyboxById(id).name
+          }}</span
+          >{{ $t('delete-envelope-question-2') }}?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="dialogVisible = false">{{
+            $t('cancel')
+          }}</v-btn>
+          <v-btn color="red darken-1" text @click="confirmDelete">{{
+            $t('delete')
+          }}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 <script setup>
+import { ref } from 'vue'
 import global from '@/global.js'
 import router from '@/router'
 import { formatCurrency } from '@/utils'
 import { deleteMoneybox } from '@/api.js'
+
+const dialogVisible = ref(false)
 
 const props = defineProps({
   id: Number
@@ -74,12 +100,15 @@ async function changeSettingsClicked() {
   })
 }
 
-// add are you sure dialog
 async function deleteClicked() {
-  // push first, otherwise logic needed to not render the deleted envelope before push activates
+  dialogVisible.value = true
+}
+
+async function confirmDelete() {
   router.push({
     path: '/'
   })
   await deleteMoneybox(global.findMoneyboxById(props.id))
+  dialogVisible.value = false
 }
 </script>
