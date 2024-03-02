@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { formatCurrency } from '@/utils'
+import { formatCurrency } from '@/utils.js'
 
 defineProps({
   totalAmount: Number

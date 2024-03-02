@@ -20,7 +20,7 @@
 
 <script setup>
 import router from '@/router'
-import { formatCurrency } from '@/utils'
+import { formatCurrency } from '@/utils.js'
 
 defineProps({
   currentAmount: Number

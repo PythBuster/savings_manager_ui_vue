@@ -39,7 +39,7 @@
 </template>
 <script setup>
 import router from '@/router'
-import { formatCurrency } from '@/utils'
+import { formatCurrency } from '@/utils.js'
 
 const balance = formatCurrency(125.0)
 

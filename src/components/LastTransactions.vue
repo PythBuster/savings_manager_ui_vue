@@ -30,7 +30,7 @@
   </v-row>
 </template>
 <script setup>
-import { formatCurrency, formatDate } from '@/utils'
+import { formatCurrency, formatDate } from '@/utils.js'
 
 // Dummy data, API fetch not implemented yet
 const transactionItems = [

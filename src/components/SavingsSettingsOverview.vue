@@ -16,7 +16,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { formatCurrency } from '@/utils'
+import { formatCurrency } from '@/utils.js'
 
 // t used for tableItems, otherwise $t globally available
 import { useI18n } from 'vue-i18n'
