@@ -60,12 +60,12 @@ export async function getMoneyboxes() {
 
   // Add dummy values, since API fetch not implemented yet
   const modifiedMoneyboxes = jsonData.moneyboxes
-    .map((moneybox, index) => ({
+    .map((moneybox) => ({
       ...moneybox,
-      goal: Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000,
-      increment: Math.floor(Math.random() * (1000 - 100 + 1)) + 100,
-      noLimit: Math.random() < 0.5,
-      priority: index + 1
+      goal: 0.0,
+      increment: 0.0,
+      noLimit: true,
+      priority: 1
     }))
     .map(Moneybox.fromJSON)
 
@@ -88,10 +88,10 @@ export async function getMoneybox(moneybox_id) {
   const jsonData = await response.json()
 
   // Add dummy values, since API fetch not implemented yet
-  jsonData.goal = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000
-  jsonData.increment = Math.floor(Math.random() * (1000 - 100 + 1)) + 100
-  jsonData.noLimit = Math.random() < 0.5
-  jsonData.priority = global.moneyboxes.length + 1
+  jsonData.goal = 0.0
+  jsonData.increment = 0.0
+  jsonData.noLimit = true
+  jsonData.priority = 1
 
   return Moneybox.fromJSON(jsonData)
 }
@@ -137,10 +137,10 @@ export async function addMoneybox(name) {
   const jsonData = await response.json()
 
   // Add dummy values, since API fetch not implemented yet
-  jsonData.goal = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000
-  jsonData.increment = Math.floor(Math.random() * (1000 - 100 + 1)) + 100
-  jsonData.noLimit = Math.random() < 0.5
-  jsonData.priority = global.moneyboxes.length + 1
+  jsonData.goal = 0.0
+  jsonData.increment = 0.0
+  jsonData.noLimit = true
+  jsonData.priority = 1
 
   const newMoneybox = Moneybox.fromJSON(jsonData)
 
