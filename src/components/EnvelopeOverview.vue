@@ -142,7 +142,7 @@ async function confirmDelete() {
         errorMessage.value = error.message
       }
     } else {
-      errorMessage.value = error
+      errorMessage.value = error.name + ': ' + error.message
     }
     showErrorDialog.value = true
   }

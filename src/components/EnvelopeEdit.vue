@@ -74,7 +74,7 @@ async function saveClicked() {
         errorMessage.value = error.message
       }
     } else {
-      errorMessage.value = error
+      errorMessage.value = error.name + ': ' + error.message
     }
     showErrorDialog.value = true
   }
