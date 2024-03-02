@@ -32,5 +32,5 @@
 import global from '@/global.js'
 
 // Dummy data, API fetch not implemented yet
-const currentAmount = 1000.5
+const currentAmount = 0.0
 </script>

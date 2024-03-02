@@ -26,7 +26,7 @@ const { t } = useI18n({})
 let tableItems = computed(() => [
   {
     name: t('savings-amount'),
-    data: formatCurrency(500.0)
+    data: formatCurrency(0.0)
   },
   {
     name: t('savings-cycle'),
@@ -34,11 +34,11 @@ let tableItems = computed(() => [
   },
   {
     name: t('allocated'),
-    data: formatCurrency(145.0)
+    data: formatCurrency(0.0)
   },
   {
     name: t('uncommitted'),
-    data: formatCurrency(355.0)
+    data: formatCurrency(0.0)
   }
 ])
 </script>

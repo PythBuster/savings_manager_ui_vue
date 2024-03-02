@@ -112,7 +112,8 @@ const menuItems = computed(() => [
   { title: t('savings-settings'), path: '/savingssettings' }
 ])
 
-const totalAmount = 2781.0
+// Dummy data
+const totalAmount = 0.0
 
 function languageSelected(language) {
   selectedLanguage.value = language
