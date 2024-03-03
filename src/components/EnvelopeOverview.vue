@@ -180,7 +180,6 @@ async function handleTransactionConfirm(transactionDetails) {
         transactionDetails.amount
       )
     } catch (error) {
-      console.log(error.details)
       if (error instanceof APIError) {
         if (error.status === 404) {
           errorMessage.value = t('error-not-found', {
@@ -237,7 +236,6 @@ async function handleTransferConfirm(transferSelection) {
       global.findMoneyboxById(transferSelection.selectedId)
     )
   } catch (error) {
-    console.log(error.details)
     if (error instanceof APIError) {
       if (error.status === 404) {
         errorMessage.value = t('error-not-found', {
