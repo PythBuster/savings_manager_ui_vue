@@ -81,7 +81,7 @@
           <v-btn color="blue darken-1" @click="showDeleteDialog = false">{{
             $t('cancel')
           }}</v-btn>
-          <v-btn color="red darken-1" @click="confirmDelete">{{
+          <v-btn color="red darken-1" @click="handleDeleteConfirm">{{
             $t('delete')
           }}</v-btn>
         </v-card-actions>
@@ -94,9 +94,9 @@
     ></ErrorDialog>
     <TransactionDialog
       v-model="showTransactionDialog"
-      :title="actionTitle"
-      :message="currentAction"
-      @confirm="handleConfirm"
+      :action="currentActionType"
+      :id="id"
+      @confirm="handleTransactionConfirm"
       @update:modelValue="handleTransactionDialogClose($event)"
     />
     <TransferDialog
@@ -127,8 +127,8 @@ const props = defineProps({
 
 const showTransactionDialog = ref(false)
 const showTransferDialog = ref(false)
-const currentAction = ref('')
-const actionTitle = ref('')
+
+const currentActionType = ref('')
 
 const showErrorDialog = ref(false)
 const errorMessage = ref('')
@@ -159,28 +159,16 @@ function deleteClicked() {
 }
 
 function handleTransactionDialog(action) {
+  currentActionType.value = action
   showTransactionDialog.value = true
-  if (action === 'deposit') {
-    actionTitle.value =
-      t('deposit') +
-      t('into-envelope', { name: global.findMoneyboxById(props.id).name })
-    currentAction.value = t('deposit-question')
-  } else if (action === 'withdraw') {
-    actionTitle.value =
-      t('withdraw') +
-      t('from-envelope', {
-        name: global.findMoneyboxById(props.id).name
-      })
-    currentAction.value = t('withdraw-question')
-  }
 }
 
 function handleTransferDialog() {
   showTransferDialog.value = true
 }
 
-function handleConfirm(amount) {
-  console.log(amount)
+function handleTransactionConfirm(transactionDetails) {
+  console.log(transactionDetails.amount, transactionDetails.action)
   // Perform the deposit or withdrawal action here
 }
 
@@ -189,7 +177,7 @@ function handleTransferConfirm(transferSelection) {
   // Perform the deposit or withdrawal action here
 }
 
-async function confirmDelete() {
+async function handleDeleteConfirm() {
   try {
     await deleteMoneybox(global.findMoneyboxById(props.id))
     showDeleteDialog.value = false

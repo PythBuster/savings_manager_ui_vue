@@ -22,23 +22,44 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import global from '@/global.js'
+import { useI18n } from 'vue-i18n'
 
-defineProps({
+// t used for dialogs, otherwise $t globally available
+const { t } = useI18n({})
+
+const props = defineProps({
   modelValue: Boolean,
-  title: String,
-  message: String
+  action: String,
+  id: Number
 })
 
 const emit = defineEmits(['update:modelValue', 'confirm'])
 
 const amount = ref(0)
 
+const title = computed(() => {
+  return props.action === 'deposit'
+    ? t('deposit') +
+        t('into-envelope', { name: global.findMoneyboxById(props.id).name })
+    : t('withdraw') +
+        t('from-envelope', {
+          name: global.findMoneyboxById(props.id).name
+        })
+})
+
+const message = computed(() => {
+  return props.action === 'deposit'
+    ? t('deposit-question')
+    : t('withdraw-question')
+})
+
 function cancel() {
   emit('update:modelValue', false)
 }
 function confirm() {
-  emit('confirm', amount.value)
+  emit('confirm', { amount: amount.value, action: props.action })
   emit('update:modelValue', false)
   amount.value = 0
 }
