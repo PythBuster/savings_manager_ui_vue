@@ -5,7 +5,7 @@
     @update:model-value="updateVisibilityState"
   >
     <v-card>
-      <v-card-title>
+      <v-card-title class="text-wrap">
         {{ title }}
       </v-card-title>
       <v-card-text>
