@@ -14,7 +14,7 @@
   "uncommitted": "Offen:",
   "monthly": "Monatlich",
   "total-savings": "Gesamtersparnis:",
-  "envelope": "Kasse: ",
+  "envelope": "Kasse",
   "balance": "Kontostand:",
   "goal-amount": "Zielbetrag:",
   "deposit": "Einzahlen",
@@ -65,5 +65,9 @@
   "deposit-question": "Wie viel möchtest Du einzahlen?",
   "withdraw-question": "Wie viel möchtest Du abheben?",
   "into-envelope": " in Kasse: {name}",
-  "from-envelope": " von Kasse: {name}"
+  "from-envelope": " von Kasse: {name}",
+  "transfer-from-envelope": "Übertrag von Kasse: ",
+  "transfer-how-much": "Wie viel möchtest Du übertragen?",
+  "transfer-where": "In welche Kasse möchtest Du übertragen?",
+  "error-no-envelopes-found": "Keine Kassen gefunden"
 }

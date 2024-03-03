@@ -3,7 +3,7 @@
     <v-row v-if="global.findMoneyboxById(id)">
       <v-col cols="auto" md="auto">
         <h1 class="text-h4">
-          {{ $t('envelope') + global.findMoneyboxById(id).name }}
+          {{ $t('envelope') + ': ' + global.findMoneyboxById(id).name }}
         </h1>
       </v-col>
     </v-row>
@@ -35,13 +35,13 @@
         </v-table>
       </v-col>
       <v-col cols="auto" class="d-flex flex-column">
-        <v-btn @click="showDialog('deposit')" class="mb-2">{{
+        <v-btn @click="handleTransactionDialog('deposit')" class="mb-2">{{
           $t('deposit')
         }}</v-btn>
-        <v-btn @click="showDialog('withdraw')" class="mb-2">{{
+        <v-btn @click="handleTransactionDialog('withdraw')" class="mb-2">{{
           $t('withdraw')
         }}</v-btn>
-        <v-btn>{{ $t('transfer') }}</v-btn>
+        <v-btn @click="handleTransferDialog">{{ $t('transfer') }}</v-btn>
       </v-col>
       <v-col cols="auto" class="d-flex flex-column">
         <v-btn @click="changeSettingsClicked" class="mb-2">{{
@@ -99,6 +99,12 @@
       @confirm="handleConfirm"
       @update:modelValue="handleTransactionDialogClose($event)"
     />
+    <TransferDialog
+      v-model="showTransferDialog"
+      :sourceId="id"
+      @confirm="handleTransferConfirm"
+      @update:modelValue="handleTransferDialogClose($event)"
+    ></TransferDialog>
   </v-container>
 </template>
 <script setup>
@@ -120,6 +126,7 @@ const props = defineProps({
 })
 
 const showTransactionDialog = ref(false)
+const showTransferDialog = ref(false)
 const currentAction = ref('')
 const actionTitle = ref('')
 
@@ -137,6 +144,10 @@ function handleTransactionDialogClose(value) {
   showTransactionDialog.value = value
 }
 
+function handleTransferDialogClose(value) {
+  showTransferDialog.value = value
+}
+
 function changeSettingsClicked() {
   router.push({
     path: `/editenvelope/${props.id}`
@@ -147,7 +158,7 @@ function deleteClicked() {
   showDeleteDialog.value = true
 }
 
-function showDialog(action) {
+function handleTransactionDialog(action) {
   showTransactionDialog.value = true
   if (action === 'deposit') {
     actionTitle.value =
@@ -164,10 +175,20 @@ function showDialog(action) {
   }
 }
 
+function handleTransferDialog() {
+  showTransferDialog.value = true
+}
+
 function handleConfirm(amount) {
   console.log(amount)
   // Perform the deposit or withdrawal action here
 }
+
+function handleTransferConfirm(transferSelection) {
+  console.log(transferSelection.amount, transferSelection.selectedId)
+  // Perform the deposit or withdrawal action here
+}
+
 async function confirmDelete() {
   try {
     await deleteMoneybox(global.findMoneyboxById(props.id))

@@ -14,7 +14,7 @@
   "uncommitted": "Uncommitted:",
   "monthly": "Monthly",
   "total-savings": "Total savings:",
-  "envelope": "Envelope: ",
+  "envelope": "Envelope",
   "balance": "Balance:",
   "goal-amount": "Target amount:",
   "deposit": "Deposit",
@@ -65,5 +65,9 @@
   "deposit-question": "How much would you like to deposit?",
   "withdraw-question": "How much would you like to withdraw?",
   "into-envelope": " into envelope: {name}",
-  "from-envelope": " from envelope: {name}"
+  "from-envelope": " from envelope: {name}",
+  "transfer-from-envelope": "Transfer from envelope: ",
+  "transfer-how-much": "How much do you want to transfer?",
+  "transfer-where": "To what envelope would you like to transfer?",
+  "error-no-envelopes-found": "No envelopes found"
 }
