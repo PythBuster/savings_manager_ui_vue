@@ -35,8 +35,12 @@
         </v-table>
       </v-col>
       <v-col cols="auto" class="d-flex flex-column">
-        <v-btn class="mb-2">{{ $t('deposit') }}</v-btn>
-        <v-btn class="mb-2">{{ $t('withdraw') }}</v-btn>
+        <v-btn @click="showDialog('deposit')" class="mb-2">{{
+          $t('deposit')
+        }}</v-btn>
+        <v-btn @click="showDialog('withdraw')" class="mb-2">{{
+          $t('withdraw')
+        }}</v-btn>
         <v-btn>{{ $t('transfer') }}</v-btn>
       </v-col>
       <v-col cols="auto" class="d-flex flex-column">
@@ -58,7 +62,7 @@
     </v-row>
     <v-dialog
       v-if="global.findMoneyboxById(id)"
-      v-model="dialogVisible"
+      v-model="showDeleteDialog"
       max-width="500px"
     >
       <v-card>
@@ -74,7 +78,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" @click="dialogVisible = false">{{
+          <v-btn color="blue darken-1" @click="showDeleteDialog = false">{{
             $t('cancel')
           }}</v-btn>
           <v-btn color="red darken-1" @click="confirmDelete">{{
@@ -88,6 +92,13 @@
       :error-message="errorMessage"
       @update:modelValue="handleErrorDialogClose($event)"
     ></ErrorDialog>
+    <TransactionDialog
+      v-model="showTransactionDialog"
+      :title="actionTitle"
+      :message="currentAction"
+      @confirm="handleConfirm"
+      @update:modelValue="handleTransactionDialogClose($event)"
+    />
   </v-container>
 </template>
 <script setup>
@@ -99,14 +110,18 @@ import { deleteMoneybox } from '@/api.js'
 import { useI18n } from 'vue-i18n'
 import { APIError } from '@/customerrors'
 
-// t used for error dialog, otherwise $t globally available
+// t used for dialogs, otherwise $t globally available
 const { t } = useI18n({})
 
-const dialogVisible = ref(false)
+const showDeleteDialog = ref(false)
 
 const props = defineProps({
   id: Number
 })
+
+const showTransactionDialog = ref(false)
+const currentAction = ref('')
+const actionTitle = ref('')
 
 const showErrorDialog = ref(false)
 const errorMessage = ref('')
@@ -114,8 +129,12 @@ const errorMessage = ref('')
 function handleErrorDialogClose(value) {
   showErrorDialog.value = value
   if (!value) {
-    dialogVisible.value = false
+    showDeleteDialog.value = false
   }
+}
+
+function handleTransactionDialogClose(value) {
+  showTransactionDialog.value = value
 }
 
 function changeSettingsClicked() {
@@ -125,13 +144,34 @@ function changeSettingsClicked() {
 }
 
 function deleteClicked() {
-  dialogVisible.value = true
+  showDeleteDialog.value = true
 }
 
+function showDialog(action) {
+  showTransactionDialog.value = true
+  if (action === 'deposit') {
+    actionTitle.value =
+      t('deposit') +
+      t('into-envelope', { name: global.findMoneyboxById(props.id).name })
+    currentAction.value = t('deposit-question')
+  } else if (action === 'withdraw') {
+    actionTitle.value =
+      t('withdraw') +
+      t('from-envelope', {
+        name: global.findMoneyboxById(props.id).name
+      })
+    currentAction.value = t('withdraw-question')
+  }
+}
+
+function handleConfirm(amount) {
+  console.log(amount)
+  // Perform the deposit or withdrawal action here
+}
 async function confirmDelete() {
   try {
     await deleteMoneybox(global.findMoneyboxById(props.id))
-    dialogVisible.value = false
+    showDeleteDialog.value = false
 
     router.push({
       path: '/'

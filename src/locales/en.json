@@ -61,5 +61,9 @@
   "error-duplicate-name": "An envelope with the name '{name}' already exists. Please choose a different name.",
   "error-must-be-string": "The name of the envelope must be a string.",
   "error": "Error",
-  "error-not-found": "An envelope with the name '{name}' could not be found."
+  "error-not-found": "An envelope with the name '{name}' could not be found.",
+  "deposit-question": "How much would you like to deposit?",
+  "withdraw-question": "How much would you like to withdraw?",
+  "into-envelope": " into envelope: {name}",
+  "from-envelope": " from envelope: {name}"
 }

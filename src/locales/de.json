@@ -61,5 +61,9 @@
   "error-duplicate-name": "Eine Kasse mit dem Namen '{name}' existiert bereits. Bitte wähle einen anderen Namen.",
   "error-must-be-string": "Der Name der Kasse muss ein String sein.",
   "error": "Fehler",
-  "error-not-found": "Eine Kasse mit dem Namen '{name}' wurde nicht gefunden."
+  "error-not-found": "Eine Kasse mit dem Namen '{name}' wurde nicht gefunden.",
+  "deposit-question": "Wie viel möchtest Du einzahlen?",
+  "withdraw-question": "Wie viel möchtest Du abheben?",
+  "into-envelope": " in Kasse: {name}",
+  "from-envelope": " von Kasse: {name}"
 }
