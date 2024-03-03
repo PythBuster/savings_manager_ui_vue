@@ -13,7 +13,7 @@
           <tbody>
             <tr>
               <td>{{ $t('balance') }}</td>
-              <td>{{ global.findMoneyboxById(id).balance }}</td>
+              <td>{{ formatCurrency(global.findMoneyboxById(id).balance) }}</td>
             </tr>
             <tr>
               <td>{{ $t('goal-amount') }}</td>
