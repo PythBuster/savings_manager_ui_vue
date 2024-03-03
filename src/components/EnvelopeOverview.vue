@@ -115,6 +115,7 @@ import { formatCurrency } from '@/utils'
 import {
   deleteMoneybox,
   depositIntoMoneybox,
+  transferFromMoneyboxToMoneybox,
   withdrawFromMoneybox
 } from '@/api.js'
 import { useI18n } from 'vue-i18n'
@@ -228,9 +229,34 @@ async function handleTransactionConfirm(transactionDetails) {
   }
 }
 
-function handleTransferConfirm(transferSelection) {
-  console.log(transferSelection.amount, transferSelection.selectedId)
-  // Perform the deposit or withdrawal action here
+async function handleTransferConfirm(transferSelection) {
+  try {
+    await transferFromMoneyboxToMoneybox(
+      global.findMoneyboxById(props.id),
+      transferSelection.amount,
+      global.findMoneyboxById(transferSelection.selectedId)
+    )
+  } catch (error) {
+    console.log(error.details)
+    if (error instanceof APIError) {
+      if (error.status === 404) {
+        errorMessage.value = t('error-not-found', {
+          name: global.findMoneyboxById(props.id).name
+        })
+      } else if (error.status === 405) {
+        errorMessage.value = t('error-not-enough-money', {
+          name: global.findMoneyboxById(props.id).name
+        })
+      } else if (error.status === 422) {
+        errorMessage.value = t('error-negative-amount')
+      } else if (error.status === 500) {
+        errorMessage.value = error.message
+      }
+    } else {
+      errorMessage.value = error.name + ': ' + error.message
+    }
+    showErrorDialog.value = true
+  }
 }
 
 async function handleDeleteConfirm() {
