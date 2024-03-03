@@ -112,7 +112,11 @@ import { ref } from 'vue'
 import global from '@/global.js'
 import router from '@/router'
 import { formatCurrency } from '@/utils'
-import { deleteMoneybox } from '@/api.js'
+import {
+  deleteMoneybox,
+  depositIntoMoneybox,
+  withdrawFromMoneybox
+} from '@/api.js'
 import { useI18n } from 'vue-i18n'
 import { APIError } from '@/customerrors'
 
@@ -167,9 +171,61 @@ function handleTransferDialog() {
   showTransferDialog.value = true
 }
 
-function handleTransactionConfirm(transactionDetails) {
-  console.log(transactionDetails.amount, transactionDetails.action)
-  // Perform the deposit or withdrawal action here
+async function handleTransactionConfirm(transactionDetails) {
+  if (transactionDetails.action === 'deposit') {
+    try {
+      await depositIntoMoneybox(
+        global.findMoneyboxById(props.id),
+        transactionDetails.amount
+      )
+    } catch (error) {
+      console.log(error.details)
+      if (error instanceof APIError) {
+        if (error.status === 404) {
+          errorMessage.value = t('error-not-found', {
+            name: global.findMoneyboxById(props.id).name
+          })
+        } else if (error.status === 405) {
+          errorMessage.value = t('error-not-enough-money', {
+            name: global.findMoneyboxById(props.id).name
+          })
+        } else if (error.status === 422) {
+          errorMessage.value = t('error-negative-amount')
+        } else if (error.status === 500) {
+          errorMessage.value = error.message
+        }
+      } else {
+        errorMessage.value = error.name + ': ' + error.message
+      }
+      showErrorDialog.value = true
+    }
+  } else {
+    try {
+      await withdrawFromMoneybox(
+        global.findMoneyboxById(props.id),
+        transactionDetails.amount
+      )
+    } catch (error) {
+      if (error instanceof APIError) {
+        if (error.status === 404) {
+          errorMessage.value = t('error-not-found', {
+            name: global.findMoneyboxById(props.id).name
+          })
+        } else if (error.status === 405) {
+          errorMessage.value = t('error-not-enough-money', {
+            name: global.findMoneyboxById(props.id).name
+          })
+        } else if (error.status === 422) {
+          errorMessage.value = t('error-negative-amount')
+        } else if (error.status === 500) {
+          errorMessage.value = error.message
+        }
+      } else {
+        errorMessage.value = error.name + ': ' + error.message
+      }
+      showErrorDialog.value = true
+    }
+  }
 }
 
 function handleTransferConfirm(transferSelection) {

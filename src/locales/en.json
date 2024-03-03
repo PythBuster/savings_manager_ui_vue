@@ -69,5 +69,7 @@
   "transfer-from-envelope": "Transfer from envelope: ",
   "transfer-how-much": "How much do you want to transfer?",
   "transfer-where": "To what envelope would you like to transfer?",
-  "error-no-envelopes-found": "No envelopes found"
+  "error-no-envelopes-found": "No envelopes found",
+  "error-negative-amount": "Amount may not be negative and has to be an integer.",
+  "error-not-enough-money": "Not enough money in the envelope"
 }

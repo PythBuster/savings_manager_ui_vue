@@ -69,5 +69,7 @@
   "transfer-from-envelope": "Übertrag von Kasse: ",
   "transfer-how-much": "Wie viel möchtest Du übertragen?",
   "transfer-where": "In welche Kasse möchtest Du übertragen?",
-  "error-no-envelopes-found": "Keine Kassen gefunden"
+  "error-no-envelopes-found": "Keine Kassen gefunden",
+  "error-negative-amount": "Der Betrag darf nicht negativ und muss ganzzahlig sein.",
+  "error-not-enough-money": "Nicht genug Geld in der Kasse"
 }
