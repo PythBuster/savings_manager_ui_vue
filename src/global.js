@@ -2,21 +2,28 @@
 
 import { reactive, readonly } from 'vue'
 
+// this reactive() tracks changes to the array itself, like adding/removing moneyboxes
 const moneyboxes = reactive([])
+
 const moneyboxesMap = new Map()
 const moneyboxesLoaded = false
 
+// reactive() below tracks changes to the moneybox instances themselves, like changing name or balance
+
 function setMoneyboxes(newMoneyboxes) {
-  moneyboxes.splice(0, moneyboxes.length, ...newMoneyboxes)
+  moneyboxes.splice(0, moneyboxes.length)
   moneyboxesMap.clear()
   newMoneyboxes.forEach((moneybox) => {
-    moneyboxesMap.set(moneybox.id, moneybox)
+    const reactiveMoneybox = reactive(moneybox)
+    moneyboxes.push(reactiveMoneybox)
+    moneyboxesMap.set(moneybox.id, reactiveMoneybox)
   })
 }
 
 function addMoneybox(newMoneybox) {
-  moneyboxes.push(newMoneybox)
-  moneyboxesMap.set(newMoneybox.id, newMoneybox)
+  const reactiveMoneybox = reactive(newMoneybox)
+  moneyboxes.push(reactiveMoneybox)
+  moneyboxesMap.set(newMoneybox.id, reactiveMoneybox)
 }
 
 function deleteMoneybox(moneyboxToDelete) {

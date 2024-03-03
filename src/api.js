@@ -1,7 +1,6 @@
 import { DataError, APIError } from '@/customerrors.js'
 import { Moneybox } from '@/models.js'
 import global from '@/global.js'
-import { reactive } from 'vue'
 
 const serverURL = import.meta.env.VITE_BACKEND_URL
 
@@ -69,7 +68,6 @@ export async function getMoneyboxes() {
       priority: 1
     }))
     .map(Moneybox.fromJSON)
-    .map(reactive)
 
   global.setMoneyboxes(modifiedMoneyboxes)
 }
@@ -95,7 +93,7 @@ export async function getMoneybox(moneybox_id) {
   jsonData.noLimit = true
   jsonData.priority = 1
 
-  return reactive(Moneybox.fromJSON(jsonData))
+  return Moneybox.fromJSON(jsonData)
 }
 
 /**
@@ -144,7 +142,7 @@ export async function addMoneybox(name) {
   jsonData.noLimit = true
   jsonData.priority = 1
 
-  const newMoneybox = reactive(Moneybox.fromJSON(jsonData))
+  const newMoneybox = Moneybox.fromJSON(jsonData)
 
   global.addMoneybox(newMoneybox)
 
