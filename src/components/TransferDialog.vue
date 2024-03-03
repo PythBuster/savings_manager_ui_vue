@@ -31,11 +31,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import global from '@/global.js'
 import { getMoneyboxes } from '@/api.js'
 
-defineProps({
+const props = defineProps({
   modelValue: Boolean,
   sourceId: Number
 })
@@ -44,6 +44,30 @@ const emit = defineEmits(['update:modelValue', 'confirm'])
 
 const amount = ref(0)
 const selectedId = ref(undefined)
+
+// need all moneyboxes to show complete list
+async function loadMoneyboxes() {
+  if (!global.moneyboxesLoaded) {
+    try {
+      await getMoneyboxes()
+      global.moneyboxesLoaded = true
+    } catch (error) {
+      console.error('Failed to fetch moneyboxes:', error)
+      // TODO: Show error message to user or redirect to error page
+    }
+  }
+}
+
+// Doing this in onMounted() loads them when parent component is mounted
+watch(
+  () => props.modelValue,
+  (newVal, oldVal) => {
+    if (newVal === true && oldVal === false) {
+      // Specifically check for the dialog opening
+      loadMoneyboxes()
+    }
+  }
+)
 
 function cancel() {
   emit('update:modelValue', false)
@@ -62,17 +86,4 @@ function confirm() {
 function updateVisibilityState(value) {
   emit('update:modelValue', value)
 }
-
-// need all moneyboxes to show complete list
-onMounted(async () => {
-  if (!global.moneyboxesLoaded) {
-    try {
-      await getMoneyboxes()
-      global.moneyboxesLoaded = true
-    } catch (error) {
-      console.error('Failed to fetch moneyboxes:', error)
-      // TODO: Show error message to user or redirect to error page
-    }
-  }
-})
 </script>
