@@ -53,16 +53,10 @@
 
 <script setup>
 import router from '@/router'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import global from '@/global.js'
 
-const items = ref([
-  { id: 1, name: 'Notgroschen' },
-  { id: 2, name: 'Urlaub' },
-  { id: 3, name: 'PC' },
-  { id: 4, name: 'Haushalt' },
-  { id: 5, name: 'Haustier' },
-  { id: 6, name: 'Bildung' }
-])
+const items = ref([])
 
 const selectedIndex = ref(null)
 
@@ -109,4 +103,8 @@ function saveClicked() {
     path: '/'
   })
 }
+
+onMounted(() => {
+  items.value = global.moneyboxes.map(({ id, name }) => ({ id, name }))
+})
 </script>
