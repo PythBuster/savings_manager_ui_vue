@@ -20,6 +20,7 @@
           v-model="selectedId"
           :no-data-text="$t('error-no-envelopes-found')"
         ></v-autocomplete>
+        <p>{{ $t('description') + $t('for-transfer') }}</p>
         <v-text-field :label="$t('description')" v-model="description" />
       </v-card-text>
       <v-card-actions>

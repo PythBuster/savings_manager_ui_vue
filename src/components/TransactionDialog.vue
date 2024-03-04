@@ -11,6 +11,14 @@
       <v-card-text>
         <p>{{ message }}</p>
         <CurrencyInput :label="$t('amount')" v-model="amount" />
+        <p>
+          {{
+            $t('description') +
+            (props.action === 'deposit'
+              ? $t('for-deposit')
+              : $t('for-withdrawal'))
+          }}
+        </p>
         <v-text-field :label="$t('description')" v-model="description" />
       </v-card-text>
       <v-card-actions>
