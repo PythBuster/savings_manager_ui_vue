@@ -20,6 +20,7 @@
           v-model="selectedId"
           :no-data-text="$t('error-no-envelopes-found')"
         ></v-autocomplete>
+        <v-text-field :label="$t('description')" v-model="description" />
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -44,6 +45,7 @@ const emit = defineEmits(['update:modelValue', 'confirm'])
 
 const amount = ref(0)
 const selectedId = ref(undefined)
+const description = ref('')
 
 // need all moneyboxes to show complete list
 async function loadMoneyboxes() {
@@ -76,10 +78,12 @@ function cancel() {
 function confirm() {
   emit('confirm', {
     amount: amount.value,
-    selectedId: selectedId.value
+    selectedId: selectedId.value,
+    description: description.value
   })
   emit('update:modelValue', false)
   amount.value = 0
+  description.value = ''
   selectedId.value = undefined
 }
 

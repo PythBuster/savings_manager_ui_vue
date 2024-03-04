@@ -71,5 +71,6 @@
   "transfer-where": "In welche Kasse möchtest Du übertragen?",
   "error-no-envelopes-found": "Keine Kassen gefunden",
   "error-negative-amount": "Der Betrag darf nicht negativ und muss ganzzahlig sein.",
-  "error-not-enough-money": "Nicht genug Geld in der Kasse"
+  "error-not-enough-money": "Nicht genug Geld in der Kasse",
+  "description": "Beschreibung"
 }

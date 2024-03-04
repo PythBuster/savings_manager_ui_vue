@@ -13,3 +13,13 @@ export const formatDate = (date, locale = 'de-DE') => {
     year: 'numeric'
   }).format(new Date(date))
 }
+
+/**
+ * Validates a string to be ISO 8601 format.
+ * @param {String} dateString The string to validate
+ * @returns {Boolean} True if format is valid, false otherwise
+ */
+export function isValidISO8601(dateString) {
+  const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d+Z$/
+  return regex.test(dateString)
+}

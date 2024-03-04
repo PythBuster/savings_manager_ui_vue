@@ -1,14 +1,20 @@
+import { isValidISO8601 } from '@/utils.js'
+
 export class Moneybox {
-  /** @member {Number} balance */
-  _balance
-  /** @member {Number} goal */
-  _goal
   /** @member {Number} id */
   _id
-  /** @member {Number} increment */
-  _increment
   /** @member {String} name */
   _name
+  /** @member {Number} balance */
+  _balance
+  /** @member {String} created_at */
+  _created_at
+  /** @member {String} modified_at */
+  _modified_at
+  /** @member {Number} goal */
+  _goal
+  /** @member {Number} increment */
+  _increment
   /** @member {Boolean} noLimit */
   _noLimit
   /** @member {Number} priority */
@@ -16,18 +22,32 @@ export class Moneybox {
 
   /**
    * Creates an instance of Moneybox.
-   * @param {Number} balance - The current balance of the moneybox
-   * @param {Number} goal - The savings goal for the moneybox
    * @param {Number} id - The unique identifier for the moneybox
-   * @param {Number} increment - The savings increment value for the moneybox
    * @param {String} name - The name of the moneybox
+   * @param {Number} balance - The current balance of the moneybox
+   * @param {String} created_at - The creation ISO8601 time/date of the moneybox
+   * @param {String} modified_at - The modification ISO8601 time/date of the moneybox
+   * @param {Number} goal - The savings goal for the moneybox
+   * @param {Number} increment - The savings increment value for the moneybox
    * @param {Boolean} noLimit - Indicates whether the moneybox has no saving limit.
    * @param {Number} priority - The priority of the moneybox
    */
-  constructor(id, name, balance, goal, increment, noLimit, priority) {
+  constructor(
+    id,
+    name,
+    balance,
+    created_at,
+    modified_at,
+    goal,
+    increment,
+    noLimit,
+    priority
+  ) {
     this.id = id
     this.name = name
     this.balance = balance
+    this.created_at = created_at
+    this.modified_at = modified_at
     this.goal = goal
     this.increment = increment
     this.noLimit = noLimit
@@ -44,6 +64,8 @@ export class Moneybox {
       rawMoneybox.id,
       rawMoneybox.name,
       rawMoneybox.balance,
+      rawMoneybox.created_at,
+      rawMoneybox.modified_at,
       rawMoneybox.goal,
       rawMoneybox.increment,
       rawMoneybox.noLimit,
@@ -65,6 +87,26 @@ export class Moneybox {
   set name(value) {
     if (typeof value !== 'string') throw new TypeError('name must be a string')
     this._name = value
+  }
+
+  get created_at() {
+    return this._created_at
+  }
+  set created_at(value) {
+    if (!isValidISO8601(value)) {
+      throw new TypeError('created_at must be in ISO8601 format')
+    }
+    this._created_at = value
+  }
+
+  get modified_at() {
+    return this._modified_at
+  }
+  set modified_at(value) {
+    if (!isValidISO8601(value) && value !== null) {
+      throw new TypeError('modified_at must be in ISO8601 format')
+    }
+    this._modfied_at = value
   }
 
   get balance() {

@@ -177,7 +177,10 @@ async function handleTransactionConfirm(transactionDetails) {
     try {
       await depositIntoMoneybox(
         global.findMoneyboxById(props.id),
-        transactionDetails.amount
+        transactionDetails.amount,
+        transactionDetails.description,
+        'manually', // only option for now
+        'direct' // only option for now
       )
     } catch (error) {
       if (error instanceof APIError) {
@@ -203,10 +206,14 @@ async function handleTransactionConfirm(transactionDetails) {
     try {
       await withdrawFromMoneybox(
         global.findMoneyboxById(props.id),
-        transactionDetails.amount
+        transactionDetails.amount,
+        transactionDetails.description,
+        'manually', // only option for now
+        'direct' // only option for now
       )
     } catch (error) {
       if (error instanceof APIError) {
+        console.log(error.details)
         if (error.status === 404) {
           errorMessage.value = t('error-not-found', {
             name: global.findMoneyboxById(props.id).name
@@ -233,7 +240,10 @@ async function handleTransferConfirm(transferSelection) {
     await transferFromMoneyboxToMoneybox(
       global.findMoneyboxById(props.id),
       transferSelection.amount,
-      global.findMoneyboxById(transferSelection.selectedId)
+      global.findMoneyboxById(transferSelection.selectedId),
+      transferSelection.description,
+      'manually', // only option for now
+      'direct' // only option for now
     )
   } catch (error) {
     if (error instanceof APIError) {
