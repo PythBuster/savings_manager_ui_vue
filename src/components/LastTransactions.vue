@@ -30,37 +30,117 @@
   </v-row>
 </template>
 <script setup>
+import { computed, onMounted, ref } from 'vue'
+import global from '@/global.js'
 import { formatCurrency, formatDate } from '@/utils.js'
+import { getMoneybox } from '@/api.js'
 
-// Dummy data, API fetch not implemented yet
-const transactionItems = [
-  {
-    date: formatDate('2024-01-18'),
-    infotext: 'Übertrag',
-    origin: 'Urlaub',
-    amount: formatCurrency(-10.0),
-    total: formatCurrency(90.0)
-  },
-  {
-    date: formatDate('2024-01-20'),
-    infotext: 'Übertrag',
-    origin: 'Haushalt',
-    amount: formatCurrency(20.0),
-    total: formatCurrency(110.0)
-  },
-  {
-    date: formatDate('2024-01-28'),
-    infotext: 'Abbuchung',
-    origin: 'manuell',
-    amount: formatCurrency(-50.0),
-    total: formatCurrency(60.0)
-  },
-  {
-    date: formatDate('2024-02-01'),
-    infotext: 'Einzahlung',
-    origin: 'automatisch',
-    amount: formatCurrency(30.0),
-    total: formatCurrency(90.0)
+const props = defineProps({
+  id: Number
+})
+
+const transactionsLoaded = ref(false)
+
+// How many transaction log entries to show
+const numberOfEntries = 4
+
+const generatePlaceholderData = (count) =>
+  Array.from({ length: count }, () => ({
+    date: '---',
+    infotext: '---',
+    origin: '---',
+    amount: '---',
+    total: '---'
+  }))
+
+// transaction_type and description not needed for current design of the table
+// TODO:
+// Add proper date, when available from API,
+// then sort by default by date and time, even if timestamp is hidden
+const transactionItems = computed(() => {
+  if (
+    !transactionsLoaded.value ||
+    !global.findMoneyboxById(props.id).transactionLogs
+  ) {
+    return generatePlaceholderData(numberOfEntries)
   }
-]
+
+  const transactionData = global.findMoneyboxById(props.id).transactionLogs
+  const lastNEntries = transactionData.entries.slice(-numberOfEntries)
+
+  let items = lastNEntries.map((entry) => {
+    const infotext =
+      entry.amount > 0 && entry.counterparty_moneybox_id === null
+        ? 'deposit'
+        : entry.amount <= 0 && entry.counterparty_moneybox_id === null
+          ? 'withdrawal'
+          : 'transfer'
+    let origin = ''
+    if (infotext === 'transfer') {
+      const counterpartyMoneybox = global.findMoneyboxById(
+        entry.counterparty_moneybox_id
+      )
+      // Check if counterparty moneybox exists and has a name, otherwise mark as 'UNKNOWN'
+      // When moneybox has been deleted, there's currently no way to fetch the name
+      origin =
+        counterpartyMoneybox && counterpartyMoneybox.name
+          ? counterpartyMoneybox.name
+          : 'UNKNOWN'
+    } else {
+      origin =
+        entry.transaction_trigger === 'manually' ? 'manual' : 'automatical'
+    }
+
+    return {
+      date: formatDate(entry.transaction_time.split('T')[0]),
+      infotext,
+      origin,
+      amount: formatCurrency(entry.amount),
+      total: formatCurrency(entry.balance)
+    }
+  })
+
+  // Pad with placeholders if there are fewer items than numberOfEntries
+  if (items.length < numberOfEntries) {
+    items = [
+      ...items,
+      ...generatePlaceholderData(numberOfEntries - items.length)
+    ]
+  }
+
+  return items
+})
+
+async function updateTransactionItems() {
+  const transactionData = global.findMoneyboxById(props.id).transactionLogs
+
+  if (!transactionData) {
+    transactionsLoaded.value = true
+    return
+  }
+
+  const lastNEntries = transactionData.entries.slice(-numberOfEntries)
+
+  for (const entry of lastNEntries) {
+    if (
+      entry.counterparty_moneybox_id &&
+      !global.findMoneyboxById(entry.counterparty_moneybox_id)
+    ) {
+      try {
+        global.addMoneybox(await getMoneybox(entry.counterparty_moneybox_id))
+      } catch (error) {
+        // A workaround to prevent 404 on deleted moneyboxes would be to
+        // use getMoneyboxes() and filter the result, that seems even uglier
+        console.error(
+          `Failed to fetch moneybox with id ${entry.counterparty_moneybox_id}, probably deleted.`,
+          error
+        )
+        // TODO: Handle error, e.g., show message to user or redirect - not when deleted is the cause. How do we know?
+      }
+    }
+  }
+  transactionsLoaded.value = true
+}
+
+onMounted(updateTransactionItems)
 </script>

@@ -19,6 +19,8 @@ export class Moneybox {
   _noLimit
   /** @member {Number} priority */
   _priority
+  /** @member {TransactionLogs|null} transactionLogs */
+  _transactionLogs
 
   /**
    * Creates an instance of Moneybox.
@@ -31,6 +33,7 @@ export class Moneybox {
    * @param {Number} increment - The savings increment value for the moneybox
    * @param {Boolean} noLimit - Indicates whether the moneybox has no saving limit.
    * @param {Number} priority - The priority of the moneybox
+   * @param {TransactionLogs|null} transactionLogs - The transaction logs for the moneybox - null if not initialized
    */
   constructor(
     id,
@@ -41,7 +44,8 @@ export class Moneybox {
     goal,
     increment,
     noLimit,
-    priority
+    priority,
+    transactionLogs = null
   ) {
     this.id = id
     this.name = name
@@ -52,6 +56,7 @@ export class Moneybox {
     this.increment = increment
     this.noLimit = noLimit
     this.priority = priority
+    this.transactionLogs = transactionLogs
   }
 
   /**
@@ -153,5 +158,203 @@ export class Moneybox {
     if (!Number.isInteger(value) || value < 1)
       throw new RangeError('priority must be an integer and >= 1')
     this._priority = value
+  }
+
+  get transactionLogs() {
+    return this._transactionLogs
+  }
+  set transactionLogs(value) {
+    if (value !== null && !(value instanceof TransactionLogs)) {
+      throw new TypeError(
+        'transactionLogs must be an instance of TransactionLogs or null'
+      )
+    }
+    this._transactionLogs = value
+  }
+}
+
+export class TransactionLogEntry {
+  /** @member {Number} moneybox_id */
+  _moneybox_id
+  /** @member {Number} counterparty_moneybox_id */
+  _counterparty_moneybox_id
+  /** @member {Number} amount */
+  _amount
+  /** @member {Number}  balance */
+  _balance
+  /** @member {String} description */
+  _description
+  /** @member {String} transaction_trigger */
+  _transaction_trigger
+  /** @member {String} transaction_type */
+  _transaction_type
+  /** @member {String} transaction_time */
+  _transaction_time
+
+  /**
+   * Creates an instance of TransactionLogEntry.
+   * @param {Number} moneybox_id - The moneybox id of the transaction
+   * @param {Number|null} counterparty_moneybox_id - The counterparty moneybox id of the transaction (for transfer) - null if not applicable (for deposit/withdrawal)
+   * @param {Number} amount - The amount of the transaction - can be negative for withdrawal/transfer
+   * @param {Number} balance - The balance of the moneybox after the transaction
+   * @param {String} description - The description of the transaction
+   * @param {String} transaction_trigger - The trigger of the transaction - 'manually' or 'automatically'
+   * @param {String} transaction_type - The type of the transaction = 'direct' or 'distribution'
+   * @param {String} transaction_time - The ISO8601 time/date of the transaction
+   */
+  constructor(
+    moneybox_id,
+    counterparty_moneybox_id,
+    amount,
+    balance,
+    description,
+    transaction_trigger,
+    transaction_type,
+    transaction_time
+  ) {
+    this.moneybox_id = moneybox_id
+    this.counterparty_moneybox_id = counterparty_moneybox_id
+    this.amount = amount
+    this.balance = balance
+    this.description = description
+    this.transaction_trigger = transaction_trigger
+    this.transaction_type = transaction_type
+    this.transaction_time = transaction_time
+  }
+  get moneybox_id() {
+    return this._moneybox_id
+  }
+  set moneybox_id(value) {
+    if (!Number.isInteger(value))
+      throw new TypeError('moneybox_id must be an integer')
+    this._moneybox_id = value
+  }
+
+  get counterparty_moneybox_id() {
+    return this._counterparty_moneybox_id
+  }
+  set counterparty_moneybox_id(value) {
+    if (value !== null && !Number.isInteger(value))
+      throw new TypeError('counterparty_moneybox_id must be an integer or null')
+    this._counterparty_moneybox_id = value
+  }
+
+  get amount() {
+    return this._amount
+  }
+  set amount(value) {
+    if (typeof value !== 'number')
+      throw new TypeError('amount must be a number')
+    this._amount = value
+  }
+
+  get balance() {
+    return this._balance
+  }
+  set balance(value) {
+    if (typeof value !== 'number' || value < 0)
+      throw new TypeError('balance must be a number and >= 0')
+    this._balance = value
+  }
+
+  get description() {
+    return this._description
+  }
+  set description(value) {
+    if (typeof value !== 'string')
+      throw new TypeError('description must be a string')
+    this._description = value
+  }
+
+  get transaction_trigger() {
+    return this._transaction_trigger
+  }
+  set transaction_trigger(value) {
+    if (value !== 'manually' && value !== 'automatically')
+      throw new TypeError(
+        'transaction_trigger must be "manually" or "automatically"'
+      )
+    this._transaction_trigger = value
+  }
+
+  get transaction_type() {
+    return this._transaction_type
+  }
+  set transaction_type(value) {
+    if (value !== 'direct' && value !== 'distribution')
+      throw new TypeError('transaction_type must be "direct" or "distribution"')
+    this._transaction_type = value
+  }
+
+  get transaction_time() {
+    return this._transaction_time
+  }
+  set transaction_time(value) {
+    if (!isValidISO8601(value)) {
+      throw new TypeError('transaction_time must be in ISO8601 format')
+    }
+    this._transaction_time = value
+  }
+}
+
+export class TransactionLogs {
+  /** @member {Number} moneybox_id */
+  _moneybox_id
+  /** @member {TransactionLogEntry[]} entries */
+  _entries
+
+  /**
+   * Creates an instance of TransactionLogs.
+   * @param {Number} moneybox_id - The ID of the moneybox these transactions belong to
+   * @param {TransactionLogEntry[]} entries - An array of TransactionLogEntry instances
+   */
+  constructor(moneybox_id, entries) {
+    this.moneybox_id = moneybox_id
+    this.entries = entries
+  }
+
+  get moneybox_id() {
+    return this._moneybox_id
+  }
+  set moneybox_id(value) {
+    if (!Number.isInteger(value))
+      throw new TypeError('Moneybox ID must be an integer')
+    this._moneybox_id = value
+  }
+
+  get entries() {
+    return this._entries
+  }
+  set entries(value) {
+    if (
+      !Array.isArray(value) ||
+      !value.every((item) => item instanceof TransactionLogEntry)
+    )
+      throw new TypeError(
+        'Entries must be an array of TransactionLogEntry instances'
+      )
+    this._entries = value
+  }
+
+  /**
+   * Static method to create a TransactionLogs instance from a JSON object.
+   * @param {Object} rawLogs A JSON object that contains the moneybox_id and an array of transaction log entries.
+   * @returns {TransactionLogs} A new instance of TransactionLogs.
+   */
+  static fromJSON(rawLogs) {
+    const entries = rawLogs.transaction_logs.map(
+      (log) =>
+        new TransactionLogEntry(
+          log.moneybox_id,
+          log.counterparty_moneybox_id,
+          log.amount,
+          log.balance,
+          log.description,
+          log.transaction_trigger,
+          log.transaction_type,
+          log.transaction_time
+        )
+    )
+    return new TransactionLogs(rawLogs.transaction_logs[0].moneybox_id, entries)
   }
 }

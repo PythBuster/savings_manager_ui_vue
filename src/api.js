@@ -1,5 +1,5 @@
 import { DataError, APIError } from '@/customerrors.js'
-import { Moneybox } from '@/models.js'
+import { Moneybox, TransactionLogs } from '@/models.js'
 import global from '@/global.js'
 
 const serverURL = import.meta.env.VITE_BACKEND_URL
@@ -304,4 +304,44 @@ export async function transferFromMoneyboxToMoneybox(
 
   const newDestinationBalance = destinationMoneyboxInstance.balance + amount
   destinationMoneyboxInstance.balance = newDestinationBalance
+}
+
+/**
+ * Fetches transaction logs for a specific moneybox and updates the corresponding Moneybox instance in the global store.
+ * @param {Moneybox} moneyboxInstance - The Moneybox instance for which to fetch transaction logs
+ * @returns {Promise<void>} - A promise that resolves when the transaction logs have been fetched and added to the Moneybox instance
+ */
+export async function getTransactionLogs(moneyboxInstance) {
+  const moneybox_id = moneyboxInstance.id
+  const response = await fetch(
+    `${serverURL}/api/moneybox/${moneybox_id}/transactions`,
+    {
+      method: 'GET',
+      headers: receiveJsonHeaders
+    }
+  )
+
+  await checkResponse(response) // This will throw if the response is not OK
+
+  if (response.status === 204) {
+    return
+  }
+
+  const jsonData = await response.json()
+
+  // Add dummy value, since API fetch not implemented yet
+  const currentDateTimeISO = '1970-01-01T00:00:00.000Z'
+
+  const modifiedTransactionLogs = {
+    ...jsonData,
+    transaction_logs: jsonData.transaction_logs.map((log) => ({
+      ...log,
+      transaction_time: currentDateTimeISO
+    }))
+  }
+
+  const transactionLogsInstance = TransactionLogs.fromJSON(
+    modifiedTransactionLogs
+  )
+  global.addTransactionLogsToMoneybox(moneybox_id, transactionLogsInstance)
 }

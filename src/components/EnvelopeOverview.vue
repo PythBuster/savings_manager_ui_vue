@@ -54,7 +54,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" md="8">
-        <LastTransactions />
+        <LastTransactions :id="id" />
       </v-col>
       <v-col cols="12" md="4">
         <BarChart />
@@ -115,6 +115,7 @@ import { formatCurrency } from '@/utils'
 import {
   deleteMoneybox,
   depositIntoMoneybox,
+  getTransactionLogs,
   transferFromMoneyboxToMoneybox,
   withdrawFromMoneybox
 } from '@/api.js'
@@ -182,6 +183,8 @@ async function handleTransactionConfirm(transactionDetails) {
         'manually', // only option for now
         'direct' // only option for now
       )
+      // update transaction logs
+      await getTransactionLogs(global.findMoneyboxById(props.id))
     } catch (error) {
       if (error instanceof APIError) {
         if (error.status === 404) {
@@ -211,6 +214,8 @@ async function handleTransactionConfirm(transactionDetails) {
         'manually', // only option for now
         'direct' // only option for now
       )
+      // update transaction logs
+      await getTransactionLogs(global.findMoneyboxById(props.id))
     } catch (error) {
       if (error instanceof APIError) {
         console.log(error.details)
@@ -245,6 +250,8 @@ async function handleTransferConfirm(transferSelection) {
       'manually', // only option for now
       'direct' // only option for now
     )
+    // update transaction logs
+    await getTransactionLogs(global.findMoneyboxById(props.id))
   } catch (error) {
     if (error instanceof APIError) {
       if (error.status === 404) {
