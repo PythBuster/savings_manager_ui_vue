@@ -111,7 +111,7 @@ export class Moneybox {
     if (!isValidISO8601(value) && value !== null) {
       throw new TypeError('modified_at must be in ISO8601 format')
     }
-    this._modfied_at = value
+    this._modified_at = value
   }
 
   get balance() {
