@@ -75,5 +75,6 @@
   "description": "Description",
   "for-deposit": " for the deposit",
   "for-withdrawal": " for the withdrawal",
-  "for-transfer": " for the transfer"
+  "for-transfer": " for the transfer",
+  "invalid-selection": "Invalid selection"
 }

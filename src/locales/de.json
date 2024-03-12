@@ -75,5 +75,6 @@
   "description": "Beschreibung",
   "for-deposit": " der Einzahlung",
   "for-withdrawal": " der Abhebung",
-  "for-transfer": " des Transfers"
+  "for-transfer": " des Transfers",
+  "invalid-selection": "Ungültige Auswahl"
 }

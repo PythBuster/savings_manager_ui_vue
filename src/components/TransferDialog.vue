@@ -5,37 +5,47 @@
     @update:model-value="updateVisibilityState"
   >
     <v-card>
-      <v-card-title class="text-wrap">{{
-        $t('transfer-from-envelope') + global.findMoneyboxById(sourceId).name
-      }}</v-card-title>
-      <v-card-text>
-        <p>{{ $t('transfer-how-much') }}</p>
-        <CurrencyInput :label="$t('amount')" v-model="amount" />
-        <p>{{ $t('transfer-where') }}</p>
-        <v-autocomplete
-          :label="$t('envelope')"
-          :items="global.moneyboxes.filter((obj) => obj.id !== sourceId)"
-          item-value="id"
-          item-title="name"
-          v-model="selectedId"
-          :no-data-text="$t('error-no-envelopes-found')"
-        ></v-autocomplete>
-        <p>{{ $t('description') + $t('for-transfer') }}</p>
-        <v-text-field :label="$t('description')" v-model="description" />
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="grey" @click="cancel">{{ $t('cancel') }}</v-btn>
-        <v-btn color="primary" @click="confirm">OK</v-btn>
-      </v-card-actions>
+      <v-card-title class="text-wrap">
+        {{
+          $t('transfer-from-envelope') + global.findMoneyboxById(sourceId).name
+        }}
+      </v-card-title>
+      <v-form ref="form" v-model="valid">
+        <v-card-text>
+          <p>{{ $t('transfer-how-much') }}</p>
+          <CurrencyInput :label="$t('amount')" v-model="amount" />
+          <p>{{ $t('transfer-where') }}</p>
+          <v-autocomplete
+            :label="$t('envelope')"
+            :items="validMoneyboxes"
+            item-value="id"
+            item-title="name"
+            v-model="selectedId"
+            :no-data-text="$t('error-no-envelopes-found')"
+            :rules="[validateAutocomplete]"
+          ></v-autocomplete>
+          <p>{{ $t('description') + $t('for-transfer') }}</p>
+          <v-text-field :label="$t('description')" v-model="description" />
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="grey" @click="cancel">{{ $t('cancel') }}</v-btn>
+          <v-btn color="primary" :disabled="!valid" @click="confirm">OK</v-btn>
+        </v-card-actions>
+      </v-form>
     </v-card>
   </v-dialog>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import global from '@/global.js'
 import { getMoneyboxes } from '@/api.js'
+
+import { useI18n } from 'vue-i18n'
+
+// t used for validation message, otherwise $t globally available
+const { t } = useI18n({})
 
 const props = defineProps({
   modelValue: Boolean,
@@ -47,6 +57,18 @@ const emit = defineEmits(['update:modelValue', 'confirm'])
 const amount = ref(0)
 const selectedId = ref(undefined)
 const description = ref('')
+const valid = ref(false)
+
+const validMoneyboxes = computed(() => {
+  return global.moneyboxes.filter((obj) => obj.id !== props.sourceId)
+})
+
+function validateAutocomplete(value) {
+  const isValid = validMoneyboxes.value.some(
+    (moneybox) => moneybox.id === value
+  )
+  return isValid || t('invalid-selection')
+}
 
 // need all moneyboxes to show complete list
 async function loadMoneyboxes() {
