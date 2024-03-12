@@ -5,7 +5,19 @@
         <v-card-item>
           <v-card-title>{{ $t('last-transactions') }}</v-card-title>
         </v-card-item>
-        <v-data-table :headers="tableHeaders" :items="transactionItems">
+        <v-text-field
+          v-if="showAll"
+          v-model="search"
+          :label="$t('search')"
+          prepend-inner-icon="mdi-magnify"
+          variant="solo-filled"
+          hide-details
+        ></v-text-field>
+        <v-data-table
+          :headers="tableHeaders"
+          :items="transactionItems"
+          :search="search"
+        >
           <!-- hide-default-footer and disable-pagination not implemented yet in Vuetify 3 - https://github.com/vuetifyjs/vuetify/issues/17651 -->
           <template v-slot:bottom v-if="!showAll"></template
           ><template v-slot:no-data></template
@@ -23,6 +35,8 @@ import { getMoneybox } from '@/api.js'
 // t used for table, otherwise $t globally available
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n({})
+
+const search = ref('')
 
 const props = defineProps({
   id: { type: Number, default: undefined },
