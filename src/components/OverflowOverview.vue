@@ -1,10 +1,13 @@
 <template>
   <v-container>
-    <v-row align="center" justify="space-between">
+    <v-row class="d-flex justify-space-between align-center">
       <v-col cols="auto" md="auto">
         <h1 class="text-h4">
           {{ $t('envelope') + ': ' + $t('overflow-envelope') }}
         </h1>
+      </v-col>
+      <v-col cols="auto" class="d-flex justify-end">
+        <v-btn>{{ $t('view-complete-logs') }}</v-btn>
       </v-col>
     </v-row>
     <v-row justify="space-between">
