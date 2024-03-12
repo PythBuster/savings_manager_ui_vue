@@ -8,6 +8,7 @@
         <v-data-table :headers="tableHeaders" :items="transactionItems">
           <!-- hide-default-footer and disable-pagination not implemented yet in Vuetify 3 - https://github.com/vuetifyjs/vuetify/issues/17651 -->
           <template v-slot:bottom v-if="!showAll"></template
+          ><template v-slot:no-data></template
         ></v-data-table>
       </v-card>
     </v-col>
