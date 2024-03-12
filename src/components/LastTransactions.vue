@@ -115,7 +115,7 @@ const transactionItems = computed(() => {
   return items
 })
 
-async function updateTransactionItems() {
+onMounted(async () => {
   const transactionData = global.findMoneyboxById(props.id).transactionLogs
 
   if (!transactionData) {
@@ -144,7 +144,5 @@ async function updateTransactionItems() {
     }
   }
   transactionsLoaded.value = true
-}
-
-onMounted(updateTransactionItems)
+})
 </script>
