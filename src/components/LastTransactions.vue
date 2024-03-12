@@ -5,26 +5,10 @@
         <v-card-item>
           <v-card-title>{{ $t('last-transactions') }}</v-card-title>
         </v-card-item>
-        <v-table>
-          <thead>
-            <tr>
-              <th class="text-no-wrap">{{ $t('date') }}</th>
-              <th class="text-no-wrap">{{ $t('info-text') }}</th>
-              <th class="text-no-wrap">{{ $t('origin') }}</th>
-              <th class="text-no-wrap">{{ $t('amount') }}</th>
-              <th class="text-no-wrap">{{ $t('total') }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in transactionItems" :key="item.name">
-              <td>{{ item.date }}</td>
-              <td>{{ item.infotext }}</td>
-              <td>{{ item.origin }}</td>
-              <td>{{ item.amount }}</td>
-              <td>{{ item.total }}</td>
-            </tr>
-          </tbody>
-        </v-table>
+        <v-data-table :headers="tableHeaders" :items="transactionItems">
+          <!-- hide-default-footer and disable-pagination not implemented yet in Vuetify 3 - https://github.com/vuetifyjs/vuetify/issues/17651 -->
+          <template v-slot:bottom></template
+        ></v-data-table>
       </v-card>
     </v-col>
   </v-row>
@@ -56,6 +40,14 @@ const generatePlaceholderData = (count) =>
     amount: '---',
     total: '---'
   }))
+
+const tableHeaders = computed(() => [
+  { title: t('date'), value: 'date' },
+  { title: t('info-text'), value: 'infotext' },
+  { title: t('origin'), value: 'origin' },
+  { title: t('amount'), value: 'amount' },
+  { title: t('total'), value: 'total' }
+])
 
 // transaction_type and description not needed for current design of the table
 // TODO:
