@@ -81,5 +81,6 @@
   "manual": "manual",
   "automatic": "automatic",
   "withdrawal": "Withdrawal",
-  "deposit2": "Deposit"
+  "deposit2": "Deposit",
+  "invalid-selection": "Invalid selection"
 }

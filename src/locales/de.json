@@ -81,5 +81,6 @@
   "manual": "manuell",
   "automatic": "automatisch",
   "withdrawal": "Abbuchung",
-  "deposit2": "Einzahlung"
+  "deposit2": "Einzahlung",
+  "invalid-selection": "Ungültige Auswahl"
 }
