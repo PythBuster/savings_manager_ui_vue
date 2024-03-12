@@ -82,5 +82,6 @@
   "automatic": "automatic",
   "withdrawal": "Withdrawal",
   "deposit2": "Deposit",
-  "invalid-selection": "Invalid selection"
+  "invalid-selection": "Invalid selection",
+  "view-complete-logs": "View complete logs"
 }

@@ -1,10 +1,16 @@
 <template>
   <v-container>
-    <v-row v-if="global.findMoneyboxById(id)">
+    <v-row
+      v-if="global.findMoneyboxById(id)"
+      class="d-flex justify-space-between align-center"
+    >
       <v-col cols="auto" md="auto">
         <h1 class="text-h4">
           {{ $t('envelope') + ': ' + global.findMoneyboxById(id).name }}
         </h1>
+      </v-col>
+      <v-col cols="auto" class="d-flex justify-end">
+        <v-btn>{{ $t('view-complete-logs') }}</v-btn>
       </v-col>
     </v-row>
     <v-row v-if="global.findMoneyboxById(id)" justify="space-between">
