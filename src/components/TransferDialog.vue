@@ -96,6 +96,9 @@ watch(
 
 function cancel() {
   emit('update:modelValue', false)
+  amount.value = 0
+  description.value = ''
+  selectedId.value = undefined
 }
 
 function confirm() {
