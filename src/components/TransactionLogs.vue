@@ -144,13 +144,17 @@ onMounted(async () => {
     entriesToProcess = transactionData.entries.slice(-numberOfEntries)
   }
 
+  const fetchedMoneyboxIds = new Set()
+
   for (const entry of entriesToProcess) {
     if (
       entry.counterparty_moneybox_id &&
-      !global.findMoneyboxById(entry.counterparty_moneybox_id)
+      !global.findMoneyboxById(entry.counterparty_moneybox_id) &&
+      !fetchedMoneyboxIds.has(entry.counterparty_moneybox_id) // Check if not already fetched or attempted
     ) {
       try {
         global.addMoneybox(await getMoneybox(entry.counterparty_moneybox_id))
+        fetchedMoneyboxIds.add(entry.counterparty_moneybox_id) // Add to cache on success
       } catch (error) {
         // A workaround to prevent 404 on deleted moneyboxes would be to
         // use getMoneyboxes() and filter the result, that seems even uglier
@@ -158,6 +162,7 @@ onMounted(async () => {
           `Failed to fetch moneybox with id ${entry.counterparty_moneybox_id}, probably deleted.`,
           error
         )
+        fetchedMoneyboxIds.add(entry.counterparty_moneybox_id) // Also add to cache on failure
         // TODO: Handle error, e.g., show message to user or redirect - not when deleted is the cause. How do we know?
       }
     }
