@@ -35,6 +35,10 @@ import global from '@/global.js'
 import { formatCurrency, formatDate } from '@/utils.js'
 import { getMoneybox } from '@/api.js'
 
+// t used for table, otherwise $t globally available
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n({})
+
 const props = defineProps({
   id: Number
 })
@@ -71,12 +75,12 @@ const transactionItems = computed(() => {
   let items = lastNEntries.map((entry) => {
     const infotext =
       entry.amount > 0 && entry.counterparty_moneybox_id === null
-        ? 'deposit'
+        ? t('deposit2')
         : entry.amount <= 0 && entry.counterparty_moneybox_id === null
-          ? 'withdrawal'
-          : 'transfer'
+          ? t('withdrawal')
+          : t('transfer2')
     let origin = ''
-    if (infotext === 'transfer') {
+    if (infotext === t('transfer2')) {
       const counterpartyMoneybox = global.findMoneyboxById(
         entry.counterparty_moneybox_id
       )
@@ -85,10 +89,10 @@ const transactionItems = computed(() => {
       origin =
         counterpartyMoneybox && counterpartyMoneybox.name
           ? counterpartyMoneybox.name
-          : 'UNKNOWN'
+          : '[' + t('unknown') + ']'
     } else {
       origin =
-        entry.transaction_trigger === 'manually' ? 'manual' : 'automatical'
+        entry.transaction_trigger === 'manually' ? t('manual') : t('automatic')
     }
 
     return {

@@ -75,5 +75,11 @@
   "description": "Beschreibung",
   "for-deposit": " der Einzahlung",
   "for-withdrawal": " der Abhebung",
-  "for-transfer": " des Transfers"
+  "for-transfer": " des Transfers",
+  "unknown": "Unbekannt",
+  "transfer2": "Übertrag",
+  "manual": "manuell",
+  "automatic": "automatisch",
+  "withdrawal": "Abbuchung",
+  "deposit2": "Einzahlung"
 }
