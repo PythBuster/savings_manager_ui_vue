@@ -7,7 +7,7 @@
         </v-card-item>
         <v-data-table :headers="tableHeaders" :items="transactionItems">
           <!-- hide-default-footer and disable-pagination not implemented yet in Vuetify 3 - https://github.com/vuetifyjs/vuetify/issues/17651 -->
-          <template v-slot:bottom></template
+          <template v-slot:bottom v-if="!showAll"></template
         ></v-data-table>
       </v-card>
     </v-col>
@@ -24,7 +24,8 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n({})
 
 const props = defineProps({
-  id: Number
+  id: { type: Number, default: undefined },
+  showAll: { type: Boolean, default: false } // Show all transactions, instead of just numberOfEntries
 })
 
 const transactionsLoaded = ref(false)
@@ -42,11 +43,23 @@ const generatePlaceholderData = (count) =>
   }))
 
 const tableHeaders = computed(() => [
-  { title: t('date'), value: 'date' },
-  { title: t('info-text'), value: 'infotext' },
-  { title: t('origin'), value: 'origin' },
-  { title: t('amount'), value: 'amount' },
-  { title: t('total'), value: 'total' }
+  { title: t('date'), value: 'date', sortable: props.showAll },
+  { title: t('info-text'), value: 'infotext', sortable: props.showAll },
+  { title: t('origin'), value: 'origin', sortable: props.showAll },
+  {
+    title: t('amount'),
+    value: 'amount',
+    key: 'rawAmount',
+    sortable: props.showAll,
+    customSort: (a, b) => a.rawAmount - b.rawAmount // Custom sort based on rawAmount
+  },
+  {
+    title: t('total'),
+    value: 'total',
+    key: 'rawTotal',
+    sortable: props.showAll,
+    customSort: (a, b) => a.rawTotal - b.rawTotal // Custom sort based on rawTotal
+  }
 ])
 
 // transaction_type and description not needed for current design of the table
@@ -55,16 +68,19 @@ const tableHeaders = computed(() => [
 // then sort by default by date and time, even if timestamp is hidden
 const transactionItems = computed(() => {
   if (
+    !props.id ||
     !transactionsLoaded.value ||
     !global.findMoneyboxById(props.id).transactionLogs
   ) {
-    return generatePlaceholderData(numberOfEntries)
+    return props.showAll ? [] : generatePlaceholderData(numberOfEntries)
   }
 
   const transactionData = global.findMoneyboxById(props.id).transactionLogs
-  const lastNEntries = transactionData.entries.slice(-numberOfEntries)
+  const entries = props.showAll
+    ? transactionData.entries
+    : transactionData.entries.slice(-numberOfEntries)
 
-  let items = lastNEntries.map((entry) => {
+  let items = entries.map((entry) => {
     const infotext =
       entry.amount > 0 && entry.counterparty_moneybox_id === null
         ? t('deposit2')
@@ -92,12 +108,14 @@ const transactionItems = computed(() => {
       infotext,
       origin,
       amount: formatCurrency(entry.amount),
-      total: formatCurrency(entry.balance)
+      total: formatCurrency(entry.balance),
+      rawAmount: entry.amount,
+      rawTotal: entry.balance
     }
   })
 
-  // Pad with placeholders if there are fewer items than numberOfEntries
-  if (items.length < numberOfEntries) {
+  // Only add placeholders if not showing all entries and there are fewer items than numberOfEntries
+  if (!props.showAll && items.length < numberOfEntries) {
     items = [
       ...items,
       ...generatePlaceholderData(numberOfEntries - items.length)
@@ -108,6 +126,10 @@ const transactionItems = computed(() => {
 })
 
 onMounted(async () => {
+  if (!props.id) {
+    return
+  }
+
   const transactionData = global.findMoneyboxById(props.id).transactionLogs
 
   if (!transactionData) {
@@ -115,9 +137,14 @@ onMounted(async () => {
     return
   }
 
-  const lastNEntries = transactionData.entries.slice(-numberOfEntries)
+  let entriesToProcess
+  if (props.showAll) {
+    entriesToProcess = transactionData.entries
+  } else {
+    entriesToProcess = transactionData.entries.slice(-numberOfEntries)
+  }
 
-  for (const entry of lastNEntries) {
+  for (const entry of entriesToProcess) {
     if (
       entry.counterparty_moneybox_id &&
       !global.findMoneyboxById(entry.counterparty_moneybox_id)

@@ -10,7 +10,9 @@
         </h1>
       </v-col>
       <v-col cols="auto" class="d-flex justify-end">
-        <v-btn>{{ $t('view-complete-logs') }}</v-btn>
+        <v-btn @click="viewCompleteClicked">{{
+          $t('view-complete-logs')
+        }}</v-btn>
       </v-col>
     </v-row>
     <v-row v-if="global.findMoneyboxById(id)" justify="space-between">
@@ -60,7 +62,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" md="8">
-        <LastTransactions :id="id" />
+        <TransactionLogs :id="id" :showAll="false" />
       </v-col>
       <v-col cols="12" md="4">
         <BarChart />
@@ -304,5 +306,11 @@ async function handleDeleteConfirm() {
     }
     showErrorDialog.value = true
   }
+}
+
+function viewCompleteClicked() {
+  router.push({
+    path: `/logs/${props.id}`
+  })
 }
 </script>

@@ -83,5 +83,6 @@
   "withdrawal": "Withdrawal",
   "deposit2": "Deposit",
   "invalid-selection": "Invalid selection",
-  "view-complete-logs": "View complete logs"
+  "view-complete-logs": "View complete logs",
+  "back-to-overview": "Back to overview"
 }

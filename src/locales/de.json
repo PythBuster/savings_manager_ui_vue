@@ -83,5 +83,6 @@
   "withdrawal": "Abbuchung",
   "deposit2": "Einzahlung",
   "invalid-selection": "Ungültige Auswahl",
-  "view-complete-logs": "Vollständige Logs ansehen"
+  "view-complete-logs": "Vollständige Logs ansehen",
+  "back-to-overview": "Zurück zur Übersicht"
 }
