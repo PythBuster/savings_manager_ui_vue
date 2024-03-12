@@ -173,7 +173,7 @@ export class Moneybox {
   }
 }
 
-export class TransactionLogEntry {
+export class TransactionLogsEntry {
   /** @member {Number} moneybox_id */
   _moneybox_id
   /** @member {Number} counterparty_moneybox_id */
@@ -192,7 +192,7 @@ export class TransactionLogEntry {
   _transaction_time
 
   /**
-   * Creates an instance of TransactionLogEntry.
+   * Creates an instance of TransactionLogsEntry.
    * @param {Number} moneybox_id - The moneybox id of the transaction
    * @param {Number|null} counterparty_moneybox_id - The counterparty moneybox id of the transaction (for transfer) - null if not applicable (for deposit/withdrawal)
    * @param {Number} amount - The amount of the transaction - can be negative for withdrawal/transfer
@@ -300,13 +300,13 @@ export class TransactionLogEntry {
 export class TransactionLogs {
   /** @member {Number} moneybox_id */
   _moneybox_id
-  /** @member {TransactionLogEntry[]} entries */
+  /** @member {TransactionLogsEntry[]} entries */
   _entries
 
   /**
    * Creates an instance of TransactionLogs.
    * @param {Number} moneybox_id - The ID of the moneybox these transactions belong to
-   * @param {TransactionLogEntry[]} entries - An array of TransactionLogEntry instances
+   * @param {TransactionLogsEntry[]} entries - An array of TransactionLogsEntry instances
    */
   constructor(moneybox_id, entries) {
     this.moneybox_id = moneybox_id
@@ -328,10 +328,10 @@ export class TransactionLogs {
   set entries(value) {
     if (
       !Array.isArray(value) ||
-      !value.every((item) => item instanceof TransactionLogEntry)
+      !value.every((item) => item instanceof TransactionLogsEntry)
     )
       throw new TypeError(
-        'Entries must be an array of TransactionLogEntry instances'
+        'Entries must be an array of TransactionLogsEntry instances'
       )
     this._entries = value
   }
@@ -344,7 +344,7 @@ export class TransactionLogs {
   static fromJSON(rawLogs) {
     const entries = rawLogs.transaction_logs.map(
       (log) =>
-        new TransactionLogEntry(
+        new TransactionLogsEntry(
           log.moneybox_id,
           log.counterparty_moneybox_id,
           log.amount,
