@@ -4,6 +4,8 @@ Frontend (work in progress) for https://github.com/PythBuster/savings_manager
 
 Original also forked here: https://github.com/Jasmin68k/savings-manager-backend
 
+NodeJS/Express implementation: https://github.com/Jasmin68k/savings-manager-backend-js
+
 ## Configuration
 
 Set `VITE_BACKEND_URL` in `.env` to the URL of the backend server.
