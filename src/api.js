@@ -64,8 +64,7 @@ export async function getMoneyboxes() {
       ...moneybox,
       goal: 0.0,
       increment: 0.0,
-      noLimit: true,
-      priority: 1
+      noLimit: true
     }))
     .map(Moneybox.fromJSON)
 
@@ -91,31 +90,44 @@ export async function getMoneybox(moneybox_id) {
   jsonData.goal = 0.0
   jsonData.increment = 0.0
   jsonData.noLimit = true
-  jsonData.priority = 1
 
   return Moneybox.fromJSON(jsonData)
 }
 
 /**
- * Updates the name of a specific moneybox
+ * Updates name and/or priority of a specific moneybox
  * @param {Moneybox} moneyboxInstance - The Moneybox instance to update.
- * @param {string} newName - The new name for the moneybox.
+ * @param {string} newName - The new name for the moneybox. If null, the name won't be updated.
+ * @param {number} [newPriority] - The new priority for the moneybox. If undefined, the priority won't be updated.
  * @returns {Promise<void>} A promise that resolves once the moneybox has been updated.
  */
-export async function updateMoneybox(moneyboxInstance, newName) {
+export async function updateMoneybox(moneyboxInstance, newName, newPriority) {
   const moneybox_id = moneyboxInstance.id
+  const updatePayload = {}
+
+  if (newName !== null) {
+    updatePayload.name = newName
+  }
+
+  if (typeof newPriority !== 'undefined') {
+    updatePayload.priority = newPriority
+  }
+
   const response = await fetch(`${serverURL}/api/moneybox/${moneybox_id}`, {
     method: 'PATCH',
     headers: sendReceiveJsonHeaders,
-    body: JSON.stringify({
-      name: newName
-    })
+    body: JSON.stringify(updatePayload)
   })
 
   await checkResponse(response)
   const jsonData = await response.json()
 
-  moneyboxInstance.name = jsonData.name
+  if (newName !== null) {
+    moneyboxInstance.name = jsonData.name
+  }
+  if (typeof newPriority !== 'undefined') {
+    moneyboxInstance.priority = jsonData.priority
+  }
 }
 
 /**
@@ -140,7 +152,6 @@ export async function addMoneybox(name) {
   jsonData.goal = 0.0
   jsonData.increment = 0.0
   jsonData.noLimit = true
-  jsonData.priority = 1
 
   const newMoneybox = Moneybox.fromJSON(jsonData)
 

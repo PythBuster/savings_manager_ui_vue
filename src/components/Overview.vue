@@ -7,7 +7,7 @@
     </v-row>
     <v-row>
       <v-col
-        v-for="(card, index) in global.moneyboxes"
+        v-for="(card, index) in sortedMoneyboxes"
         :key="index"
         cols="12"
         sm="6"
@@ -29,7 +29,12 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import global from '@/global.js'
+
+const sortedMoneyboxes = computed(() => {
+  return [...global.moneyboxes].sort((a, b) => a.priority - b.priority)
+})
 
 // Dummy data, API fetch not implemented yet
 const currentAmount = 0.0

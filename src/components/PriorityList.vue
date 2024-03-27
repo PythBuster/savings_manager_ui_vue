@@ -55,6 +55,7 @@
 import router from '@/router'
 import { ref, onMounted } from 'vue'
 import global from '@/global.js'
+import { updateMoneybox } from '@/api.js'
 
 const items = ref([])
 
@@ -98,13 +99,39 @@ const moveDown = () => {
   }
 }
 
-function saveClicked() {
+async function saveClicked() {
+  for (let index = 0; index < items.value.length; index++) {
+    const item = items.value[index]
+    const newPriority = index + 1 // Calculate the new priority based on array position
+
+    const moneyboxInstance = global.findMoneyboxById(item.id)
+
+    if (moneyboxInstance) {
+      try {
+        // Update the moneybox with the new priority
+        await updateMoneybox(
+          moneyboxInstance,
+          null, // No name change
+          newPriority
+        )
+      } catch (error) {
+        console.error(
+          `Failed to update priority for ${moneyboxInstance.name}:`,
+          error
+        )
+      }
+    } else {
+      console.error(`Moneybox with id ${item.id} not found.`)
+    }
+  }
   router.push({
     path: '/'
   })
 }
 
 onMounted(() => {
-  items.value = global.moneyboxes.map(({ id, name }) => ({ id, name }))
+  items.value = global.moneyboxes
+    .map(({ id, name, priority }) => ({ id, name, priority })) // Ensure priority is included for sorting
+    .sort((a, b) => a.priority - b.priority) // Sort based on priority
 })
 </script>
