@@ -32,14 +32,19 @@
 
 <script setup>
 import router from '@/router'
-import { ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n({})
 
 const selectedMode = ref(t('add-up'))
 
-const modes = [t('add-up'), t('fill-envelopes'), t('collect')]
+const modes = ref([])
+
+// Use watchEffect to automatically update when locale changes
+watchEffect(() => {
+  modes.value = [t('add-up'), t('fill-envelopes'), t('collect')]
+})
 
 function saveClicked() {
   router.push({
