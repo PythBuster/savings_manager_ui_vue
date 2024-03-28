@@ -8,7 +8,7 @@ NodeJS/Express implementation: https://github.com/Jasmin68k/savings-manager-back
 
 ## Configuration
 
-Set `VITE_BACKEND_URL` in `.env` to the URL of the backend server.
+Create `.env.local` in root directory and set `VITE_BACKEND_URL` to the URL of the backend server.
 
 ## Project setup
 
