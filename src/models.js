@@ -180,7 +180,7 @@ export class TransactionLogsEntry {
   _counterparty_moneybox_id
   /** @member {Number} amount */
   _amount
-  /** @member {Number}  balance */
+  /** @member {Number} balance */
   _balance
   /** @member {String} description */
   _description
