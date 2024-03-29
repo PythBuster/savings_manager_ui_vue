@@ -213,7 +213,6 @@ async function handleTransactionConfirm(transactionDetails) {
       )
     } catch (error) {
       if (error instanceof APIError) {
-        console.log(error.details)
         if (error.status === 404) {
           errorMessage.value = t('error-not-found', {
             name: global.findMoneyboxById(props.id).name
