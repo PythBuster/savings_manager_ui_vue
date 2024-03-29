@@ -131,7 +131,8 @@ async function saveClicked() {
 
 onMounted(() => {
   items.value = global.moneyboxes
-    .map(({ id, name, priority }) => ({ id, name, priority })) // Ensure priority is included for sorting
-    .sort((a, b) => a.priority - b.priority) // Sort based on priority
+    .filter((moneybox) => !moneybox.is_overflow) // Exclude moneyboxes with is_overflow set to true
+    .map(({ id, name, priority }) => ({ id, name, priority })) // Extract needed properties
+    .sort((a, b) => a.priority - b.priority) // Sort by priority
 })
 </script>

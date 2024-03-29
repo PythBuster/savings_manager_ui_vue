@@ -107,12 +107,14 @@ const transactionItems = computed(() => {
       const counterpartyMoneybox = global.findMoneyboxById(
         entry.counterparty_moneybox_id
       )
-      // Check if counterparty moneybox exists and has a name, otherwise mark as 'UNKNOWN'
-      // When moneybox has been deleted, there's currently no way to fetch the name
-      origin =
-        counterpartyMoneybox && counterpartyMoneybox.name
-          ? counterpartyMoneybox.name
-          : '[' + t('unknown') + ']'
+
+      if (counterpartyMoneybox) {
+        origin = counterpartyMoneybox.is_overflow
+          ? t('overflow-envelope')
+          : counterpartyMoneybox.name
+      } else {
+        origin = '[' + t('unknown') + ']'
+      }
     } else {
       origin =
         entry.transaction_trigger === 'manually' ? t('manual') : t('automatic')
