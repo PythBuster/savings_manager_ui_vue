@@ -60,7 +60,9 @@ const description = ref('')
 const valid = ref(false)
 
 const validMoneyboxes = computed(() => {
-  return global.moneyboxes.filter((obj) => obj.id !== props.sourceId)
+  return global.moneyboxes
+    .filter((obj) => obj.id !== props.sourceId)
+    .sort((a, b) => a.name.localeCompare(b.name))
 })
 
 function validateAutocomplete(value) {
