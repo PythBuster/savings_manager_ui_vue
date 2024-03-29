@@ -22,7 +22,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" sm="6">
-        <OverflowEnvelope :currentAmount="currentAmount" />
+        <OverflowEnvelope :currentAmount="overflow ? overflow.balance : 0" />
       </v-col>
     </v-row>
   </v-container>
@@ -33,9 +33,12 @@ import { computed } from 'vue'
 import global from '@/global.js'
 
 const sortedMoneyboxes = computed(() => {
-  return [...global.moneyboxes].sort((a, b) => a.priority - b.priority)
+  return global.moneyboxes
+    .filter((moneybox) => !moneybox.is_overflow)
+    .sort((a, b) => a.priority - b.priority)
 })
 
-// Dummy data, API fetch not implemented yet
-const currentAmount = 0.0
+const overflow = computed(() => {
+  return global.moneyboxes.find((moneybox) => moneybox.is_overflow === true)
+})
 </script>

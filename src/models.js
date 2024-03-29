@@ -19,6 +19,8 @@ export class Moneybox {
   _noLimit
   /** @member {Number} priority */
   _priority
+  /** @member {Boolean} is_overflow */
+  _is_overflow
   /** @member {TransactionLogs|null} transactionLogs */
   _transactionLogs
 
@@ -33,6 +35,7 @@ export class Moneybox {
    * @param {Number} increment - The savings increment value for the moneybox
    * @param {Boolean} noLimit - Indicates whether the moneybox has no saving limit.
    * @param {Number} priority - The priority of the moneybox
+   * @param {Boolean} is_overflow - Indicates whether the moneybox is overflow
    * @param {TransactionLogs|null} transactionLogs - The transaction logs for the moneybox - null if not initialized
    */
   constructor(
@@ -45,6 +48,7 @@ export class Moneybox {
     increment,
     noLimit,
     priority,
+    is_overflow = false,
     transactionLogs = null
   ) {
     this.id = id
@@ -56,6 +60,7 @@ export class Moneybox {
     this.increment = increment
     this.noLimit = noLimit
     this.priority = priority
+    this.is_overflow = is_overflow
     this.transactionLogs = transactionLogs
   }
 
@@ -74,7 +79,8 @@ export class Moneybox {
       rawMoneybox.goal,
       rawMoneybox.increment,
       rawMoneybox.noLimit,
-      rawMoneybox.priority
+      rawMoneybox.priority,
+      rawMoneybox.is_overflow
     )
   }
 
@@ -158,6 +164,15 @@ export class Moneybox {
     if (!Number.isInteger(value) || value < 1)
       throw new RangeError('priority must be an integer and >= 1')
     this._priority = value
+  }
+
+  get is_overflow() {
+    return this._is_overflow
+  }
+  set is_overflow(value) {
+    if (typeof value !== 'boolean')
+      throw new TypeError('is_overflow must be a boolean')
+    this._is_overflow = value
   }
 
   get transactionLogs() {

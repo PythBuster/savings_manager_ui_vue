@@ -1,7 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
-import { getMoneyboxes, getMoneybox, getTransactionLogs } from '@/api.js'
+import {
+  getMoneyboxes,
+  getMoneybox,
+  getTransactionLogs,
+  addMoneybox
+} from '@/api.js'
 import global from '@/global.js'
+import { APIError } from '@/customerrors'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +20,19 @@ const router = createRouter({
           try {
             await getMoneyboxes()
             global.moneyboxesLoaded = true
+
+            const overflowExists = global.moneyboxes.some(
+              (moneybox) => moneybox.is_overflow === true
+            )
+
+            if (!overflowExists) {
+              // name will not be used in UI, but it's required by the API
+              await addMoneybox('OVERFLOW', true)
+              // global.overflowExists = true
+            } else {
+              // global.overflowExists = true
+            }
+
             next()
           } catch (error) {
             console.error('Failed to fetch moneyboxes:', error)
@@ -35,7 +54,11 @@ const router = createRouter({
         const id = Number(to.params.id)
         if (!global.findMoneyboxById(id)) {
           try {
-            global.addMoneybox(await getMoneybox(id))
+            const moneybox = await getMoneybox(id)
+            if (moneybox.is_overflow) {
+              throw new APIError('Overflow moneybox cannot be accessed by id')
+            }
+            global.addMoneybox(moneybox)
             await getTransactionLogs(global.findMoneyboxById(id))
             next()
           } catch (error) {
@@ -45,6 +68,9 @@ const router = createRouter({
           }
         } else if (global.findMoneyboxById(id).transactionLogs === null) {
           try {
+            if (global.findMoneyboxById(id).is_overflow) {
+              throw new APIError('Overflow moneybox cannot be accessed by id')
+            }
             await getTransactionLogs(global.findMoneyboxById(id))
             next()
           } catch (error) {
@@ -70,7 +96,11 @@ const router = createRouter({
         const id = Number(to.params.id)
         if (!global.findMoneyboxById(id)) {
           try {
-            global.addMoneybox(await getMoneybox(id))
+            const moneybox = await getMoneybox(id)
+            if (moneybox.is_overflow) {
+              throw new APIError('Overflow moneybox cannot be accessed by id')
+            }
+            global.addMoneybox(moneybox)
             await getTransactionLogs(global.findMoneyboxById(id))
             next()
           } catch (error) {
@@ -80,6 +110,9 @@ const router = createRouter({
           }
         } else if (global.findMoneyboxById(id).transactionLogs === null) {
           try {
+            if (global.findMoneyboxById(id).is_overflow) {
+              throw new APIError('Overflow moneybox cannot be accessed by id')
+            }
             await getTransactionLogs(global.findMoneyboxById(id))
             next()
           } catch (error) {
@@ -95,6 +128,40 @@ const router = createRouter({
         }
       }
     },
+    {
+      path: '/logs/overflow',
+
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('@/views/LogsOverflow.vue'),
+      beforeEnter: async (_to, _from, next) => {
+        try {
+          if (!global.moneyboxesLoaded) {
+            await getMoneyboxes()
+            global.moneyboxesLoaded = true
+          }
+
+          let overflowMoneybox = global.moneyboxes.find(
+            (moneybox) => moneybox.is_overflow === true
+          )
+
+          if (!overflowMoneybox) {
+            overflowMoneybox = await addMoneybox('OVERFLOW', true)
+          }
+
+          if (overflowMoneybox.transactionLogs === null) {
+            await getTransactionLogs(overflowMoneybox)
+          }
+
+          next()
+        } catch (error) {
+          console.error('Error handling overflow moneybox:', error)
+          next(false)
+        }
+      }
+    },
+
     {
       path: '/priority',
       // route level code-splitting
@@ -158,7 +225,32 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/Overflow.vue')
+      component: () => import('@/views/Overflow.vue'),
+      beforeEnter: async (_to, _from, next) => {
+        try {
+          if (!global.moneyboxesLoaded) {
+            await getMoneyboxes()
+            global.moneyboxesLoaded = true
+          }
+
+          let overflowMoneybox = global.moneyboxes.find(
+            (moneybox) => moneybox.is_overflow === true
+          )
+
+          if (!overflowMoneybox) {
+            overflowMoneybox = await addMoneybox('OVERFLOW', true)
+          }
+
+          if (overflowMoneybox.transactionLogs === null) {
+            await getTransactionLogs(overflowMoneybox)
+          }
+
+          next()
+        } catch (error) {
+          console.error('Error handling overflow moneybox:', error)
+          next(false)
+        }
+      }
     },
     {
       path: '/editoverflow',

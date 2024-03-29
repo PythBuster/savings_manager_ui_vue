@@ -131,16 +131,18 @@ export async function updateMoneybox(moneyboxInstance, newName, newPriority) {
 }
 
 /**
- * Adds a new moneybox with the specified name.
+ * Adds a new moneybox with the specified name and optionally marks it as overflow.
  * @param {string} name - The name of the new moneybox to create.
+ * @param {boolean} [isOverflow=false] - Flag to mark the new moneybox as overflow.
  * @returns {Promise<Moneybox>} - A promise that resolves to a new Moneybox instance
  */
-export async function addMoneybox(name) {
+export async function addMoneybox(name, isOverflow = false) {
   const response = await fetch(`${serverURL}/api/moneybox`, {
     method: 'POST',
     headers: sendReceiveJsonHeaders,
     body: JSON.stringify({
-      name: name
+      name: name,
+      is_overflow: isOverflow
     })
   })
 
@@ -168,6 +170,10 @@ export async function addMoneybox(name) {
 export async function deleteMoneybox(moneyboxInstance) {
   if (!(moneyboxInstance instanceof Moneybox)) {
     throw new TypeError('Not an instance of Moneybox')
+  }
+
+  if (moneyboxInstance.is_overflow) {
+    throw new Error('Deleting an overflow moneybox is not allowed.')
   }
 
   const moneybox_id = moneyboxInstance.id
@@ -324,6 +330,7 @@ export async function transferFromMoneyboxToMoneybox(
  */
 export async function getTransactionLogs(moneyboxInstance) {
   const moneybox_id = moneyboxInstance.id
+
   const response = await fetch(
     `${serverURL}/api/moneybox/${moneybox_id}/transactions`,
     {

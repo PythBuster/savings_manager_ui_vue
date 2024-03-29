@@ -58,7 +58,7 @@ watch(
 
 async function createClicked() {
   try {
-    await addMoneybox(envelopeName.value)
+    await addMoneybox(envelopeName.value, false)
     router.push({
       path: '/priority'
     })

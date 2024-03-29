@@ -6,9 +6,7 @@
   >
     <v-card>
       <v-card-title class="text-wrap">
-        {{
-          $t('transfer-from-envelope') + global.findMoneyboxById(sourceId).name
-        }}
+        {{ transferTitle }}
       </v-card-title>
       <v-form ref="form" v-model="valid">
         <v-card-text>
@@ -59,8 +57,21 @@ const selectedId = ref(undefined)
 const description = ref('')
 const valid = ref(false)
 
+const transferTitle = computed(() => {
+  const isOverflow = global.findMoneyboxById(props.sourceId).is_overflow
+
+  return isOverflow
+    ? `${t('transfer-from-envelope')} ${t('overflow-envelope')}`
+    : `${t('transfer-from-envelope')} ${global.findMoneyboxById(props.sourceId).name}`
+})
+
 const validMoneyboxes = computed(() => {
-  return global.moneyboxes.filter((obj) => obj.id !== props.sourceId)
+  return global.moneyboxes
+    .filter((obj) => obj.id !== props.sourceId)
+    .map((moneybox) => ({
+      id: moneybox.id,
+      name: moneybox.is_overflow ? t('overflow-envelope') : moneybox.name
+    }))
 })
 
 function validateAutocomplete(value) {

@@ -50,13 +50,14 @@ const amount = ref(0)
 const description = ref('')
 
 const title = computed(() => {
+  const isOverflow = global.findMoneyboxById(props.id).is_overflow
+  const moneyboxName = isOverflow
+    ? t('overflow-envelope')
+    : global.findMoneyboxById(props.id).name
+
   return props.action === 'deposit'
-    ? t('deposit') +
-        t('into-envelope', { name: global.findMoneyboxById(props.id).name })
-    : t('withdraw') +
-        t('from-envelope', {
-          name: global.findMoneyboxById(props.id).name
-        })
+    ? `${t('deposit')} ${t('into-envelope', { name: moneyboxName })}`
+    : `${t('withdraw')} ${t('from-envelope', { name: moneyboxName })}`
 })
 
 const message = computed(() => {
