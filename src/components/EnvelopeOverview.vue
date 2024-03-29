@@ -261,6 +261,9 @@ async function handleTransferConfirm(transferSelection) {
     )
     // update transaction logs
     await getTransactionLogs(global.findMoneyboxById(props.id))
+    await getTransactionLogs(
+      global.findMoneyboxById(transferSelection.selectedId)
+    )
   } catch (error) {
     if (error instanceof APIError) {
       if (error.status === 404) {
