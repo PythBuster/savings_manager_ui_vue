@@ -14,7 +14,11 @@
         <p>{{ $t('transfer-where') }}</p>
         <v-autocomplete
           :label="$t('envelope')"
-          :items="global.moneyboxes.filter((obj) => obj.id !== sourceId)"
+          :items="
+            global.moneyboxes
+              .filter((obj) => obj.id !== sourceId)
+              .sort((a, b) => a.name.localeCompare(b.name))
+          "
           item-value="id"
           item-title="name"
           v-model="selectedId"
