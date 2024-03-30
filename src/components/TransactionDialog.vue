@@ -57,6 +57,7 @@ const message = computed(() => {
 
 function cancel() {
   emit('update:modelValue', false)
+  amount.value = 0
 }
 function confirm() {
   emit('confirm', { amount: amount.value, action: props.action })
@@ -66,5 +67,6 @@ function confirm() {
 
 function updateVisibilityState(value) {
   emit('update:modelValue', value)
+  amount.value = 0
 }
 </script>
