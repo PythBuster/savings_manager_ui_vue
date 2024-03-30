@@ -117,5 +117,8 @@ function confirm() {
 
 function updateVisibilityState(value) {
   emit('update:modelValue', value)
+  amount.value = 0
+  description.value = ''
+  selectedId.value = undefined
 }
 </script>
