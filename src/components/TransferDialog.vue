@@ -72,6 +72,7 @@ const validMoneyboxes = computed(() => {
       id: moneybox.id,
       name: moneybox.is_overflow ? t('overflow-envelope') : moneybox.name
     }))
+    .sort((a, b) => a.name.localeCompare(b.name))
 })
 
 function validateAutocomplete(value) {
