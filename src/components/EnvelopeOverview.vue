@@ -23,22 +23,6 @@
                 <td>{{ $t('balance') }}</td>
                 <td>{{ formatCurrency(global.findMoneyboxById(id).balance) }}</td>
               </tr>
-              <tr>
-                <td>{{ $t('goal-amount') }}</td>
-                <td>
-                  {{
-                    !global.findMoneyboxById(id).noLimit
-                      ? formatCurrency(global.findMoneyboxById(id).goal)
-                      : $t('no-limit')
-                  }}
-                </td>
-              </tr>
-              <tr>
-                <td>{{ $t('savings-amount') }}:</td>
-                <td>
-                  {{ formatCurrency(global.findMoneyboxById(id).increment) }}
-                </td>
-              </tr>
             </tbody>
           </v-table>
         </v-col>
@@ -63,9 +47,6 @@
       <v-row>
         <v-col cols="12" md="8">
           <LastTransactions />
-        </v-col>
-        <v-col cols="12" md="4">
-          <BarChart />
         </v-col>
       </v-row>
       <v-dialog

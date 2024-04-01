@@ -16,8 +16,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in transactionItems" :key="item.name">
-              <td>{{ item.date }}</td>
+            <tr v-for="item in transactionItems.sort(
+              (a, b) => a.date < b.date
+            )" :key="item.name">
+              <td>{{ item.date.toLocaleDateString($i18n.locale,
+                { year: 'numeric', month: '2-digit', day: '2-digit' }
+               ) }}</td>
               <td>{{ item.infotext }}</td>
               <td>{{ item.origin }}</td>
               <td>{{ item.amount }}</td>
@@ -30,33 +34,33 @@
   </v-row>
 </template>
 <script setup>
-import { formatCurrency, formatDate } from '@/utils.js'
+import { formatCurrency } from '@/utils.js'
 
 // Dummy data, API fetch not implemented yet
 const transactionItems = [
   {
-    date: formatDate('2024-01-18'),
+    date: new Date('2024/01/18'),
     infotext: 'Übertrag',
     origin: 'Urlaub',
     amount: formatCurrency(-10.0),
     total: formatCurrency(90.0)
   },
   {
-    date: formatDate('2024-01-20'),
+    date: new Date('2024/01/20'),
     infotext: 'Übertrag',
     origin: 'Haushalt',
     amount: formatCurrency(20.0),
     total: formatCurrency(110.0)
   },
   {
-    date: formatDate('2024-01-28'),
+    date: new Date('2024/01/28'),
     infotext: 'Abbuchung',
     origin: 'manuell',
     amount: formatCurrency(-50.0),
     total: formatCurrency(60.0)
   },
   {
-    date: formatDate('2024-02-01'),
+    date: new Date('2024/02/01'),
     infotext: 'Einzahlung',
     origin: 'automatisch',
     amount: formatCurrency(30.0),
