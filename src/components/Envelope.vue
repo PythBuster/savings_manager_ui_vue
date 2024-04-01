@@ -15,17 +15,9 @@
           >
         </v-card-item>
         <v-card-text>
-          <p>
-            {{
-              !global.findMoneyboxById(id).noLimit
-                ? $t('goal') + formatCurrency(global.findMoneyboxById(id).goal)
-                : $t('goal') + $t('no-limit')
-            }}
-          </p>
           <p class="font-weight-bold">
             {{ formatCurrency(global.findMoneyboxById(id).balance) }}
           </p>
-          <p>+{{ formatCurrency(global.findMoneyboxById(id).increment) }}</p>
         </v-card-text>
       </v-col>
     </v-row>

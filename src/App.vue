@@ -67,7 +67,6 @@
               </v-list-item>
             </v-list>
             <div class="flex-grow-1"></div>
-            <SavingsSettingsOverview />
             <TotalSavings :totalAmount="totalAmount" />
           </v-col>
         </v-row>
@@ -85,6 +84,7 @@ import { ref, computed, onMounted } from 'vue'
 import router from '@/router'
 import { useTheme } from 'vuetify'
 import Cookies from 'js-cookie'
+import global from '@/global.js'
 
 // t used for menuItems and languageSelected(), otherwise $t globally available
 import { useI18n } from 'vue-i18n'
@@ -107,13 +107,12 @@ const languages = [
 ]
 
 const menuItems = computed(() => [
-  { title: t('my-envelopes'), path: '/' },
-  { title: t('priority-list'), path: '/priority' },
-  { title: t('savings-settings'), path: '/savingssettings' }
+  { title: t('my-envelopes'), path: '/' }
 ])
 
-// Dummy data
-const totalAmount = 0.0
+const totalAmount = computed(() =>
+  global.moneyboxes.reduce((previous, moneybox) => previous + moneybox.balance, 0)
+)
 
 function languageSelected(language) {
   selectedLanguage.value = language
