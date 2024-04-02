@@ -46,7 +46,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" md="8">
-          <LastTransactions />
+          <LastTransactions :currentMoneyboxID="id" />
         </v-col>
       </v-row>
       <v-dialog

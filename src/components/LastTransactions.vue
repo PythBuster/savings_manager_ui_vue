@@ -5,66 +5,82 @@
         <v-card-item>
           <v-card-title>{{ $t('last-transactions') }}</v-card-title>
         </v-card-item>
-        <v-table>
-          <thead>
+        <v-table v-if="transactionItems.length > 0">
+      <thead>
             <tr>
               <th class="text-no-wrap">{{ $t('date') }}</th>
               <th class="text-no-wrap">{{ $t('info-text') }}</th>
               <th class="text-no-wrap">{{ $t('origin') }}</th>
-              <th class="text-no-wrap">{{ $t('amount') }}</th>
-              <th class="text-no-wrap">{{ $t('total') }}</th>
+              <th class="text-no-wrap" style="text-align: center;">{{ $t('amount') }}</th>
+              <th class="text-no-wrap" style="text-align: center;">{{ $t('total') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="item in transactionItems.sort(
-              (a, b) => a.date < b.date
+              (a, b) => a.created_at < b.created_at
             )" :key="item.name">
-              <td>{{ item.date.toLocaleDateString($i18n.locale,
-                { year: 'numeric', month: '2-digit', day: '2-digit' }
+              <td>{{ item.created_at.toLocaleDateString($i18n.locale,
+                { year: 'numeric', month: '2-digit', day: '2-digit', hour: 'numeric', minute: 'numeric'}
                ) }}</td>
-              <td>{{ item.infotext }}</td>
-              <td>{{ item.origin }}</td>
-              <td>{{ item.amount }}</td>
-              <td>{{ item.total }}</td>
+              <td>{{ item.description }}</td>
+              <td>{{ item.counterparty_moneybox_name }}</td>
+              <td :style="{ color: item.amount >= 0 ? 'green' : 'red', 'text-align': 'center' }">{{ formatBalance(item.amount, $i18n.locale) }} €</td>
+              <td style="text-align: center;">{{ formatBalance(item.balance, $i18n.locale) }} €</td>
             </tr>
           </tbody>
+
+
+
+
         </v-table>
+
+        <p v-else style="text-align: center;">Keine Transaktionen vorhanden</p>
+        <p v-if="errorMessage" style="color: red;">Fehler: {{ errorMessage }}</p>
+
       </v-card>
     </v-col>
   </v-row>
 </template>
 <script setup>
 import { formatCurrency } from '@/utils.js'
+import { computed } from 'vue'
+import axios from 'axios'
 
-// Dummy data, API fetch not implemented yet
-const transactionItems = [
-  {
-    date: new Date('2024/01/18'),
-    infotext: 'Übertrag',
-    origin: 'Urlaub',
-    amount: formatCurrency(-10.0),
-    total: formatCurrency(90.0)
-  },
-  {
-    date: new Date('2024/01/20'),
-    infotext: 'Übertrag',
-    origin: 'Haushalt',
-    amount: formatCurrency(20.0),
-    total: formatCurrency(110.0)
-  },
-  {
-    date: new Date('2024/01/28'),
-    infotext: 'Abbuchung',
-    origin: 'manuell',
-    amount: formatCurrency(-50.0),
-    total: formatCurrency(60.0)
-  },
-  {
-    date: new Date('2024/02/01'),
-    infotext: 'Einzahlung',
-    origin: 'automatisch',
-    amount: formatCurrency(30.0),
-    total: formatCurrency(90.0)
+const props = defineProps({
+  currentMoneyboxID: Number
+})
+
+
+import { ref, onMounted } from 'vue';
+
+// Daten für die Transaktionsprotokolle
+const transactionItems = ref([]);
+
+// Methode zum Abrufen der Daten
+const fetchTransactionLogs = async () => {
+  try {
+    const response = await axios.get(`http://localhost:8000/api/moneybox/${props.currentMoneyboxID}/transactions`);
+    const logs = response.data.transaction_logs.map(log => {
+                return {
+                  ...log,
+                  created_at: new Date(log.created_at)
+                };
+              });
+
+    transactionItems.value = logs.slice(0, 4);
+  } catch (error) {
+    console.error(error);
   }
-]
+};
+
+function formatBalance(balanceInCents, locale) {
+      const balanceInEuro = balanceInCents / 100; // Umrechnung von Cents zu Euro
+      return balanceInEuro.toLocaleString(locale, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+// Beim Laden der Komponente Transaktionsprotokolle abrufen
+onMounted(fetchTransactionLogs);
 </script>
