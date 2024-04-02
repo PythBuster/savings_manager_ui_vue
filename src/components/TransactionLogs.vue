@@ -18,10 +18,46 @@
           :items="transactionItems"
           :search="search"
         >
+          <template v-slot:[`item.action`]="{ item }">
+            <v-icon
+              v-if="
+                !props.showAll &&
+                item.trigger === $t('manual') &&
+                item.action !== '---'
+              "
+              >mdi-pencil</v-icon
+            >
+            <v-icon
+              v-else-if="
+                !props.showAll &&
+                item.trigger !== $t('manual') &&
+                item.action !== '---'
+              "
+              >mdi-cogs</v-icon
+            >
+            <v-icon
+              v-if="
+                !props.showAll &&
+                item.type === $t('direct') &&
+                item.action !== '---'
+              "
+              >mdi-transfer-right</v-icon
+            >
+            <v-icon
+              v-else-if="
+                !props.showAll &&
+                item.type !== $t('direct') &&
+                item.action !== '---'
+              "
+              >mdi-multicast</v-icon
+            >
+
+            {{ item.action }}
+          </template>
           <!-- hide-default-footer and disable-pagination not implemented yet in Vuetify 3 - https://github.com/vuetifyjs/vuetify/issues/17651 -->
-          <template v-slot:bottom v-if="!showAll"></template
-          ><template v-slot:no-data></template
-        ></v-data-table>
+          <template v-slot:bottom v-if="!showAll"></template>
+          <template v-slot:no-data></template>
+        </v-data-table>
       </v-card>
     </v-col>
   </v-row>
@@ -57,33 +93,49 @@ const generatePlaceholderData = (count) =>
     total: '---'
   }))
 
-const tableHeaders = computed(() => [
-  {
-    title: t('date-time'),
-    value: 'dateTime',
-    sortable: props.showAll,
-    customSort: (a, b) => new Date(a.rawDateTime) - new Date(b.rawDateTime) // Custom sort based on rawDateTime
-  },
-  { title: t('action'), value: 'action', sortable: props.showAll },
-  { title: t('description'), value: 'description', sortable: props.showAll },
-  { title: t('origin'), value: 'origin', sortable: props.showAll },
-  { title: t('trigger'), value: 'trigger', sortable: props.showAll },
-  { title: t('type'), value: 'type', sortable: props.showAll },
-  {
-    title: t('amount'),
-    value: 'amount',
-    key: 'rawAmount',
-    sortable: props.showAll,
-    customSort: (a, b) => a.rawAmount - b.rawAmount // Custom sort based on rawAmount
-  },
-  {
-    title: t('total'),
-    value: 'total',
-    key: 'rawTotal',
-    sortable: props.showAll,
-    customSort: (a, b) => a.rawTotal - b.rawTotal // Custom sort based on rawTotal
+const tableHeaders = computed(() => {
+  let headers = [
+    {
+      title: t('date-time'),
+      value: 'dateTime',
+      sortable: props.showAll,
+      customSort: (a, b) => new Date(a.rawDateTime) - new Date(b.rawDateTime) // Custom sort based on rawDateTime
+    },
+    {
+      title: t('action'),
+      value: 'action',
+      sortable: props.showAll
+    },
+    { title: t('description'), value: 'description', sortable: props.showAll },
+    { title: t('origin'), value: 'origin', sortable: props.showAll }
+  ]
+
+  if (props.showAll) {
+    headers = headers.concat([
+      { title: t('trigger'), value: 'trigger', sortable: props.showAll },
+      { title: t('type'), value: 'type', sortable: props.showAll }
+    ])
   }
-])
+
+  headers = headers.concat([
+    {
+      title: t('amount'),
+      value: 'amount',
+      key: 'rawAmount',
+      sortable: props.showAll,
+      customSort: (a, b) => a.rawAmount - b.rawAmount // Custom sort based on rawAmount
+    },
+    {
+      title: t('total'),
+      value: 'total',
+      key: 'rawTotal',
+      sortable: props.showAll,
+      customSort: (a, b) => a.rawTotal - b.rawTotal // Custom sort based on rawTotal
+    }
+  ])
+
+  return headers
+})
 
 const transactionItems = computed(() => {
   if (!props.id || !global.findMoneyboxById(props.id).transactionLogs) {
