@@ -85,5 +85,6 @@
   "invalid-selection": "Invalid selection",
   "view-complete-logs": "View complete logs",
   "back-to-overview": "Back to overview",
-  "search": "Search"
+  "search": "Search",
+  "error-delete-with-balance": "You can't delete an envelope with a balance. Please withdraw or transfer the money first."
 }

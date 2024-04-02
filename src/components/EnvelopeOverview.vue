@@ -187,9 +187,7 @@ async function handleTransactionConfirm(transactionDetails) {
       await depositIntoMoneybox(
         global.findMoneyboxById(props.id),
         transactionDetails.amount,
-        transactionDetails.description,
-        'manually', // only option for now
-        'direct' // only option for now
+        transactionDetails.description
       )
       // update transaction logs
       await getTransactionLogs(global.findMoneyboxById(props.id))
@@ -218,9 +216,7 @@ async function handleTransactionConfirm(transactionDetails) {
       await withdrawFromMoneybox(
         global.findMoneyboxById(props.id),
         transactionDetails.amount,
-        transactionDetails.description,
-        'manually', // only option for now
-        'direct' // only option for now
+        transactionDetails.description
       )
       // update transaction logs
       await getTransactionLogs(global.findMoneyboxById(props.id))
@@ -253,9 +249,7 @@ async function handleTransferConfirm(transferSelection) {
       global.findMoneyboxById(props.id),
       transferSelection.amount,
       global.findMoneyboxById(transferSelection.selectedId),
-      transferSelection.description,
-      'manually', // only option for now
-      'direct' // only option for now
+      transferSelection.description
     )
     // update transaction logs
     await getTransactionLogs(global.findMoneyboxById(props.id))
@@ -298,6 +292,8 @@ async function handleDeleteConfirm() {
         errorMessage.value = t('error-not-found', {
           name: global.findMoneyboxById(props.id).name
         })
+      } else if (error.status === 405) {
+        errorMessage.value = t('error-delete-with-balance')
       } else if (error.status === 422) {
         errorMessage.value = t('error-must-be-string')
       } else if (error.status === 500) {
