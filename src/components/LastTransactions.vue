@@ -34,7 +34,7 @@
 
         </v-table>
 
-        <p v-else style="text-align: center;">Keine Transaktionen vorhanden</p>
+        <p v-else style="text-align: center;">{{ $t('no-transactions') }}</p>
         <p v-if="errorMessage" style="color: red;">Fehler: {{ errorMessage }}</p>
 
       </v-card>
