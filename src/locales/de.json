@@ -71,5 +71,20 @@
   "transfer-where": "In welche Kasse möchtest Du übertragen?",
   "error-no-envelopes-found": "Keine Kassen gefunden",
   "error-negative-amount": "Der Betrag darf nicht negativ und muss ganzzahlig sein.",
-  "error-not-enough-money": "Nicht genug Geld in der Kasse"
+  "error-not-enough-money": "Nicht genug Geld in der Kasse",
+  "description": "Beschreibung",
+  "for-deposit": " der Einzahlung",
+  "for-withdrawal": " der Abhebung",
+  "for-transfer": " des Transfers",
+  "unknown": "Unbekannt",
+  "transfer2": "Übertrag",
+  "manual": "manuell",
+  "automatic": "automatisch",
+  "withdrawal": "Abbuchung",
+  "deposit2": "Einzahlung",
+  "invalid-selection": "Ungültige Auswahl",
+  "view-complete-logs": "Vollständige Logs ansehen",
+  "back-to-overview": "Zurück zur Übersicht",
+  "search": "Suchen",
+  "error-delete-with-balance": "Du kannst keine Kasse löschen, die noch einen Kontostand hat. Bitte hebe zunächst das Geld ab oder transferiere es."
 }

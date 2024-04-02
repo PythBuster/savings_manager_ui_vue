@@ -1,10 +1,18 @@
 <template>
   <v-container>
-    <v-row v-if="global.findMoneyboxById(id)">
+    <v-row
+      v-if="global.findMoneyboxById(id)"
+      class="d-flex justify-space-between align-center"
+    >
       <v-col cols="auto" md="auto">
         <h1 class="text-h4">
           {{ $t('envelope') + ': ' + global.findMoneyboxById(id).name }}
         </h1>
+      </v-col>
+      <v-col cols="auto" class="d-flex justify-end">
+        <v-btn @click="viewCompleteClicked">{{
+          $t('view-complete-logs')
+        }}</v-btn>
       </v-col>
     </v-row>
     <v-row v-if="global.findMoneyboxById(id)" justify="space-between">
@@ -54,7 +62,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" md="8">
-        <LastTransactions />
+        <TransactionLogs :id="id" :showAll="false" />
       </v-col>
       <v-col cols="12" md="4">
         <BarChart />
@@ -115,6 +123,7 @@ import { formatCurrency } from '@/utils'
 import {
   deleteMoneybox,
   depositIntoMoneybox,
+  getTransactionLogs,
   transferFromMoneyboxToMoneybox,
   withdrawFromMoneybox
 } from '@/api.js'
@@ -177,8 +186,11 @@ async function handleTransactionConfirm(transactionDetails) {
     try {
       await depositIntoMoneybox(
         global.findMoneyboxById(props.id),
-        transactionDetails.amount
+        transactionDetails.amount,
+        transactionDetails.description
       )
+      // update transaction logs
+      await getTransactionLogs(global.findMoneyboxById(props.id))
     } catch (error) {
       if (error instanceof APIError) {
         if (error.status === 404) {
@@ -203,8 +215,11 @@ async function handleTransactionConfirm(transactionDetails) {
     try {
       await withdrawFromMoneybox(
         global.findMoneyboxById(props.id),
-        transactionDetails.amount
+        transactionDetails.amount,
+        transactionDetails.description
       )
+      // update transaction logs
+      await getTransactionLogs(global.findMoneyboxById(props.id))
     } catch (error) {
       if (error instanceof APIError) {
         if (error.status === 404) {
@@ -233,6 +248,12 @@ async function handleTransferConfirm(transferSelection) {
     await transferFromMoneyboxToMoneybox(
       global.findMoneyboxById(props.id),
       transferSelection.amount,
+      global.findMoneyboxById(transferSelection.selectedId),
+      transferSelection.description
+    )
+    // update transaction logs
+    await getTransactionLogs(global.findMoneyboxById(props.id))
+    await getTransactionLogs(
       global.findMoneyboxById(transferSelection.selectedId)
     )
   } catch (error) {
@@ -271,6 +292,8 @@ async function handleDeleteConfirm() {
         errorMessage.value = t('error-not-found', {
           name: global.findMoneyboxById(props.id).name
         })
+      } else if (error.status === 405) {
+        errorMessage.value = t('error-delete-with-balance')
       } else if (error.status === 422) {
         errorMessage.value = t('error-must-be-string')
       } else if (error.status === 500) {
@@ -281,5 +304,11 @@ async function handleDeleteConfirm() {
     }
     showErrorDialog.value = true
   }
+}
+
+function viewCompleteClicked() {
+  router.push({
+    path: `/logs/${props.id}`
+  })
 }
 </script>

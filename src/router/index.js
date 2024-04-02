@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
-import { getMoneyboxes, getMoneybox } from '@/api.js'
+import { getMoneyboxes, getMoneybox, getTransactionLogs } from '@/api.js'
 import global from '@/global.js'
 
 const router = createRouter({
@@ -36,9 +36,57 @@ const router = createRouter({
         if (!global.findMoneyboxById(id)) {
           try {
             global.addMoneybox(await getMoneybox(id))
+            await getTransactionLogs(global.findMoneyboxById(id))
             next()
           } catch (error) {
             console.error(`Failed to fetch moneybox with id ${id}:`, error)
+            // TODO: Show error message to user or redirect to error page
+            next(false)
+          }
+        } else if (global.findMoneyboxById(id).transactionLogs === null) {
+          try {
+            await getTransactionLogs(global.findMoneyboxById(id))
+            next()
+          } catch (error) {
+            console.error(
+              `Failed to fetch transaction logs for moneybox with id ${id}:`,
+              error
+            )
+            // TODO: Show error message to user or redirect to error page
+            next(false)
+          }
+        } else {
+          next()
+        }
+      }
+    },
+    {
+      path: '/logs/:id',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('@/views/Logs.vue'),
+      beforeEnter: async (to, _from, next) => {
+        const id = Number(to.params.id)
+        if (!global.findMoneyboxById(id)) {
+          try {
+            global.addMoneybox(await getMoneybox(id))
+            await getTransactionLogs(global.findMoneyboxById(id))
+            next()
+          } catch (error) {
+            console.error(`Failed to fetch moneybox with id ${id}:`, error)
+            // TODO: Show error message to user or redirect to error page
+            next(false)
+          }
+        } else if (global.findMoneyboxById(id).transactionLogs === null) {
+          try {
+            await getTransactionLogs(global.findMoneyboxById(id))
+            next()
+          } catch (error) {
+            console.error(
+              `Failed to fetch transaction logs for moneybox with id ${id}:`,
+              error
+            )
             // TODO: Show error message to user or redirect to error page
             next(false)
           }

@@ -11,12 +11,13 @@ const moneyboxesLoaded = false
 // reactive() below tracks changes to the moneybox instances themselves, like changing name or balance
 
 function setMoneyboxes(newMoneyboxes) {
-  moneyboxes.splice(0, moneyboxes.length)
-  moneyboxesMap.clear()
-  newMoneyboxes.forEach((moneybox) => {
-    const reactiveMoneybox = reactive(moneybox)
-    moneyboxes.push(reactiveMoneybox)
-    moneyboxesMap.set(moneybox.id, reactiveMoneybox)
+  // preserve existing moneyboxes in order not to lose their transaction logs, if already fetched
+  newMoneyboxes.forEach((newMoneybox) => {
+    if (!findMoneyboxById(newMoneybox.id)) {
+      const reactiveMoneybox = reactive(newMoneybox)
+      moneyboxes.push(reactiveMoneybox)
+      moneyboxesMap.set(newMoneybox.id, reactiveMoneybox)
+    }
   })
 }
 
@@ -40,11 +41,25 @@ function findMoneyboxById(id) {
   return moneyboxesMap.get(id)
 }
 
+/**
+ * Adds a TransactionLogs instance to a specific Moneybox instance.
+ * @param {Number} moneyboxId The ID of the Moneybox to which the TransactionLogs will be added
+ * @param {TransactionLogs} transactionLogs The TransactionLogs instance to add
+ */
+function addTransactionLogsToMoneybox(moneyboxId, transactionLogs) {
+  const moneybox = findMoneyboxById(moneyboxId)
+  if (!moneybox) {
+    return
+  }
+  moneybox.transactionLogs = transactionLogs
+}
+
 export default {
   moneyboxes: readonly(moneyboxes),
   moneyboxesLoaded,
   addMoneybox,
   deleteMoneybox,
   setMoneyboxes,
-  findMoneyboxById
+  findMoneyboxById,
+  addTransactionLogsToMoneybox
 }

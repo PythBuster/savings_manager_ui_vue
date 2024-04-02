@@ -11,6 +11,15 @@
       <v-card-text>
         <p>{{ message }}</p>
         <CurrencyInput :label="$t('amount')" v-model="amount" />
+        <p>
+          {{
+            $t('description') +
+            (props.action === 'deposit'
+              ? $t('for-deposit')
+              : $t('for-withdrawal'))
+          }}
+        </p>
+        <v-text-field :label="$t('description')" v-model="description" />
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -38,6 +47,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'confirm'])
 
 const amount = ref(0)
+const description = ref('')
 
 const title = computed(() => {
   return props.action === 'deposit'
@@ -58,15 +68,22 @@ const message = computed(() => {
 function cancel() {
   emit('update:modelValue', false)
   amount.value = 0
+  description.value = ''
 }
 function confirm() {
-  emit('confirm', { amount: amount.value, action: props.action })
+  emit('confirm', {
+    amount: amount.value,
+    action: props.action,
+    description: description.value
+  })
   emit('update:modelValue', false)
   amount.value = 0
+  description.value = ''
 }
 
 function updateVisibilityState(value) {
   emit('update:modelValue', value)
   amount.value = 0
+  description.value = ''
 }
 </script>
