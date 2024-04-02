@@ -6,12 +6,32 @@ export const formatCurrency = (value) => {
   }).format(value)
 }
 
-export const formatDate = (date, locale = 'de-DE') => {
-  return new Intl.DateTimeFormat(locale, {
+/**
+ * Formats an ISO8601 datetime string to "DD.MM.YYYY - HH:mm" format.
+ * @param {string} datetime - The ISO8601 datetime string to format
+ * @param {string} locale - The locale to use for formatting, defaults to 'de-DE'
+ * @return {string} The formatted datetime string
+ */
+export const formatDateTime = (datetime, locale = 'de-DE') => {
+  // Parse the input datetime string to a Date object
+  const date = new Date(datetime)
+
+  // Format the date part
+  const formattedDate = new Intl.DateTimeFormat(locale, {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
-  }).format(new Date(date))
+  }).format(date)
+
+  // Format the time part
+  const formattedTime = date.toLocaleTimeString(locale, {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false // Use 24-hour format
+  })
+
+  // Combine the date and time parts
+  return `${formattedDate} - ${formattedTime}`
 }
 
 /**

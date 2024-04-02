@@ -29,7 +29,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import global from '@/global.js'
-import { formatCurrency, formatDate } from '@/utils.js'
+import { formatCurrency, formatDateTime } from '@/utils.js'
 
 // t used for table, otherwise $t globally available
 import { useI18n } from 'vue-i18n'
@@ -55,7 +55,13 @@ const generatePlaceholderData = (count) =>
   }))
 
 const tableHeaders = computed(() => [
-  { title: t('date'), value: 'date', sortable: props.showAll },
+  {
+    title: t('date-time'),
+    value: 'dateTime',
+    sortable: props.showAll,
+    customSort: (a, b) => new Date(a.rawDateTime) - new Date(b.rawDateTime) // Custom sort based on rawDateTime
+  },
+
   { title: t('info-text'), value: 'infotext', sortable: props.showAll },
   { title: t('origin'), value: 'origin', sortable: props.showAll },
   {
@@ -75,8 +81,6 @@ const tableHeaders = computed(() => [
 ])
 
 // transaction_type and description not needed for current design of the table
-// TODO:
-// Add time to date and sort accordingly
 const transactionItems = computed(() => {
   if (!props.id || !global.findMoneyboxById(props.id).transactionLogs) {
     return props.showAll ? [] : generatePlaceholderData(numberOfEntries)
@@ -103,13 +107,14 @@ const transactionItems = computed(() => {
     }
 
     return {
-      date: formatDate(entry.created_at.split('T')[0]),
+      dateTime: formatDateTime(entry.created_at),
       infotext,
       origin,
       amount: formatCurrency(entry.amount),
       total: formatCurrency(entry.balance),
       rawAmount: entry.amount,
-      rawTotal: entry.balance
+      rawTotal: entry.balance,
+      rawDateTime: entry.created_at
     }
   })
 
