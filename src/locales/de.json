@@ -23,7 +23,6 @@
   "change-settings": "Einstellungen bearbeiten",
   "delete-envelope": "Kasse löschen",
   "date-time": "Datum/Uhrzeit",
-  "info-text": "Beschreibung",
   "origin": "Herkunft/Ziel",
   "amount": "Betrag",
   "total": "Gesamt",
@@ -86,5 +85,10 @@
   "view-complete-logs": "Vollständige Logs ansehen",
   "back-to-overview": "Zurück zur Übersicht",
   "search": "Suchen",
-  "error-delete-with-balance": "Du kannst keine Kasse löschen, die noch einen Kontostand hat. Bitte hebe zunächst das Geld ab oder transferiere es."
+  "error-delete-with-balance": "Du kannst keine Kasse löschen, die noch einen Kontostand hat. Bitte hebe zunächst das Geld ab oder transferiere es.",
+  "action": "Aktion",
+  "trigger": "Auslöser",
+  "type": "Art",
+  "direct": "direkt",
+  "distribution": "verteilt"
 }
