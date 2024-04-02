@@ -79,14 +79,9 @@ const tableHeaders = computed(() => [
 
 // transaction_type and description not needed for current design of the table
 // TODO:
-// Add proper date, when available from API,
-// then sort by default by date and time, even if timestamp is hidden
+// Add time to date and sort accordingly
 const transactionItems = computed(() => {
-  if (
-    !props.id ||
-    !transactionsLoaded.value ||
-    !global.findMoneyboxById(props.id).transactionLogs
-  ) {
+  if (!props.id || !global.findMoneyboxById(props.id).transactionLogs) {
     return props.showAll ? [] : generatePlaceholderData(numberOfEntries)
   }
 
@@ -107,21 +102,17 @@ const transactionItems = computed(() => {
       const counterpartyMoneybox = global.findMoneyboxById(
         entry.counterparty_moneybox_id
       )
-
-      if (counterpartyMoneybox) {
-        origin = counterpartyMoneybox.is_overflow
-          ? t('overflow-envelope')
-          : counterpartyMoneybox.name
-      } else {
-        origin = '[' + t('unknown') + ']'
-      }
+      origin =
+        counterpartyMoneybox && !counterpartyMoneybox.is_overflow
+          ? entry.counterparty_moneybox_name
+          : t('overflow-envelope')
     } else {
       origin =
         entry.transaction_trigger === 'manually' ? t('manual') : t('automatic')
     }
 
     return {
-      date: formatDate(entry.transaction_time.split('T')[0]),
+      date: formatDate(entry.created_at.split('T')[0]),
       infotext,
       origin,
       amount: formatCurrency(entry.amount),
@@ -173,14 +164,12 @@ onMounted(async () => {
         global.addMoneybox(await getMoneybox(entry.counterparty_moneybox_id))
         fetchedMoneyboxIds.add(entry.counterparty_moneybox_id) // Add to cache on success
       } catch (error) {
-        // A workaround to prevent 404 on deleted moneyboxes would be to
-        // use getMoneyboxes() and filter the result, that seems even uglier
         console.error(
-          `Failed to fetch moneybox with id ${entry.counterparty_moneybox_id}, probably deleted.`,
+          `Failed to fetch moneybox with id ${entry.counterparty_moneybox_id}.`,
           error
         )
         fetchedMoneyboxIds.add(entry.counterparty_moneybox_id) // Also add to cache on failure
-        // TODO: Handle error, e.g., show message to user or redirect - not when deleted is the cause. How do we know?
+        // TODO: Handle error, e.g., show message to user or redirect
       }
     }
   }

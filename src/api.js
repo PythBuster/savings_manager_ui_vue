@@ -193,16 +193,12 @@ export async function deleteMoneybox(moneyboxInstance) {
  * @param {Moneybox} moneyboxInstance - The Moneybox to deposit into
  * @param {number} amount - The amount to deposit.
  * @param {string} description - The description of the transaction.
- * @param {string} transaction_trigger - The trigger of the transaction.
- * @param {string} transaction_type - The type of the transaction.
  * @returns {Promise<void>} - A promise that resolves when the moneybox has been updated in the store.
  */
 export async function depositIntoMoneybox(
   moneyboxInstance,
   amount,
-  description,
-  transaction_trigger,
-  transaction_type
+  description
 ) {
   const moneybox_id = moneyboxInstance.id
 
@@ -212,14 +208,8 @@ export async function depositIntoMoneybox(
       method: 'POST',
       headers: sendReceiveJsonHeaders,
       body: JSON.stringify({
-        deposit_data: {
-          amount: amount
-        },
-        transaction_data: {
-          description: description,
-          transaction_trigger: transaction_trigger,
-          transaction_type: transaction_type
-        }
+        amount: amount,
+        description: description
       })
     }
   )
@@ -235,16 +225,12 @@ export async function depositIntoMoneybox(
  * @param {Moneybox} moneyboxInstance - The Moneybox to withdraw from
  * @param {number} amount - The amount to withdraw.
  * @param {string} description - The description of the transaction.
- * @param {string} transaction_trigger - The trigger of the transaction.
- * @param {string} transaction_type - The type of the transaction.
  * @returns {Promise<void>} - A promise that resolves when the moneybox has been updated in the store.
  */
 export async function withdrawFromMoneybox(
   moneyboxInstance,
   amount,
-  description,
-  transaction_trigger,
-  transaction_type
+  description
 ) {
   const moneybox_id = moneyboxInstance.id
 
@@ -254,14 +240,8 @@ export async function withdrawFromMoneybox(
       method: 'POST',
       headers: sendReceiveJsonHeaders,
       body: JSON.stringify({
-        withdraw_data: {
-          amount: amount
-        },
-        transaction_data: {
-          description: description,
-          transaction_trigger: transaction_trigger,
-          transaction_type: transaction_type
-        }
+        amount: amount,
+        description: description
       })
     }
   )
@@ -278,17 +258,13 @@ export async function withdrawFromMoneybox(
  * @param {number} amount - The amount to transfer.
  * @param {Moneybox} destinationMoneyboxInstance - The destination Moneybox
  * @param {string} description - The description of the transaction.
- * @param {string} transaction_trigger - The trigger of the transaction.
- * @param {string} transaction_type - The type of the transaction.
  * @returns {Promise<void>} - A promise that resolves when the transfer is successfully completed.
  */
 export async function transferFromMoneyboxToMoneybox(
   sourceMoneyboxInstance,
   amount,
   destinationMoneyboxInstance,
-  description,
-  transaction_trigger,
-  transaction_type
+  description
 ) {
   const sourceMoneyboxId = sourceMoneyboxInstance.id
   const destinationMoneyboxId = destinationMoneyboxInstance.id
@@ -299,15 +275,9 @@ export async function transferFromMoneyboxToMoneybox(
       method: 'POST',
       headers: sendReceiveJsonHeaders,
       body: JSON.stringify({
-        transfer_data: {
-          amount: amount,
-          to_moneybox_id: destinationMoneyboxId
-        },
-        transaction_data: {
-          description: description,
-          transaction_trigger: transaction_trigger,
-          transaction_type: transaction_type
-        }
+        amount: amount,
+        to_moneybox_id: destinationMoneyboxId,
+        description: description
       })
     }
   )
@@ -347,19 +317,8 @@ export async function getTransactionLogs(moneyboxInstance) {
 
   const jsonData = await response.json()
 
-  // Add dummy value, since API fetch not implemented yet
-  const currentDateTimeISO = '1970-01-01T00:00:00.000Z'
-
-  const modifiedTransactionLogs = {
-    ...jsonData,
-    transaction_logs: jsonData.transaction_logs.map((log) => ({
-      ...log,
-      transaction_time: currentDateTimeISO
-    }))
-  }
-
-  const transactionLogsInstance = TransactionLogs.fromJSON(
-    modifiedTransactionLogs
-  )
+  // Assuming the API now returns transaction_logs with a valid transaction_time
+  // No need to modify the transaction logs, directly use the data from the API
+  const transactionLogsInstance = TransactionLogs.fromJSON(jsonData)
   global.addTransactionLogsToMoneybox(moneybox_id, transactionLogsInstance)
 }

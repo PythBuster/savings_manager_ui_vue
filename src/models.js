@@ -189,6 +189,8 @@ export class Moneybox {
 }
 
 export class TransactionLogsEntry {
+  /** @member {Number} id */
+  _id
   /** @member {Number} moneybox_id */
   _moneybox_id
   /** @member {Number} counterparty_moneybox_id */
@@ -203,11 +205,14 @@ export class TransactionLogsEntry {
   _transaction_trigger
   /** @member {String} transaction_type */
   _transaction_type
-  /** @member {String} transaction_time */
-  _transaction_time
+  /** @member {String} counterparty_moneybox_name */
+  _counterparty_moneybox_name
+  /** @member {String} created_at */
+  _created_at
 
   /**
    * Creates an instance of TransactionLogsEntry.
+   * @param {Number} id - The unique identifier for the transaction
    * @param {Number} moneybox_id - The moneybox id of the transaction
    * @param {Number|null} counterparty_moneybox_id - The counterparty moneybox id of the transaction (for transfer) - null if not applicable (for deposit/withdrawal)
    * @param {Number} amount - The amount of the transaction - can be negative for withdrawal/transfer
@@ -215,9 +220,11 @@ export class TransactionLogsEntry {
    * @param {String} description - The description of the transaction
    * @param {String} transaction_trigger - The trigger of the transaction - 'manually' or 'automatically'
    * @param {String} transaction_type - The type of the transaction = 'direct' or 'distribution'
-   * @param {String} transaction_time - The ISO8601 time/date of the transaction
+   * @param {String} counterparty_moneybox_name - The name of the counterparty moneybox
+   * @param {String} created_at - The creation ISO8601 time/date of the transaction
    */
   constructor(
+    id,
     moneybox_id,
     counterparty_moneybox_id,
     amount,
@@ -225,8 +232,10 @@ export class TransactionLogsEntry {
     description,
     transaction_trigger,
     transaction_type,
-    transaction_time
+    counterparty_moneybox_name,
+    created_at
   ) {
+    this.id = id
     this.moneybox_id = moneybox_id
     this.counterparty_moneybox_id = counterparty_moneybox_id
     this.amount = amount
@@ -234,8 +243,18 @@ export class TransactionLogsEntry {
     this.description = description
     this.transaction_trigger = transaction_trigger
     this.transaction_type = transaction_type
-    this.transaction_time = transaction_time
+    this.counterparty_moneybox_name = counterparty_moneybox_name
+    this.created_at = created_at
   }
+
+  get id() {
+    return this._id
+  }
+  set id(value) {
+    if (!Number.isInteger(value)) throw new TypeError('id must be an integer')
+    this._id = value
+  }
+
   get moneybox_id() {
     return this._moneybox_id
   }
@@ -301,14 +320,22 @@ export class TransactionLogsEntry {
     this._transaction_type = value
   }
 
-  get transaction_time() {
-    return this._transaction_time
+  get counterparty_moneybox_name() {
+    return this._counterparty_moneybox_name
   }
-  set transaction_time(value) {
+  set counterparty_moneybox_name(value) {
+    if (value !== null && typeof value !== 'string')
+      throw new TypeError('counterparty_moneybox_name must be a string')
+    this._counterparty_moneybox_name = value
+  }
+  get created_at() {
+    return this._created_at
+  }
+  set created_at(value) {
     if (!isValidISO8601(value)) {
-      throw new TypeError('transaction_time must be in ISO8601 format')
+      throw new TypeError('created_at must be in ISO8601 format')
     }
-    this._transaction_time = value
+    this._created_at = value
   }
 }
 
@@ -360,6 +387,7 @@ export class TransactionLogs {
     const entries = rawLogs.transaction_logs.map(
       (log) =>
         new TransactionLogsEntry(
+          log.id,
           log.moneybox_id,
           log.counterparty_moneybox_id,
           log.amount,
@@ -367,7 +395,8 @@ export class TransactionLogs {
           log.description,
           log.transaction_trigger,
           log.transaction_type,
-          log.transaction_time
+          log.counterparty_moneybox_name,
+          log.created_at
         )
     )
     return new TransactionLogs(rawLogs.transaction_logs[0].moneybox_id, entries)
