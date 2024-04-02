@@ -209,6 +209,8 @@ export class TransactionLogsEntry {
   _counterparty_moneybox_name
   /** @member {String} created_at */
   _created_at
+  /** @member {Boolean} counterparty_moneybox_is_overflow */
+  _counterparty_moneybox_is_overflow
 
   /**
    * Creates an instance of TransactionLogsEntry.
@@ -222,6 +224,7 @@ export class TransactionLogsEntry {
    * @param {String} transaction_type - The type of the transaction = 'direct' or 'distribution'
    * @param {String} counterparty_moneybox_name - The name of the counterparty moneybox
    * @param {String} created_at - The creation ISO8601 time/date of the transaction
+   * @param {Boolean} counterparty_moneybox_is_overflow - Indicates whether the counterparty moneybox is overflow
    */
   constructor(
     id,
@@ -233,7 +236,8 @@ export class TransactionLogsEntry {
     transaction_trigger,
     transaction_type,
     counterparty_moneybox_name,
-    created_at
+    created_at,
+    counterparty_moneybox_is_overflow
   ) {
     this.id = id
     this.moneybox_id = moneybox_id
@@ -245,6 +249,7 @@ export class TransactionLogsEntry {
     this.transaction_type = transaction_type
     this.counterparty_moneybox_name = counterparty_moneybox_name
     this.created_at = created_at
+    this.counterparty_moneybox_is_overflow = counterparty_moneybox_is_overflow
   }
 
   get id() {
@@ -337,6 +342,14 @@ export class TransactionLogsEntry {
     }
     this._created_at = value
   }
+  get counterparty_moneybox_is_overflow() {
+    return this._counterparty_moneybox_is_overflow
+  }
+  set counterparty_moneybox_is_overflow(value) {
+    if (typeof value !== 'boolean')
+      throw new TypeError('is_overflow must be a boolean')
+    this._counterparty_moneybox_is_overflow = value
+  }
 }
 
 export class TransactionLogs {
@@ -396,7 +409,8 @@ export class TransactionLogs {
           log.transaction_trigger,
           log.transaction_type,
           log.counterparty_moneybox_name,
-          log.created_at
+          log.created_at,
+          log.counterparty_moneybox_is_overflow
         )
     )
     return new TransactionLogs(rawLogs.transaction_logs[0].moneybox_id, entries)

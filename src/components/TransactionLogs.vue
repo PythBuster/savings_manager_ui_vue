@@ -27,10 +27,9 @@
   </v-row>
 </template>
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import global from '@/global.js'
 import { formatCurrency, formatDate } from '@/utils.js'
-import { getMoneybox } from '@/api.js'
 
 // t used for table, otherwise $t globally available
 import { useI18n } from 'vue-i18n'
@@ -42,8 +41,6 @@ const props = defineProps({
   id: { type: Number, default: undefined },
   showAll: { type: Boolean, default: false } // Show all transactions, instead of just numberOfEntries
 })
-
-const transactionsLoaded = ref(false)
 
 // How many transaction log entries to show
 const numberOfEntries = 4
@@ -99,13 +96,9 @@ const transactionItems = computed(() => {
           : t('transfer2')
     let origin = ''
     if (infotext === t('transfer2')) {
-      const counterpartyMoneybox = global.findMoneyboxById(
-        entry.counterparty_moneybox_id
-      )
-      origin =
-        counterpartyMoneybox && !counterpartyMoneybox.is_overflow
-          ? entry.counterparty_moneybox_name
-          : t('overflow-envelope')
+      origin = entry.counterparty_moneybox_is_overflow
+        ? t('overflow-envelope')
+        : entry.counterparty_moneybox_name
     } else {
       origin =
         entry.transaction_trigger === 'manually' ? t('manual') : t('automatic')
@@ -131,48 +124,5 @@ const transactionItems = computed(() => {
   }
 
   return items
-})
-
-onMounted(async () => {
-  if (!props.id) {
-    return
-  }
-
-  const transactionData = global.findMoneyboxById(props.id).transactionLogs
-
-  if (!transactionData) {
-    transactionsLoaded.value = true
-    return
-  }
-
-  let entriesToProcess
-  if (props.showAll) {
-    entriesToProcess = transactionData.entries
-  } else {
-    entriesToProcess = transactionData.entries.slice(-numberOfEntries)
-  }
-
-  const fetchedMoneyboxIds = new Set()
-
-  for (const entry of entriesToProcess) {
-    if (
-      entry.counterparty_moneybox_id &&
-      !global.findMoneyboxById(entry.counterparty_moneybox_id) &&
-      !fetchedMoneyboxIds.has(entry.counterparty_moneybox_id) // Check if not already fetched or attempted
-    ) {
-      try {
-        global.addMoneybox(await getMoneybox(entry.counterparty_moneybox_id))
-        fetchedMoneyboxIds.add(entry.counterparty_moneybox_id) // Add to cache on success
-      } catch (error) {
-        console.error(
-          `Failed to fetch moneybox with id ${entry.counterparty_moneybox_id}.`,
-          error
-        )
-        fetchedMoneyboxIds.add(entry.counterparty_moneybox_id) // Also add to cache on failure
-        // TODO: Handle error, e.g., show message to user or redirect
-      }
-    }
-  }
-  transactionsLoaded.value = true
 })
 </script>
