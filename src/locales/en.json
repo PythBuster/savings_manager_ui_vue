@@ -23,7 +23,6 @@
   "change-settings": "Change settings",
   "delete-envelope": "Delete envelope",
   "date-time": "Date/Time",
-  "info-text": "Description",
   "origin": "Origin/Destination",
   "amount": "Amount",
   "total": "Total",
@@ -86,5 +85,10 @@
   "view-complete-logs": "View complete logs",
   "back-to-overview": "Back to overview",
   "search": "Search",
-  "error-delete-with-balance": "You can't delete an envelope with a balance. Please withdraw or transfer the money first."
+  "error-delete-with-balance": "You can't delete an envelope with a balance. Please withdraw or transfer the money first.",
+  "action": "Action",
+  "trigger": "Trigger",
+  "type": "Type",
+  "direct": "direct",
+  "distribution": "distributed"
 }

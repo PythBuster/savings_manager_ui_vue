@@ -61,9 +61,11 @@ const tableHeaders = computed(() => [
     sortable: props.showAll,
     customSort: (a, b) => new Date(a.rawDateTime) - new Date(b.rawDateTime) // Custom sort based on rawDateTime
   },
-
-  { title: t('info-text'), value: 'infotext', sortable: props.showAll },
+  { title: t('action'), value: 'action', sortable: props.showAll },
+  { title: t('description'), value: 'description', sortable: props.showAll },
   { title: t('origin'), value: 'origin', sortable: props.showAll },
+  { title: t('trigger'), value: 'trigger', sortable: props.showAll },
+  { title: t('type'), value: 'type', sortable: props.showAll },
   {
     title: t('amount'),
     value: 'amount',
@@ -80,7 +82,6 @@ const tableHeaders = computed(() => [
   }
 ])
 
-// transaction_type and description not needed for current design of the table
 const transactionItems = computed(() => {
   if (!props.id || !global.findMoneyboxById(props.id).transactionLogs) {
     return props.showAll ? [] : generatePlaceholderData(numberOfEntries)
@@ -92,26 +93,33 @@ const transactionItems = computed(() => {
     : transactionData.entries.slice(-numberOfEntries)
 
   let items = entries.map((entry) => {
-    const infotext =
+    const action =
       entry.amount > 0 && entry.counterparty_moneybox_id === null
         ? t('deposit2')
         : entry.amount <= 0 && entry.counterparty_moneybox_id === null
           ? t('withdrawal')
           : t('transfer2')
+
     let origin = ''
-    if (infotext === t('transfer2')) {
+    if (action === t('transfer2')) {
       origin = entry.counterparty_moneybox_is_overflow
         ? t('overflow-envelope')
         : entry.counterparty_moneybox_name
-    } else {
-      origin =
-        entry.transaction_trigger === 'manually' ? t('manual') : t('automatic')
     }
+
+    const trigger =
+      entry.transaction_trigger === 'manually' ? t('manual') : t('automatic')
+
+    const type =
+      entry.transaction_type === 'direct' ? t('direct') : t('distribution')
 
     return {
       dateTime: formatDateTime(entry.created_at),
-      infotext,
-      origin,
+      action: action,
+      description: entry.description,
+      origin: origin,
+      trigger: trigger,
+      type: type,
       amount: formatCurrency(entry.amount),
       total: formatCurrency(entry.balance),
       rawAmount: entry.amount,
