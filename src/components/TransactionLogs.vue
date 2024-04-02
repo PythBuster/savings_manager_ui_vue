@@ -47,9 +47,12 @@ const numberOfEntries = 4
 
 const generatePlaceholderData = (count) =>
   Array.from({ length: count }, () => ({
-    date: '---',
-    infotext: '---',
+    dateTime: '---',
+    action: '---',
+    description: '---',
     origin: '---',
+    trigger: '---',
+    type: '---',
     amount: '---',
     total: '---'
   }))
