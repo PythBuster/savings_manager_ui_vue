@@ -21,7 +21,7 @@
             <tbody>
               <tr>
                 <td>{{ $t('balance') }}</td>
-                <td>{{ formatCurrency(global.findMoneyboxById(id).balance) }}</td>
+                <td>{{ formatCurrency(global.findMoneyboxById(id).balance, $i18n.locale) }}</td>
               </tr>
             </tbody>
           </v-table>

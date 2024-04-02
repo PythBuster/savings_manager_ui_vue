@@ -24,8 +24,8 @@
                ) }}</td>
               <td>{{ item.description }}</td>
               <td>{{ item.counterparty_moneybox_name }}</td>
-              <td :style="{ color: item.amount >= 0 ? 'green' : 'red', 'text-align': 'center' }">{{ formatBalance(item.amount, $i18n.locale) }} €</td>
-              <td style="text-align: center;">{{ formatBalance(item.balance, $i18n.locale) }} €</td>
+              <td :style="{ color: item.amount >= 0 ? 'green' : 'red', 'text-align': 'center' }">{{ formatCurrency(item.amount, $i18n.locale) }} €</td>
+              <td style="text-align: center;">{{ formatCurrency(item.balance, $i18n.locale) }} €</td>
             </tr>
           </tbody>
 
@@ -43,7 +43,6 @@
 </template>
 <script setup>
 import { formatCurrency } from '@/utils.js'
-import { computed } from 'vue'
 import axios from 'axios'
 
 const props = defineProps({
@@ -72,14 +71,6 @@ const fetchTransactionLogs = async () => {
     console.error(error);
   }
 };
-
-function formatBalance(balanceInCents, locale) {
-      const balanceInEuro = balanceInCents / 100; // Umrechnung von Cents zu Euro
-      return balanceInEuro.toLocaleString(locale, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
-    }
 
 // Beim Laden der Komponente Transaktionsprotokolle abrufen
 onMounted(fetchTransactionLogs);

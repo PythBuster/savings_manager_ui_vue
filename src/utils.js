@@ -1,8 +1,7 @@
-// Add option to switch currencies later
-export const formatCurrency = (value) => {
-  return new Intl.NumberFormat('de-DE', {
+export const formatCurrency = (value, locale, currency = 'EUR') => {
+  return new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency: 'EUR'
+    currency: currency
   }).format(value)
 }
 
