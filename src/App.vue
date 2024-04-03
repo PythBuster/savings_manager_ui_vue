@@ -82,7 +82,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import router from '@/router'
+import router from '@/router/index.js'
 import { useTheme } from 'vuetify'
 import Cookies from 'js-cookie'
 

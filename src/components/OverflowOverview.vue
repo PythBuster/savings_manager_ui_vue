@@ -73,7 +73,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import global from '@/global.js'
-import router from '@/router'
+import router from '@/router/index.js'
 import { formatCurrency } from '@/utils.js'
 import {
   depositIntoMoneybox,

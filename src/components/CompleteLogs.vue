@@ -22,7 +22,7 @@
 </template>
 <script setup>
 import global from '@/global.js'
-import router from '@/router'
+import router from '@/router/index.js'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()

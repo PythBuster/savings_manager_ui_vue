@@ -118,8 +118,8 @@
 <script setup>
 import { ref } from 'vue'
 import global from '@/global.js'
-import router from '@/router'
-import { formatCurrency } from '@/utils'
+import router from '@/router/index.js'
+import { formatCurrency } from '@/utils.js'
 import {
   deleteMoneybox,
   depositIntoMoneybox,
@@ -129,7 +129,7 @@ import {
   updateMoneybox
 } from '@/api.js'
 import { useI18n } from 'vue-i18n'
-import { APIError } from '@/customerrors'
+import { APIError } from '@/customerrors.js'
 
 // t used for dialogs, otherwise $t globally available
 const { t } = useI18n({})

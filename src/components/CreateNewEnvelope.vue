@@ -32,10 +32,10 @@
 </template>
 <script setup>
 import { ref, watch } from 'vue'
-import router from '@/router'
+import router from '@/router/index.js'
 import { addMoneybox } from '@/api.js'
 import { useI18n } from 'vue-i18n'
-import { APIError } from '@/customerrors'
+import { APIError } from '@/customerrors.js'
 
 // t used for envelopeName and error dialog, otherwise $t globally available
 const { t, locale } = useI18n({})

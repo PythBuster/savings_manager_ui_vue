@@ -34,7 +34,7 @@
 
 <script setup>
 import global from '@/global.js'
-import router from '@/router'
+import router from '@/router/index.js'
 import { formatCurrency } from '@/utils.js'
 
 const props = defineProps({

@@ -22,7 +22,7 @@
   </v-container>
 </template>
 <script setup>
-import router from '@/router'
+import router from '@/router/index.js'
 import { ref } from 'vue'
 
 // Dummy data
