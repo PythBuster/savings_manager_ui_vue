@@ -1,13 +1,14 @@
 <template>
   <v-container>
-    <v-col>
+  <v-row>
+    <v-col cols="1">
       <button 
         type="button"    
         @click="$router.go(-1)" class="my-5 btn btn-outline-success">&laquo; 
         Back
       </button>
     </v-col>
-    <v-col cols="auto">
+    <v-col>
       <v-row v-if="global.findMoneyboxById(id)">
         <v-col cols="auto" md="auto">
           <h1 class="text-h4">
@@ -16,7 +17,7 @@
         </v-col>
       </v-row>
       <v-row v-if="global.findMoneyboxById(id)" justify="space-between">
-        <v-col cols="auto">
+        <v-col cols="auto" md="auto">
           <v-table>
             <tbody>
               <tr>
@@ -95,6 +96,7 @@
         @update:modelValue="handleTransferDialogClose($event)"
       ></TransferDialog>
     </v-col>
+  </v-row>
   </v-container>
 </template>
 <script setup>

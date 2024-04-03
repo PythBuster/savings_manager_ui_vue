@@ -24,8 +24,8 @@
                ) }}</td>
               <td>{{ item.description }}</td>
               <td>{{ item.counterparty_moneybox_name }}</td>
-              <td :style="{ color: item.amount >= 0 ? 'green' : 'red', 'text-align': 'center' }">{{ formatCurrency(item.amount, $i18n.locale) }} €</td>
-              <td style="text-align: center;">{{ formatCurrency(item.balance, $i18n.locale) }} €</td>
+              <td :style="{ color: item.amount >= 0 ? 'green' : 'red', 'text-align': 'center' }">{{ formatCurrency(item.amount, $i18n.locale) }}</td>
+              <td style="text-align: center;">{{ formatCurrency(item.balance, $i18n.locale) }}</td>
             </tr>
           </tbody>
 
