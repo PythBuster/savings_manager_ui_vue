@@ -48,35 +48,46 @@ const props = defineProps({
 const showErrorDialog = ref(false)
 const errorMessage = ref('')
 
-const newTitle = ref(global.findMoneyboxById(props.id).name)
+const originalTitle = global.findMoneyboxById(props.id).name
+const newTitle = ref(originalTitle)
+
+// These are currently not saved, since the API does not support updating these values yet.
+// When the API is updated, these values should be saved in the API
+// and proper checks should be added to the saveClicked function.
+// Make sure, unchanged values are not being sent to the API (name unchanged is already caugt).
 const newTargetAmount = ref(global.findMoneyboxById(props.id).goal)
 const newSaveAmount = ref(global.findMoneyboxById(props.id).increment)
 
 async function saveClicked() {
-  try {
-    await updateMoneybox(global.findMoneyboxById(props.id), newTitle.value)
-    router.push({
-      path: `/envelope/${props.id}`
-    })
-  } catch (error) {
-    if (error instanceof APIError) {
-      if (error.status === 404) {
-        errorMessage.value = t('error-not-found', {
-          name: newTitle.value
-        })
-      } else if (error.status === 405) {
-        errorMessage.value = t('error-duplicate-name', {
-          name: newTitle.value
-        })
-      } else if (error.status === 422) {
-        errorMessage.value = t('error-must-be-string')
-      } else if (error.status === 500) {
-        errorMessage.value = error.message
-      }
-    } else {
-      errorMessage.value = error.name + ': ' + error.message
-    }
+  if (newTitle.value === originalTitle) {
+    errorMessage.value = t('error-name-unchanged')
     showErrorDialog.value = true
+  } else {
+    try {
+      await updateMoneybox(global.findMoneyboxById(props.id), newTitle.value)
+      router.push({
+        path: `/envelope/${props.id}`
+      })
+    } catch (error) {
+      if (error instanceof APIError) {
+        if (error.status === 404) {
+          errorMessage.value = t('error-not-found', {
+            name: newTitle.value
+          })
+        } else if (error.status === 405) {
+          errorMessage.value = t('error-duplicate-name', {
+            name: newTitle.value
+          })
+        } else if (error.status === 422) {
+          errorMessage.value = t('error-must-be-string')
+        } else if (error.status === 500) {
+          errorMessage.value = error.message
+        }
+      } else {
+        errorMessage.value = error.name + ': ' + error.message
+      }
+      showErrorDialog.value = true
+    }
   }
 }
 </script>

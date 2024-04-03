@@ -71,6 +71,7 @@
   "error-no-envelopes-found": "No envelopes found",
   "error-negative-amount": "Amount may not be negative and has to be an integer.",
   "error-not-enough-money": "Not enough money in the envelope",
+  "error-name-unchanged": "The name of the envelope has not been changed.",
   "description": "Description",
   "for-deposit": " for the deposit",
   "for-withdrawal": " for the withdrawal",
