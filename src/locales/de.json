@@ -91,5 +91,12 @@
   "trigger": "Auslöser",
   "type": "Art",
   "direct": "direkt",
-  "distribution": "verteilt"
+  "distribution": "verteilt",
+  "today": "Heute",
+  "yesterday": "Gestern",
+  "this-month": "Dieser Monat",
+  "last-month": "Letzter Monat",
+  "last-three-months": "Letzte drei Monate",
+  "any-date": "Jedes Datum",
+  "date-range": "Datumsbereich"
 }

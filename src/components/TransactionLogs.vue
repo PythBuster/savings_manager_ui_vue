@@ -5,14 +5,23 @@
         <v-card-item>
           <v-card-title>{{ $t('last-transactions') }}</v-card-title>
         </v-card-item>
-        <v-text-field
-          v-if="showAll"
-          v-model="search"
-          :label="$t('search')"
-          prepend-inner-icon="mdi-magnify"
-          variant="solo-filled"
-          hide-details
-        ></v-text-field>
+        <v-row v-if="props.showAll" class="align-center" no-gutters>
+          <v-col cols="auto">
+            <DateRangePicker
+              @selected-date-range="dateRangeSelected($event)"
+              @update:anyDate="handleAnyDateChange($event)"
+            />
+          </v-col>
+          <v-col :cols="dateFilterEnabled && display.smAndDown ? 12 : ''">
+            <v-text-field
+              v-model="search"
+              :label="$t('search')"
+              prepend-inner-icon="mdi-magnify"
+              variant="solo-filled"
+              hide-details
+            ></v-text-field>
+          </v-col>
+        </v-row>
         <v-data-table
           :headers="tableHeaders"
           :items="transactionItems"
@@ -63,7 +72,8 @@
   </v-row>
 </template>
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
+import { useDisplay } from 'vuetify'
 import global from '@/global.js'
 import { formatCurrency, formatDateTime } from '@/utils.js'
 
@@ -71,12 +81,19 @@ import { formatCurrency, formatDateTime } from '@/utils.js'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n({})
 
+const display = ref(useDisplay())
+
 const search = ref('')
 
 const props = defineProps({
   id: { type: Number, default: undefined },
   showAll: { type: Boolean, default: false } // Show all transactions, instead of just numberOfEntries
 })
+
+// Init in onMounted
+const dateFilterEnabled = ref('')
+
+const selectedDateRange = ref({ startDate: null, endDate: null })
 
 // How many transaction log entries to show
 const numberOfEntries = 4
@@ -183,6 +200,20 @@ const transactionItems = computed(() => {
     }
   })
 
+  if (
+    dateFilterEnabled.value &&
+    selectedDateRange.value &&
+    selectedDateRange.value.startDate &&
+    selectedDateRange.value.endDate
+  ) {
+    items = items.filter((item) => {
+      return (
+        item.rawDateTime >= selectedDateRange.value.startDate &&
+        item.rawDateTime <= selectedDateRange.value.endDate
+      )
+    })
+  }
+
   // Only add placeholders if not showing all entries and there are fewer items than numberOfEntries
   if (!props.showAll && items.length < numberOfEntries) {
     items = [
@@ -192,5 +223,21 @@ const transactionItems = computed(() => {
   }
 
   return items
+})
+
+function handleAnyDateChange(newValue) {
+  dateFilterEnabled.value = newValue
+}
+
+function dateRangeSelected(range) {
+  if (range.startDate && range.endDate) {
+    selectedDateRange.value.startDate = range.startDate
+    selectedDateRange.value.endDate = range.endDate
+  }
+}
+
+// Need to set dateFilterEnabled here for proper initial state of v-text-field cols in template
+onMounted(() => {
+  dateFilterEnabled.value = false
 })
 </script>

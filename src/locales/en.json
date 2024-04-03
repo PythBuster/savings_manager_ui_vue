@@ -91,5 +91,12 @@
   "trigger": "Trigger",
   "type": "Type",
   "direct": "direct",
-  "distribution": "distributed"
+  "distribution": "distributed",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "this-month": "This month",
+  "last-month": "Last month",
+  "last-three-months": "Last three months",
+  "any-date": "Any date",
+  "date-range": "Date range"
 }

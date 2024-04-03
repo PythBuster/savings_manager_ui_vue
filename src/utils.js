@@ -6,6 +6,14 @@ export const formatCurrency = (value) => {
   }).format(value)
 }
 
+export const formatDate = (date, locale = 'de-DE') => {
+  return new Intl.DateTimeFormat(locale, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  }).format(new Date(date))
+}
+
 /**
  * Formats an ISO8601 datetime string to "DD.MM.YYYY - HH:mm" format.
  * @param {string} datetime - The ISO8601 datetime string to format
