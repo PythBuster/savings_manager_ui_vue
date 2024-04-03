@@ -54,11 +54,12 @@ import { ref, onMounted } from 'vue';
 
 // Daten für die Transaktionsprotokolle
 const transactionItems = ref([]);
+const serverURL = import.meta.env.VITE_BACKEND_URL
 
 // Methode zum Abrufen der Daten
 const fetchTransactionLogs = async () => {
   try {
-    const response = await axios.get(`http://localhost:8000/api/moneybox/${props.currentMoneyboxID}/transactions`);
+    const response = await axios.get(`${serverURL}/api/moneybox/${props.currentMoneyboxID}/transactions`);
     const logs = response.data.transaction_logs.map(log => {
                 return {
                   ...log,
@@ -66,7 +67,7 @@ const fetchTransactionLogs = async () => {
                 };
               });
 
-    transactionItems.value = logs.slice(0, 4);
+    transactionItems.value = logs.sort((a, b) => a.created_at < b.created_at).slice(0, 4);
   } catch (error) {
     console.error(error);
   }

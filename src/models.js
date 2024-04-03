@@ -9,6 +9,10 @@ export class Moneybox {
   _increment
   /** @member {String} name */
   _name
+  /** @member {Date} createdAt */
+  _createdAt
+  /** @member {Date} modifiedAt */
+  _modifiedAt
   /** @member {Boolean} noLimit */
   _noLimit
   /** @member {Number} priority */
@@ -20,14 +24,18 @@ export class Moneybox {
    * @param {Number} goal - The savings goal for the moneybox
    * @param {Number} id - The unique identifier for the moneybox
    * @param {Number} increment - The savings increment value for the moneybox
+   * @param {Date} createdAt - The creation datetime of the moneybox
+   * @param {Date} modifiedAt - The modification datetime of the moneybox
    * @param {String} name - The name of the moneybox
    * @param {Boolean} noLimit - Indicates whether the moneybox has no saving limit.
    * @param {Number} priority - The priority of the moneybox
    */
-  constructor(id, name, balance, goal, increment, noLimit, priority) {
+  constructor(id, name, balance, createdAt, modifiedAt, goal, increment, noLimit, priority) {
     this.id = id
     this.name = name
     this.balance = balance
+    this.createdAt = createdAt
+    this.modifiedAt = modifiedAt
     this.goal = goal
     this.increment = increment
     this.noLimit = noLimit
@@ -44,6 +52,8 @@ export class Moneybox {
       rawMoneybox.id,
       rawMoneybox.name,
       rawMoneybox.balance,
+      rawMoneybox.created_at,
+      rawMoneybox.modified_at,
       rawMoneybox.goal,
       rawMoneybox.increment,
       rawMoneybox.noLimit,
@@ -74,6 +84,36 @@ export class Moneybox {
     if (typeof value !== 'number' || value < 0)
       throw new RangeError('balance must be a number and >= 0')
     this._balance = value
+  }
+
+  get createdAt() {
+    return this._createdAt
+  }
+  set createdAt(value) {
+
+      if (typeof value !== 'string') throw new TypeError('createdAt must be a valid string date format')
+  
+      try {
+        this._createdAt = new Date(value)
+      } 
+      catch (error) {
+         throw new TypeError('createdAt must be a valid string date format')
+      }
+    }
+
+  get modifiedAt() {
+    return this._modifiedAt
+  }
+  set modifiedAt(value) {
+
+    if (typeof value !== 'string') throw new TypeError('modifiedAt must be a valid string date format')
+
+    try {
+      this._modifiedAt = new Date(value)
+    } 
+    catch (error) {
+      throw new TypeError('modifiedAt must be a valid string date format')
+    }
   }
 
   get goal() {

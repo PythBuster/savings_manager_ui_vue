@@ -174,10 +174,11 @@ export async function deleteMoneybox(moneyboxInstance) {
 /**
  * Deposits a specified amount into a moneybox.
  * @param {Moneybox} moneyboxInstance - The Moneybox to deposit into
- * @param {number} balance - The amount to deposit.
+ * @param {number} amount - The amount to deposit.
+ * @param {string} description - The description of the deposit, defaults to "".
  * @returns {Promise<void>} - A promise that resolves when the moneybox has been updated in the store.
  */
-export async function depositIntoMoneybox(moneyboxInstance, balance) {
+export async function depositIntoMoneybox(moneyboxInstance, amount, description = "") {
   const moneybox_id = moneyboxInstance.id
 
   const response = await fetch(
@@ -186,7 +187,8 @@ export async function depositIntoMoneybox(moneyboxInstance, balance) {
       method: 'POST',
       headers: sendReceiveJsonHeaders,
       body: JSON.stringify({
-        balance: balance
+        amount: amount,
+        description: description
       })
     }
   )
@@ -194,16 +196,17 @@ export async function depositIntoMoneybox(moneyboxInstance, balance) {
   await checkResponse(response)
   const jsonData = await response.json()
 
-  moneyboxInstance.balance = jsonData.balance
+  await refreshMoneyboxData(moneyboxInstance, jsonData)
 }
 
 /**
  * Withdraws a specified amount from a moneybox.
  * @param {Moneybox} moneyboxInstance - The Moneybox to withdraw from
- * @param {number} balance - The amount to withdraw.
+ * @param {number} amount - The amount to withdraw.
+ * @param {string} description - The description of the withdraw, defaults to "".
  * @returns {Promise<void>} - A promise that resolves when the moneybox has been updated in the store.
  */
-export async function withdrawFromMoneybox(moneyboxInstance, balance) {
+export async function withdrawFromMoneybox(moneyboxInstance, amount, description = "") {
   const moneybox_id = moneyboxInstance.id
 
   const response = await fetch(
@@ -212,7 +215,8 @@ export async function withdrawFromMoneybox(moneyboxInstance, balance) {
       method: 'POST',
       headers: sendReceiveJsonHeaders,
       body: JSON.stringify({
-        balance: balance
+        amount: amount,
+        description: description
       })
     }
   )
@@ -220,20 +224,34 @@ export async function withdrawFromMoneybox(moneyboxInstance, balance) {
   await checkResponse(response)
   const jsonData = await response.json()
 
-  moneyboxInstance.balance = jsonData.balance
+  await refreshMoneyboxData(moneyboxInstance, jsonData)
+}
+
+export async function refreshMoneyboxData(moneyboxInstance, newDataJson) {
+  if (typeof newDataJson === 'object' && newDataJson !== null) {
+    for (var attr in newDataJson) {
+      if (newDataJson.hasOwnProperty(attr)) {
+        moneyboxInstance[attr] = newDataJson[attr];
+      }
+    }
+  } else {
+    console.error('Neue Daten müssen ein Objekt sein.');
+  }
 }
 
 /**
  * Transfers a specified amount from one moneybox to another.
  * @param {Moneybox} sourceMoneyboxInstance - The source Moneybox
- * @param {number} balance - The amount to transfer.
+ * @param {number} amount - The amount to transfer.
  * @param {Moneybox} destinationMoneyboxInstance - The destination Moneybox
+ * @param {string} description - The description of the transfer, defaults to "".
  * @returns {Promise<void>} - A promise that resolves when the transfer is successfully completed.
  */
 export async function transferFromMoneyboxToMoneybox(
   sourceMoneyboxInstance,
-  balance,
-  destinationMoneyboxInstance
+  amount,
+  destinationMoneyboxInstance,
+  description = ""
 ) {
   const sourceMoneyboxId = sourceMoneyboxInstance.id
   const destinationMoneyboxId = destinationMoneyboxInstance.id
@@ -244,19 +262,16 @@ export async function transferFromMoneyboxToMoneybox(
       method: 'POST',
       headers: sendReceiveJsonHeaders,
       body: JSON.stringify({
-        balance: balance,
-        to_moneybox_id: destinationMoneyboxId
+        amount: amount,
+        to_moneybox_id: destinationMoneyboxId,
+        description: description
       })
     }
   )
 
   await checkResponse(response)
 
-  // API does not return updated balances, so we have to calculate them manually
-  // Consider refetching the moneyboxes from the server instead
-  const newSourceBalance = sourceMoneyboxInstance.balance - balance
-  sourceMoneyboxInstance.balance = newSourceBalance
-
-  const newDestinationBalance = destinationMoneyboxInstance.balance + balance
-  destinationMoneyboxInstance.balance = newDestinationBalance
+  // fetch updated moneyboxes from backend (source and destination) and refresh moneybox data
+  sourceMoneyboxInstance = await getMoneybox(sourceMoneyboxInstance.id)
+  destinationMoneyboxInstance = await getMoneybox(destinationMoneyboxInstance.id)
 }

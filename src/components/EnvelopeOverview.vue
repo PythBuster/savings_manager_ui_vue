@@ -169,8 +169,11 @@ async function handleTransactionConfirm(transactionDetails) {
     try {
       await depositIntoMoneybox(
         global.findMoneyboxById(props.id),
-        transactionDetails.amount
-      )
+        Math.trunc(transactionDetails.amount * 100)
+      );
+
+      // hack: refresh page as positive feedback of the deposit/withdraw action.
+      router.go();
     } catch (error) {
       if (error instanceof APIError) {
         if (error.status === 404) {
@@ -195,8 +198,11 @@ async function handleTransactionConfirm(transactionDetails) {
     try {
       await withdrawFromMoneybox(
         global.findMoneyboxById(props.id),
-        transactionDetails.amount
+        Math.trunc(transactionDetails.amount * 100)
       )
+        
+      // hack: refresh page as positive feedback of the deposit/withdraw action.
+      router.go();
     } catch (error) {
       if (error instanceof APIError) {
         if (error.status === 404) {
@@ -224,9 +230,12 @@ async function handleTransferConfirm(transferSelection) {
   try {
     await transferFromMoneyboxToMoneybox(
       global.findMoneyboxById(props.id),
-      transferSelection.amount,
+      Math.trunc(transferSelection.amount * 100),
       global.findMoneyboxById(transferSelection.selectedId)
     )
+
+    // hack: refresh page as positive feedback of the transfer action.
+    router.go();
   } catch (error) {
     if (error instanceof APIError) {
       if (error.status === 404) {
