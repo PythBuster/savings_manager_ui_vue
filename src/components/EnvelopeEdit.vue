@@ -12,6 +12,7 @@
     </v-row>
     <v-row>
       <v-col class="d-flex justify-end">
+        <v-btn  @click="$router.go(-1)" type="cancel" variant="secondary">{{ $t('cancel') }}</v-btn>
         <v-btn
           @click="saveClicked"
           :disabled="
@@ -49,6 +50,7 @@ const errorMessage = ref('')
 const newTitle = ref(global.findMoneyboxById(props.id).name)
 const newTargetAmount = ref(global.findMoneyboxById(props.id).goal)
 const newSaveAmount = ref(global.findMoneyboxById(props.id).increment)
+
 
 async function saveClicked() {
   try {

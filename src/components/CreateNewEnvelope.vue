@@ -12,6 +12,7 @@
     </v-row>
     <v-row>
       <v-col class="d-flex justify-end">
+        <v-btn  @click="$router.go(-1)" type="cancel" variant="secondary">{{ $t('cancel') }}</v-btn>
         <v-btn
           @click="createClicked"
           :disabled="
