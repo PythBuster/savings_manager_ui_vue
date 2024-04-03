@@ -55,7 +55,7 @@ const newSaveAmount = ref(global.findMoneyboxById(props.id).increment)
 async function saveClicked() {
   try {
     await updateMoneybox(global.findMoneyboxById(props.id), newTitle.value)
-    router.push({
+    router.replace({
       path: `/envelope/${props.id}`
     })
   } catch (error) {

@@ -8,8 +8,6 @@
     <v-row class="mt-16">
       <v-col cols="12" sm="6">
         <v-text-field :label="$t('envelope-name')" v-model="envelopeName" />
-        <CurrencyInput :label="$t('target-amount')" v-model="targetAmount" />
-        <CurrencyInput :label="$t('savings-amount')" v-model="saveAmount" />
       </v-col>
     </v-row>
     <v-row>
@@ -19,7 +17,7 @@
           :disabled="
             saveAmount === null || isNaN(saveAmount) || envelopeName === ''
           "
-          >{{ $t('create-continue-priorities') }}</v-btn
+          >{{ $t('save') }}</v-btn
         >
       </v-col>
     </v-row>
@@ -59,9 +57,7 @@ watch(
 async function createClicked() {
   try {
     await addMoneybox(envelopeName.value)
-    router.push({
-      path: '/priority'
-    })
+    router.replace({ path: '/' })
   } catch (error) {
     if (error instanceof APIError) {
       if (error.status === 405) {
