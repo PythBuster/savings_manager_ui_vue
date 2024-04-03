@@ -4,7 +4,7 @@
     <v-col cols="1">
       <button 
         type="button"    
-        @click="$router.go(-1)" class="my-5 btn btn-outline-success">&laquo; 
+        @click="$router.replace({path:'/'})" class="my-5 btn btn-outline-success">&laquo; 
         Back
       </button>
     </v-col>
