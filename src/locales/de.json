@@ -72,5 +72,6 @@
   "error-no-envelopes-found": "Keine Kassen gefunden",
   "error-negative-amount": "Der Betrag darf nicht negativ und muss ganzzahlig sein.",
   "error-not-enough-money": "Nicht genug Geld in der Kasse",
-  "no-transactions": "Keine Transaktionen vorhanden"
+  "no-transactions": "Keine Transaktionen vorhanden",
+  "error-balance-must-not-be-greater-than-zero": "Kasse mit Betrag >= 0 kann nicht gelöscht werden. Bitte Betrag abheben oder übertragen!"
 }

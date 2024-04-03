@@ -105,14 +105,18 @@ export class Moneybox {
     return this._modifiedAt
   }
   set modifiedAt(value) {
+    if (value !== null){
+      if (typeof value !== 'string') throw new TypeError('modifiedAt must be a valid string date format')
 
-    if (typeof value !== 'string') throw new TypeError('modifiedAt must be a valid string date format')
-
-    try {
-      this._modifiedAt = new Date(value)
-    } 
-    catch (error) {
-      throw new TypeError('modifiedAt must be a valid string date format')
+      try {
+        this._modifiedAt = new Date(value)
+      } 
+      catch (error) {
+        throw new TypeError('modifiedAt must be a valid string date format')
+      }
+    }
+    else {
+      this._modifiedAt = null
     }
   }
 

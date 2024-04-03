@@ -72,5 +72,6 @@
   "error-no-envelopes-found": "No envelopes found",
   "error-negative-amount": "Amount may not be negative and has to be an integer.",
   "error-not-enough-money": "Not enough money in the envelope",
-  "no-transactions": "No transactions available"
+  "no-transactions": "No transactions available",
+  "error-balance-must-not-be-greater-than-zero": "Moneybox with balance >= 0 cannot be deleted. Please withdraw or transfer the balance!"
 }

@@ -272,6 +272,8 @@ async function handleDeleteConfirm() {
         errorMessage.value = t('error-not-found', {
           name: global.findMoneyboxById(props.id).name
         })
+      } else if (error.status === 405) {
+        errorMessage.value = t('error-balance-must-not-be-greater-than-zero')
       } else if (error.status === 422) {
         errorMessage.value = t('error-must-be-string')
       } else if (error.status === 500) {
