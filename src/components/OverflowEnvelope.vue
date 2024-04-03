@@ -11,7 +11,7 @@
           <v-card-title>{{ $t('overflow-envelope') }}</v-card-title>
         </v-card-item>
         <v-card-text class="font-weight-bold">
-          {{ formatCurrency(currentAmount) }}
+          {{ formatCurrency(currentAmount, $i18n.locale) }}
         </v-card-text>
       </v-col>
     </v-row>

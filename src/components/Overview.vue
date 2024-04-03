@@ -20,11 +20,6 @@
         <NewEnvelope />
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="12" sm="6">
-        <OverflowEnvelope :currentAmount="currentAmount" />
-      </v-col>
-    </v-row>
   </v-container>
 </template>
 
