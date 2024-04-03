@@ -169,7 +169,8 @@ async function handleTransactionConfirm(transactionDetails) {
     try {
       await depositIntoMoneybox(
         global.findMoneyboxById(props.id),
-        Math.trunc(transactionDetails.amount * 100)
+        Math.trunc(transactionDetails.amount * 100),
+        transactionDetails.description
       );
 
       // hack: refresh page as positive feedback of the deposit/withdraw action.
@@ -198,7 +199,8 @@ async function handleTransactionConfirm(transactionDetails) {
     try {
       await withdrawFromMoneybox(
         global.findMoneyboxById(props.id),
-        Math.trunc(transactionDetails.amount * 100)
+        Math.trunc(transactionDetails.amount * 100),
+        transactionDetails.description
       )
         
       // hack: refresh page as positive feedback of the deposit/withdraw action.
@@ -231,7 +233,8 @@ async function handleTransferConfirm(transferSelection) {
     await transferFromMoneyboxToMoneybox(
       global.findMoneyboxById(props.id),
       Math.trunc(transferSelection.amount * 100),
-      global.findMoneyboxById(transferSelection.selectedId)
+      global.findMoneyboxById(transferSelection.selectedId),
+      transferSelection.description
     )
 
     // hack: refresh page as positive feedback of the transfer action.

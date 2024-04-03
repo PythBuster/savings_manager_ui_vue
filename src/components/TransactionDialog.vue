@@ -12,6 +12,12 @@
         <p>{{ message }}</p>
         <CurrencyInput :label="$t('amount')" v-model="amount" />
       </v-card-text>
+
+      <v-card-text>
+        <p>{{ t('info-text') }}</p>
+        <v-text-field v-model="description"> </v-text-field>
+      </v-card-text>
+
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="grey" @click="cancel">{{ $t('cancel') }}</v-btn>
@@ -39,6 +45,8 @@ const emit = defineEmits(['update:modelValue', 'confirm'])
 
 const amount = ref(0)
 
+const description = ref("")
+
 const title = computed(() => {
   return props.action === 'deposit'
     ? t('deposit') +
@@ -55,18 +63,22 @@ const message = computed(() => {
     : t('withdraw-question')
 })
 
+
 function cancel() {
   emit('update:modelValue', false)
   amount.value = 0
+  description.value = ""
 }
 function confirm() {
-  emit('confirm', { amount: amount.value, action: props.action })
+  emit('confirm', { amount: amount.value, action: props.action, description: description.value })
   emit('update:modelValue', false)
   amount.value = 0
+  description.value = ""
 }
 
 function updateVisibilityState(value) {
   emit('update:modelValue', value)
   amount.value = 0
+  description.value = ""
 }
 </script>
