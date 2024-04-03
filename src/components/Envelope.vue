@@ -9,10 +9,6 @@
       <v-col>
         <v-card-item>
           <v-card-title>{{ global.findMoneyboxById(id).name }}</v-card-title>
-          <v-card-subtitle
-            >{{ $t('priority') }}
-            {{ global.findMoneyboxById(id).priority }}</v-card-subtitle
-          >
         </v-card-item>
         <v-card-text>
           <p class="font-weight-bold">
