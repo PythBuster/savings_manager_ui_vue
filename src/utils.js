@@ -1,8 +1,10 @@
 export const formatCurrency = (value, locale, currency = 'EUR') => {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency: currency
-  }).format(value)
+    currency: currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(value / 100)
 }
 
 export const formatDate = (date, locale = 'de-DE') => {

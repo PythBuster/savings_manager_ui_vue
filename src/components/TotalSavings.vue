@@ -4,7 +4,7 @@
       <v-card-title>{{ $t('total-savings') }}</v-card-title>
     </v-card-item>
     <v-card-text class="font-weight-bold text-h5">
-      {{ formatCurrency(totalAmount) }}
+      {{ formatCurrency(totalAmount, $i18n.locale) }}
     </v-card-text>
   </v-card>
 </template>

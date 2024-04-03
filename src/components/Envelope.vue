@@ -16,7 +16,10 @@
         </v-card-item>
         <v-card-text>
           <p class="font-weight-bold">
-            {{ formatCurrency(global.findMoneyboxById(id).balance) }}
+            {{ formatCurrency(
+                global.findMoneyboxById(id).balance,
+                $i18n.locale
+              ) }}
           </p>
         </v-card-text>
       </v-col>
