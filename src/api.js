@@ -284,8 +284,6 @@ export async function transferFromMoneyboxToMoneybox(
 
   await checkResponse(response)
 
-  // API does not return updated balances, so we have to calculate them manually
-  // Consider refetching the moneyboxes from the server instead
   const newSourceBalance = sourceMoneyboxInstance.balance - amount
   sourceMoneyboxInstance.balance = newSourceBalance
 
