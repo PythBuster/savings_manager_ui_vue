@@ -71,6 +71,7 @@
   "error-no-envelopes-found": "Keine Kassen gefunden",
   "error-negative-amount": "Der Betrag darf nicht negativ und muss ganzzahlig sein.",
   "error-not-enough-money": "Nicht genug Geld in der Kasse",
+  "error-name-unchanged": "Der Name der Kasse wurde nicht geändert.",
   "description": "Beschreibung",
   "for-deposit": " der Einzahlung",
   "for-withdrawal": " der Abhebung",
