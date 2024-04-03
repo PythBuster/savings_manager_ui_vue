@@ -43,7 +43,7 @@
   </v-container>
 </template>
 <script setup>
-import router from '@/router'
+import router from '@/router/index.js'
 import { formatCurrency } from '@/utils.js'
 
 const balance = formatCurrency(125.0)

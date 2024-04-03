@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import router from '@/router'
+import router from '@/router/index.js'
 import { formatCurrency } from '@/utils.js'
 
 defineProps({

@@ -32,11 +32,11 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-import router from '@/router'
+import router from '@/router/index.js'
 import global from '@/global.js'
 import { updateMoneybox } from '@/api.js'
 import { useI18n } from 'vue-i18n'
-import { APIError } from '@/customerrors'
+import { APIError } from '@/customerrors.js'
 
 // t used for error dialog, otherwise $t globally available
 const { t } = useI18n({})

@@ -14,7 +14,7 @@
   </v-card>
 </template>
 <script setup>
-import router from '@/router'
+import router from '@/router/index.js'
 
 function CreateNewEnvelopenvelopeClicked() {
   router.push({

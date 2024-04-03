@@ -5,12 +5,12 @@
  */
 
 // Plugins
-import { registerPlugins } from '@/plugins'
+import { registerPlugins } from '@/plugins/index.js'
 
 // Components
 import App from '@/App.vue'
-import i18n from '@/i18n'
-import router from '@/router'
+import i18n from '@/i18n.js'
+import router from '@/router/index.js'
 import vClickOutside from 'v-click-outside'
 
 // Composables

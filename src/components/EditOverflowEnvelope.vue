@@ -31,7 +31,7 @@
 </template>
 
 <script setup>
-import router from '@/router'
+import router from '@/router/index.js'
 import { ref, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 

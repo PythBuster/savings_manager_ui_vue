@@ -52,7 +52,7 @@
 </template>
 
 <script setup>
-import router from '@/router'
+import router from '@/router/index.js'
 import { ref, onMounted } from 'vue'
 import global from '@/global.js'
 
