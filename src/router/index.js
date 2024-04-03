@@ -10,10 +10,11 @@ const router = createRouter({
       path: '/',
       component: Home,
       beforeEnter: async (_to, _from, next) => {
+        await getMoneyboxes()
+        global.moneyboxesLoaded = true
+        
         if (!global.moneyboxesLoaded) {
           try {
-            await getMoneyboxes()
-            global.moneyboxesLoaded = true
             next()
           } catch (error) {
             console.error('Failed to fetch moneyboxes:', error)
@@ -32,6 +33,9 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('@/views/Envelope.vue'),
       beforeEnter: async (to, _from, next) => {
+        await getMoneyboxes()
+        global.moneyboxesLoaded = true
+
         const id = Number(to.params.id)
         if (!global.findMoneyboxById(id)) {
           try {
@@ -54,6 +58,9 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('@/views/Priority.vue'),
       beforeEnter: async (_to, _from, next) => {
+        await getMoneyboxes()
+        global.moneyboxesLoaded = true
+
         if (!global.moneyboxesLoaded) {
           try {
             await getMoneyboxes()
@@ -74,14 +81,24 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/Savings.vue')
+      component: () => import('@/views/Savings.vue'),
+      beforeEnter: async (_to, _from, next) => {
+        await getMoneyboxes()
+        global.moneyboxesLoaded = true
+        next()
+      }
     },
     {
       path: '/createenvelope',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/CreateEnvelope.vue')
+      component: () => import('@/views/CreateEnvelope.vue'),
+      beforeEnter: async (_to, _from, next) => {
+        await getMoneyboxes()
+        global.moneyboxesLoaded = true
+        next()
+      }
     },
     {
       path: '/editenvelope/:id',
@@ -90,6 +107,8 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('@/views/EditEnvelope.vue'),
       beforeEnter: async (to, _from, next) => {
+        await getMoneyboxes()
+        global.moneyboxesLoaded = true
         const id = Number(to.params.id)
         if (!global.findMoneyboxById(id)) {
           try {
@@ -110,14 +129,24 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/Overflow.vue')
+      component: () => import('@/views/Overflow.vue'),
+      beforeEnter: async (_to, _from, next) => {
+        await getMoneyboxes()
+        global.moneyboxesLoaded = true
+        next()
+      }
     },
     {
       path: '/editoverflow',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/EditOverflow.vue')
+      component: () => import('@/views/EditOverflow.vue'),
+      beforeEnter: async (_to, _from, next) => {
+        await getMoneyboxes()
+        global.moneyboxesLoaded = true
+        next()
+      }
     }
   ]
 })
