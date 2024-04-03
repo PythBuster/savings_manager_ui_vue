@@ -119,7 +119,7 @@ export async function updateMoneybox(moneyboxInstance, newName) {
 }
 
 /**
- * Adds a new moneybox with the specified name.
+ * Adds a new moneybox with the specified name.PATCH
  * @param {string} name - The name of the new moneybox to create.
  * @returns {Promise<Moneybox>} - A promise that resolves to a new Moneybox instance
  */
@@ -230,7 +230,7 @@ export async function withdrawFromMoneybox(moneyboxInstance, amount, description
 export async function refreshMoneyboxData(moneyboxInstance, newDataJson) {
   if (typeof newDataJson === 'object' && newDataJson !== null) {
     for (var attr in newDataJson) {
-      if (newDataJson.hasOwnProperty(attr)) {
+      if (Object.prototype.hasOwnProperty.call(newDataJson, attr)) {
         moneyboxInstance[attr] = newDataJson[attr];
       }
     }
