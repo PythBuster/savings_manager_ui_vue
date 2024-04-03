@@ -1,34 +1,34 @@
 import { DataError, APIError } from '@/customerrors.js'
-import { Moneybox } from '@/models.js'
+import { Moneybox, TransactionLogs } from '@/models.js'
 import global from '@/global.js'
 
 const serverURL = import.meta.env.VITE_BACKEND_URL
 
 const receiveJsonHeaders = new Headers({
-  accept: 'application/json'
+accept: 'application/json'
 })
 
 const sendReceiveJsonHeaders = new Headers({
-  accept: 'application/json',
-  'content-type': 'application/json'
+accept: 'application/json',
+'content-type': 'application/json'
 })
 
 async function checkResponse(response) {
-  if (!response.ok) {
-    let errorDetails = null
-    if (response.status !== 500) {
-      try {
-        const errorResponse = await response.json()
+if (!response.ok) {
+  let errorDetails = null
+  if (response.status !== 500) {
+    try {
+      const errorResponse = await response.json()
 
-        errorDetails = errorResponse
-      } catch (error) {
-        console.error('Error parsing error response:', error)
-      }
+      errorDetails = errorResponse
+    } catch (error) {
+      console.error('Error parsing error response:', error)
     }
-
-    const message = `${response.status} ${response.statusText}`
-    throw new APIError(message, response.status, errorDetails)
   }
+
+  const message = `${response.status} ${response.statusText}`
+  throw new APIError(message, response.status, errorDetails)
+}
 }
 
 /**
@@ -38,36 +38,36 @@ async function checkResponse(response) {
  * @returns {Promise<void>} A promise that resolves when the moneyboxes have been fetched and the store has been updated.
  */
 export async function getMoneyboxes() {
-  const response = await fetch(`${serverURL}/api/moneyboxes`, {
-    method: 'GET',
-    headers: receiveJsonHeaders
-  })
+const response = await fetch(`${serverURL}/api/moneyboxes`, {
+  method: 'GET',
+  headers: receiveJsonHeaders
+})
 
-  if (response.status === 204) {
-    return []
-  }
+if (response.status === 204) {
+  return []
+}
 
-  await checkResponse(response)
+await checkResponse(response)
 
-  const jsonData = await response.json()
+const jsonData = await response.json()
 
-  if (!jsonData || Object.keys(jsonData).length === 0) {
-    throw new DataError('No result from API')
-  }
-  if (!jsonData.moneyboxes) {
-    throw new DataError('Invalid data from API')
-  }
+if (!jsonData || Object.keys(jsonData).length === 0) {
+  throw new DataError('No result from API')
+}
+if (!jsonData.moneyboxes) {
+  throw new DataError('Invalid data from API')
+}
 
-  // Add dummy values, since API fetch not implemented yet
-  const modifiedMoneyboxes = jsonData.moneyboxes
-    .map((moneybox) => ({
-      ...moneybox,
-      goal: 0.0,
-      increment: 0.0,
-      noLimit: true,
-      priority: 1
-    }))
-    .map(Moneybox.fromJSON)
+// Add dummy values, since API fetch not implemented yet
+const modifiedMoneyboxes = jsonData.moneyboxes
+  .map((moneybox) => ({
+    ...moneybox,
+    goal: 0.0,
+    increment: 0.0,
+    noLimit: true,
+    priority: 1
+  }))
+  .map(Moneybox.fromJSON)
 
   global.setMoneyboxes(modifiedMoneyboxes)
 }
@@ -138,16 +138,8 @@ export async function addMoneybox(name) {
 
   // Add dummy values, since API fetch not implemented yet
   jsonData.goal = 0.0
-  jsonData.increment = 0.0
-  jsonData.noLimit = true
-  jsonData.priority = 1
-
-  const newMoneybox = Moneybox.fromJSON(jsonData)
-
-  global.addMoneybox(newMoneybox)
-
-  return newMoneybox
 }
+
 
 /**
  * Deletes a specific moneybox
@@ -157,11 +149,11 @@ export async function addMoneybox(name) {
 export async function deleteMoneybox(moneyboxInstance) {
   if (!(moneyboxInstance instanceof Moneybox)) {
     throw new TypeError('Not an instance of Moneybox')
-  }
+}
 
-  const moneybox_id = moneyboxInstance.id
+const moneybox_id = moneyboxInstance.id
 
-  const response = await fetch(`${serverURL}/api/moneybox/${moneybox_id}`, {
+const response = await fetch(`${serverURL}/api/moneybox/${moneybox_id}`, {
     method: 'DELETE',
     headers: receiveJsonHeaders
   })
@@ -252,7 +244,7 @@ export async function transferFromMoneyboxToMoneybox(
   amount,
   destinationMoneyboxInstance,
   description = ""
-) {
+  ) {
   const sourceMoneyboxId = sourceMoneyboxInstance.id
   const destinationMoneyboxId = destinationMoneyboxInstance.id
 
@@ -274,4 +266,33 @@ export async function transferFromMoneyboxToMoneybox(
   // fetch updated moneyboxes from backend (source and destination) and refresh moneybox data
   sourceMoneyboxInstance = await getMoneybox(sourceMoneyboxInstance.id)
   destinationMoneyboxInstance = await getMoneybox(destinationMoneyboxInstance.id)
+}
+
+/**
+ * Fetches transaction logs for a specific moneybox and updates the corresponding Moneybox instance in the global store.
+ * @param {Moneybox} moneyboxInstance - The Moneybox instance for which to fetch transaction logs
+ * @returns {Promise<void>} - A promise that resolves when the transaction logs have been fetched and added to the Moneybox instance
+ */
+export async function getTransactionLogs(moneyboxInstance) {
+  const moneybox_id = moneyboxInstance.id
+  const response = await fetch(
+    `${serverURL}/api/moneybox/${moneybox_id}/transactions`,
+    {
+      method: 'GET',
+      headers: receiveJsonHeaders
+    }
+  )
+
+  await checkResponse(response) // This will throw if the response is not OK
+
+  if (response.status === 204) {
+    return
+  }
+
+  const jsonData = await response.json()
+
+  // Assuming the API now returns transaction_logs with a valid transaction_time
+  // No need to modify the transaction logs, directly use the data from the API
+  const transactionLogsInstance = TransactionLogs.fromJSON(jsonData)
+  global.addTransactionLogsToMoneybox(moneybox_id, transactionLogsInstance)
 }

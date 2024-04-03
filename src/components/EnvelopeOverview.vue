@@ -15,6 +15,11 @@
             {{ $t('envelope') + ': ' + global.findMoneyboxById(id).name }}
           </h1>
         </v-col>
+        <v-col cols="auto" class="d-flex justify-end">
+          <v-btn @click="viewCompleteClicked">{{
+            $t('view-complete-logs')
+          }}</v-btn>
+        </v-col>
       </v-row>
       <v-row v-if="global.findMoneyboxById(id)" justify="space-between">
         <v-col cols="auto" md="auto">
@@ -287,5 +292,11 @@ async function handleDeleteConfirm() {
     }
     showErrorDialog.value = true
   }
+}
+
+function viewCompleteClicked() {
+  router.push({
+    path: `/logs/${props.id}`
+  })
 }
 </script>

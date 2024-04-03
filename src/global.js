@@ -40,11 +40,25 @@ function findMoneyboxById(id) {
   return moneyboxesMap.get(id)
 }
 
+/**
+ * Adds a TransactionLogs instance to a specific Moneybox instance.
+ * @param {Number} moneyboxId The ID of the Moneybox to which the TransactionLogs will be added
+ * @param {TransactionLogs} transactionLogs The TransactionLogs instance to add
+ */
+function addTransactionLogsToMoneybox(moneyboxId, transactionLogs) {
+  const moneybox = findMoneyboxById(moneyboxId)
+  if (!moneybox) {
+    return
+  }
+  moneybox.transactionLogs = transactionLogs
+}
+
 export default {
   moneyboxes: readonly(moneyboxes),
   moneyboxesLoaded,
   addMoneybox,
   deleteMoneybox,
   setMoneyboxes,
-  findMoneyboxById
+  findMoneyboxById,
+  addTransactionLogsToMoneybox
 }
