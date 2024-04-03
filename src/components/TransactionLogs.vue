@@ -12,7 +12,8 @@
             prepend-inner-icon="mdi-magnify"
             variant="solo-filled"
             hide-details
-          ></v-text-field>
+          ></v-text-field> 
+          {{ console.log(transactionItems) }}
           <v-data-table
             :headers="tableHeaders"
             :items="transactionItems"
@@ -21,40 +22,38 @@
             <template v-slot:[`item.action`]="{ item }">
               <v-icon
                 v-if="
-                  !props.showAll &&
-                  item.trigger === $t('manual') &&
-                  item.action !== '---'
+                  item.trigger === 'manual'
                 "
                 >mdi-pencil</v-icon
               >
               <v-icon
                 v-else-if="
-                  !props.showAll &&
-                  item.trigger !== $t('manual') &&
-                  item.action !== '---'
+                  item.trigger == 'manual'
                 "
                 >mdi-cogs</v-icon
               >
               <v-icon
                 v-if="
-                  !props.showAll &&
-                  item.type === $t('direct') &&
-                  item.action !== '---'
+                  item.type === 'direct'
                 "
                 >mdi-transfer-right</v-icon
               >
               <v-icon
                 v-else-if="
-                  !props.showAll &&
-                  item.type !== $t('direct') &&
-                  item.action !== '---'
+                  item.type !== 'direct'
                 "
                 >mdi-multicast</v-icon
               >
   
               {{ item.action }}
             </template>
+            <template v-slot:[`item.rawAmount`]="{ item }">
+                <span :style="{ color: item.rawAmount >= 0 ? 'green' : 'red' }">
+                    {{ item.amount }}
+                </span>
+            </template>
             <!-- hide-default-footer and disable-pagination not implemented yet in Vuetify 3 - https://github.com/vuetifyjs/vuetify/issues/17651 -->
+
             <template v-slot:bottom v-if="!showAll"></template>
             <template v-slot:no-data></template>
           </v-data-table>
@@ -69,11 +68,12 @@
   
   // t used for table, otherwise $t globally available
   import { useI18n } from 'vue-i18n'
-  const { t } = useI18n({})
+  const { t, locale } = useI18n()
   
+
   const search = ref('')
   
-  const props = defineProps({
+    const props = defineProps({
     id: { type: Number, default: undefined },
     showAll: { type: Boolean, default: false } // Show all transactions, instead of just numberOfEntries
   })
@@ -167,14 +167,14 @@
         entry.transaction_type === 'direct' ? t('direct') : t('distribution')
   
       return {
-        dateTime: formatDateTime(entry.created_at),
+        dateTime: formatDateTime(entry.created_at, locale.value),
         action: action,
         description: entry.description,
         origin: origin,
         trigger: trigger,
         type: type,
-        amount: formatCurrency(entry.amount),
-        total: formatCurrency(entry.balance),
+        amount: formatCurrency(entry.amount, locale.value),
+        total: formatCurrency(entry.balance, locale.value),
         rawAmount: entry.amount,
         rawTotal: entry.balance,
         rawDateTime: entry.created_at

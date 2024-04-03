@@ -19,9 +19,7 @@
             <tr v-for="item in transactionItems.sort(
               (a, b) => a.created_at < b.created_at
             )" :key="item.name">
-              <td>{{ item.created_at.toLocaleDateString($i18n.locale,
-                { year: 'numeric', month: '2-digit', day: '2-digit', hour: 'numeric', minute: 'numeric'}
-               ) }}</td>
+              <td>{{ formatDateTime(item.created_at, $i18n.locale) }}</td>
               <td>{{ item.description }}</td>
               <td>{{ item.counterparty_moneybox_name }}</td>
               <td :style="{ color: item.amount >= 0 ? 'green' : 'red', 'text-align': 'center' }">{{ formatCurrency(item.amount, $i18n.locale) }}</td>
@@ -42,7 +40,7 @@
   </v-row>
 </template>
 <script setup>
-import { formatCurrency } from '@/utils.js'
+import { formatCurrency, formatDateTime } from '@/utils.js'
 import axios from 'axios'
 
 const props = defineProps({
