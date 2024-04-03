@@ -5,7 +5,7 @@
         <v-card-item>
           <v-card-title>{{ $t('last-transactions') }}</v-card-title>
         </v-card-item>
-        <v-row v-if="props.showAll" class="align-center" no-gutters>
+        <v-row v-if="showAll" class="align-center" no-gutters>
           <v-col cols="auto">
             <DateRangePicker
               @selected-date-range="dateRangeSelected($event)"
@@ -30,7 +30,7 @@
           <template v-slot:[`item.action`]="{ item }">
             <v-icon
               v-if="
-                !props.showAll &&
+                !showAll &&
                 item.trigger === $t('manual') &&
                 item.action !== '---'
               "
@@ -38,7 +38,7 @@
             >
             <v-icon
               v-else-if="
-                !props.showAll &&
+                !showAll &&
                 item.trigger !== $t('manual') &&
                 item.action !== '---'
               "
@@ -46,17 +46,13 @@
             >
             <v-icon
               v-if="
-                !props.showAll &&
-                item.type === $t('direct') &&
-                item.action !== '---'
+                !showAll && item.type === $t('direct') && item.action !== '---'
               "
               >mdi-transfer-right</v-icon
             >
             <v-icon
               v-else-if="
-                !props.showAll &&
-                item.type !== $t('direct') &&
-                item.action !== '---'
+                !showAll && item.type !== $t('direct') && item.action !== '---'
               "
               >mdi-multicast</v-icon
             >
