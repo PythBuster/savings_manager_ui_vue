@@ -267,30 +267,38 @@ async function handleTransferConfirm(transferSelection) {
 }
 
 async function handleDeleteConfirm() {
-  try {
-    await deleteMoneybox(global.findMoneyboxById(props.id))
-    showDeleteDialog.value = false
+  const deletedMoneyboxId = props.id
+  const deletedMoneybox = global.findMoneyboxById(deletedMoneyboxId)
 
-    router.push({
-      path: '/'
-    })
-  } catch (error) {
-    if (error instanceof APIError) {
-      if (error.status === 404) {
-        errorMessage.value = t('error-not-found', {
-          name: global.findMoneyboxById(props.id).name
-        })
-      } else if (error.status === 405) {
-        errorMessage.value = t('error-delete-with-balance')
-      } else if (error.status === 422) {
-        errorMessage.value = t('error-must-be-string')
-      } else if (error.status === 500) {
-        errorMessage.value = error.message
-      }
-    } else {
-      errorMessage.value = error.name + ': ' + error.message
-    }
+  if (deletedMoneybox.balance > 0) {
+    errorMessage.value = t('error-delete-with-balance')
     showErrorDialog.value = true
+  } else {
+    try {
+      await deleteMoneybox(global.findMoneyboxById(props.id))
+      showDeleteDialog.value = false
+
+      router.push({
+        path: '/'
+      })
+    } catch (error) {
+      if (error instanceof APIError) {
+        if (error.status === 404) {
+          errorMessage.value = t('error-not-found', {
+            name: global.findMoneyboxById(props.id).name
+          })
+        } else if (error.status === 405) {
+          errorMessage.value = t('error-delete-with-balance')
+        } else if (error.status === 422) {
+          errorMessage.value = t('error-must-be-string')
+        } else if (error.status === 500) {
+          errorMessage.value = error.message
+        }
+      } else {
+        errorMessage.value = error.name + ': ' + error.message
+      }
+      showErrorDialog.value = true
+    }
   }
 }
 
