@@ -9,7 +9,7 @@
           <v-col cols="auto">
             <DateRangePicker
               @selected-date-range="dateRangeSelected($event)"
-              @update:anyDate="handleAnyDateChange($event)"
+              v-model="dateFilterEnabled"
             />
           </v-col>
           <v-col :cols="dateFilterEnabled && display.smAndDown ? 12 : ''">
@@ -68,7 +68,7 @@
   </v-row>
 </template>
 <script setup>
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref } from 'vue'
 import { useDisplay } from 'vuetify'
 import global from '@/global.js'
 import { formatCurrency, formatDateTime } from '@/utils.js'
@@ -86,8 +86,7 @@ const props = defineProps({
   showAll: { type: Boolean, default: false } // Show all transactions, instead of just numberOfEntries
 })
 
-// Init in onMounted
-const dateFilterEnabled = ref('')
+const dateFilterEnabled = ref(false)
 
 const selectedDateRange = ref({ startDate: null, endDate: null })
 
@@ -221,19 +220,10 @@ const transactionItems = computed(() => {
   return items
 })
 
-function handleAnyDateChange(newValue) {
-  dateFilterEnabled.value = newValue
-}
-
 function dateRangeSelected(range) {
   if (range.startDate && range.endDate) {
     selectedDateRange.value.startDate = range.startDate
     selectedDateRange.value.endDate = range.endDate
   }
 }
-
-// Need to set dateFilterEnabled here for proper initial state of v-text-field cols in template
-onMounted(() => {
-  dateFilterEnabled.value = false
-})
 </script>

@@ -40,7 +40,6 @@
             v-model="dateStart"
             hide-header
             hide-weekdays
-            @update:modelValue="onDateSelected('start', $event)"
           ></v-date-picker>
         </v-menu>
       </v-col>
@@ -59,7 +58,6 @@
             hide-header
             hide-weekdays
             :min="dateStart"
-            @update:modelValue="onDateSelected('end', $event)"
           ></v-date-picker>
         </v-menu>
       </v-col>
@@ -68,14 +66,16 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, watchEffect, onMounted } from 'vue'
+import { ref, computed, watch, watchEffect } from 'vue'
 import { formatDate } from '@/utils.js'
 
 // t used for range, otherwise $t globally available
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n({})
 
-const emit = defineEmits(['selected-date-range', 'update:anyDate'])
+const anyDate = defineModel()
+
+const emit = defineEmits(['selected-date-range'])
 
 const menuForDateRanges = ref(false)
 
@@ -101,32 +101,14 @@ const ranges = ref([])
 const menu1 = ref(false)
 const menu2 = ref(false)
 
-const anyDate = ref(false)
-const showRangesList = ref(true)
-
 const toggleDatePicker = () => {
   anyDate.value = !anyDate.value
   menuForDateRanges.value = anyDate.value
+
   if (!anyDate.value) {
     menu1.value = false
     menu2.value = false
   }
-}
-
-const onDateSelected = async (picker, value) => {
-  if (picker === 'start') {
-    dateStart.value = new Date(value)
-    menu1.value = false
-  } else if (picker === 'end') {
-    dateEnd.value = adjustEndDate(new Date(value))
-    menu2.value = false
-  }
-  showRangesList.value = false
-
-  emit('selected-date-range', {
-    startDate: dateStart.value.toISOString(),
-    endDate: dateEnd.value.toISOString()
-  })
 }
 
 const anyDateText = computed(() =>
@@ -174,7 +156,6 @@ function rangeSelected(range) {
   }
 
   menuForDateRanges.value = false
-  showRangesList.value = false
 
   emit('selected-date-range', {
     startDate: dateStart.value.toISOString(),
@@ -190,18 +171,34 @@ const formattedDateEnd = computed(() => {
   return formatDate(dateEnd.value)
 })
 
-watch(dateStart, (newValue) => {
-  if (newValue > dateEnd.value) {
-    dateEnd.value = adjustEndDate(new Date(newValue))
+watch(dateStart, (newValue, oldValue) => {
+  // prevent recursion
+  if (newValue.getTime() !== oldValue.getTime()) {
+    if (newValue > dateEnd.value) {
+      dateEnd.value = adjustEndDate(new Date(newValue))
+    }
+    dateStart.value = new Date(newValue)
+    menu1.value = false
+
+    emitDateRangeSelected()
   }
 })
 
-watch(anyDate, (newValue) => {
-  emit('update:anyDate', newValue)
-  if (!newValue) {
-    showRangesList.value = true
+watch(dateEnd, (newValue, oldValue) => {
+  // prevent recursion
+  if (newValue.getTime() !== oldValue.getTime()) {
+    dateEnd.value = adjustEndDate(new Date(newValue))
+    menu2.value = false
+    emitDateRangeSelected()
   }
 })
+
+const emitDateRangeSelected = () => {
+  emit('selected-date-range', {
+    startDate: dateStart.value.toISOString(),
+    endDate: dateEnd.value.toISOString()
+  })
+}
 
 // Use watchEffect to automatically update when locale changes
 watchEffect(() => {
@@ -214,10 +211,22 @@ watchEffect(() => {
   ]
 })
 
-onMounted(() => {
-  emit('selected-date-range', {
-    startDate: dateStart.value.toISOString(),
-    endDate: dateEnd.value.toISOString()
-  })
+watch(anyDate, (newValue) => {
+  menuForDateRanges.value = newValue
 })
+
+// onMounted(() => {
+//   emit('selected-date-range', {
+//     startDate: dateStart.value.toISOString(),
+//     endDate: dateEnd.value.toISOString()
+//   })
+// })
+
+// onMounted(() => {
+//   emitDateRangeSelected()
+// })
+
+// onMounted(() => {
+//   console.log(anyDate.value)
+// })
 </script>
