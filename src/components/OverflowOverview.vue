@@ -53,20 +53,17 @@
     <ErrorDialog
       v-model="showErrorDialog"
       :error-message="errorMessage"
-      @update:modelValue="handleErrorDialogClose($event)"
     ></ErrorDialog>
     <TransactionDialog
       v-model="showTransactionDialog"
       :action="currentActionType"
       :id="overflow.id"
       @confirm="handleTransactionConfirm"
-      @update:modelValue="handleTransactionDialogClose($event)"
     />
     <TransferDialog
       v-model="showTransferDialog"
       :sourceId="overflow.id"
       @confirm="handleTransferConfirm"
-      @update:modelValue="handleTransferDialogClose($event)"
     ></TransferDialog>
   </v-container>
 </template>
@@ -98,18 +95,6 @@ const currentActionType = ref('')
 
 const showErrorDialog = ref(false)
 const errorMessage = ref('')
-
-function handleErrorDialogClose(value) {
-  showErrorDialog.value = value
-}
-
-function handleTransactionDialogClose(value) {
-  showTransactionDialog.value = value
-}
-
-function handleTransferDialogClose(value) {
-  showTransferDialog.value = value
-}
 
 function handleTransactionDialog(action) {
   currentActionType.value = action
