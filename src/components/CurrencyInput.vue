@@ -4,23 +4,16 @@
 
 <script setup>
 import { useCurrencyInput } from 'vue-currency-input'
-import { watch } from 'vue'
 
-const props = defineProps({ modelValue: Number })
+defineModel()
 
-const { inputRef, formattedValue, setValue } = useCurrencyInput({
+const { inputRef, formattedValue } = useCurrencyInput({
   currency: 'EUR',
   hideCurrencySymbolOnFocus: false,
   hideGroupingSeparatorOnFocus: false,
   precision: 2,
   valueRange: { min: 0 },
-  locale: 'de-DE'
+  locale: 'de-DE',
+  autoEmit: false // handled by defineModel()
 })
-
-watch(
-  () => props.modelValue,
-  (value) => {
-    setValue(value)
-  }
-)
 </script>
