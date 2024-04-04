@@ -192,7 +192,7 @@ const formattedDateEnd = computed(() => {
 
 watch(dateStart, (newValue) => {
   if (newValue > dateEnd.value) {
-    dateEnd.value = newValue
+    dateEnd.value = adjustEndDate(new Date(newValue))
   }
 })
 
