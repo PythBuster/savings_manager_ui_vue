@@ -26,7 +26,6 @@
     <ErrorDialog
       v-model="showErrorDialog"
       :error-message="errorMessage"
-      @update:modelValue="showErrorDialog = $event"
     ></ErrorDialog>
   </v-container>
 </template>

@@ -1,9 +1,5 @@
 <template>
-  <v-dialog
-    :model-value="modelValue"
-    max-width="500px"
-    @update:model-value="updateVisibilityState"
-  >
+  <v-dialog v-model="dialogVisible" max-width="500px">
     <v-card>
       <v-card-title class="headline">{{ $t('error') }}</v-card-title>
       <v-card-text>{{ errorMessage }}</v-card-text>
@@ -17,17 +13,12 @@
 
 <script setup>
 defineProps({
-  modelValue: Boolean,
   errorMessage: String
 })
 
-const emit = defineEmits(['update:modelValue'])
+const dialogVisible = defineModel()
 
 function closeDialog() {
-  emit('update:modelValue', false)
-}
-
-function updateVisibilityState(value) {
-  emit('update:modelValue', value)
+  dialogVisible.value = false
 }
 </script>
