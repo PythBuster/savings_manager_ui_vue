@@ -1,9 +1,5 @@
 <template>
-  <v-dialog
-    :model-value="modelValue"
-    max-width="500px"
-    @update:model-value="updateVisibilityState"
-  >
+  <v-dialog v-model="dialogVisible" max-width="500px">
     <v-card>
       <v-card-title class="text-wrap">
         {{ title }}
@@ -29,7 +25,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import global from '@/global.js'
 import { useI18n } from 'vue-i18n'
 
@@ -37,12 +33,13 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n({})
 
 const props = defineProps({
-  modelValue: Boolean,
   action: String,
   id: Number
 })
 
-const emit = defineEmits(['update:modelValue', 'confirm'])
+const dialogVisible = defineModel()
+
+const emit = defineEmits(['confirm'])
 
 const amount = ref(0)
 const description = ref('')
@@ -65,24 +62,22 @@ const message = computed(() => {
 })
 
 function cancel() {
-  emit('update:modelValue', false)
-  amount.value = 0
-  description.value = ''
+  dialogVisible.value = false
 }
+
 function confirm() {
   emit('confirm', {
     amount: amount.value,
     action: props.action,
     description: description.value
   })
-  emit('update:modelValue', false)
-  amount.value = 0
-  description.value = ''
+  dialogVisible.value = false
 }
 
-function updateVisibilityState(value) {
-  emit('update:modelValue', value)
-  amount.value = 0
-  description.value = ''
-}
+watch(dialogVisible, (newValue) => {
+  if (!newValue) {
+    amount.value = 0
+    description.value = ''
+  }
+})
 </script>

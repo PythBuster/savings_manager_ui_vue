@@ -1,9 +1,5 @@
 <template>
-  <v-dialog
-    :model-value="modelValue"
-    max-width="500px"
-    @update:model-value="updateVisibilityState"
-  >
+  <v-dialog v-model="dialogVisible" max-width="500px">
     <v-card>
       <v-card-title class="text-wrap">
         {{ transferTitle }}
@@ -46,11 +42,12 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n({})
 
 const props = defineProps({
-  modelValue: Boolean,
   sourceId: Number
 })
 
-const emit = defineEmits(['update:modelValue', 'confirm'])
+const dialogVisible = defineModel()
+
+const emit = defineEmits(['confirm'])
 
 const amount = ref(0)
 const selectedId = ref(undefined)
@@ -96,21 +93,15 @@ async function loadMoneyboxes() {
 }
 
 // Doing this in onMounted() loads them when parent component is mounted
-watch(
-  () => props.modelValue,
-  (newVal, oldVal) => {
-    if (newVal === true && oldVal === false) {
-      // Specifically check for the dialog opening
-      loadMoneyboxes()
-    }
+watch(dialogVisible, (newVal) => {
+  if (newVal) {
+    // Specifically check for the dialog opening
+    loadMoneyboxes()
   }
-)
+})
 
 function cancel() {
-  emit('update:modelValue', false)
-  amount.value = 0
-  description.value = ''
-  selectedId.value = undefined
+  dialogVisible.value = false
 }
 
 function confirm() {
@@ -119,16 +110,14 @@ function confirm() {
     selectedId: selectedId.value,
     description: description.value
   })
-  emit('update:modelValue', false)
-  amount.value = 0
-  description.value = ''
-  selectedId.value = undefined
+  dialogVisible.value = false
 }
 
-function updateVisibilityState(value) {
-  emit('update:modelValue', value)
-  amount.value = 0
-  description.value = ''
-  selectedId.value = undefined
-}
+watch(dialogVisible, (newValue) => {
+  if (!newValue) {
+    amount.value = 0
+    description.value = ''
+    selectedId.value = undefined
+  }
+})
 </script>

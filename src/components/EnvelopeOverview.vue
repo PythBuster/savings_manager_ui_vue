@@ -98,25 +98,22 @@
     <ErrorDialog
       v-model="showErrorDialog"
       :error-message="errorMessage"
-      @update:modelValue="handleErrorDialogClose($event)"
     ></ErrorDialog>
     <TransactionDialog
       v-model="showTransactionDialog"
       :action="currentActionType"
       :id="id"
       @confirm="handleTransactionConfirm"
-      @update:modelValue="handleTransactionDialogClose($event)"
     />
     <TransferDialog
       v-model="showTransferDialog"
       :sourceId="id"
       @confirm="handleTransferConfirm"
-      @update:modelValue="handleTransferDialogClose($event)"
     ></TransferDialog>
   </v-container>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import global from '@/global.js'
 import router from '@/router/index.js'
 import { formatCurrency } from '@/utils.js'
@@ -148,20 +145,11 @@ const currentActionType = ref('')
 const showErrorDialog = ref(false)
 const errorMessage = ref('')
 
-function handleErrorDialogClose(value) {
-  showErrorDialog.value = value
-  if (!value) {
+watch(showErrorDialog, (newValue) => {
+  if (!newValue) {
     showDeleteDialog.value = false
   }
-}
-
-function handleTransactionDialogClose(value) {
-  showTransactionDialog.value = value
-}
-
-function handleTransferDialogClose(value) {
-  showTransferDialog.value = value
-}
+})
 
 function changeSettingsClicked() {
   router.push({
