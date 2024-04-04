@@ -268,54 +268,60 @@ async function handleTransferConfirm(transferSelection) {
 }
 
 async function handleDeleteConfirm() {
-  try {
-    const deletedMoneyboxId = props.id
-    const deletedMoneybox = global.findMoneyboxById(deletedMoneyboxId)
-    const deletedMoneyboxPriority = deletedMoneybox
-      ? deletedMoneybox.priority
-      : null
+  const deletedMoneyboxId = props.id
+  const deletedMoneybox = global.findMoneyboxById(deletedMoneyboxId)
 
-    await deleteMoneybox(deletedMoneybox)
-
-    if (deletedMoneyboxPriority !== null) {
-      // Adjust priorities for remaining moneyboxes
-      // global.findMoneyboxById() needed for mutability and reactivity
-      const moneyboxesToUpdate = global.moneyboxes
-        .filter((mb) => mb.priority > deletedMoneyboxPriority)
-        .map((mb) => global.findMoneyboxById(mb.id))
-
-      for (const moneybox of moneyboxesToUpdate) {
-        const updatedPriority = moneybox.priority - 1
-        await updateMoneybox(
-          moneybox,
-          null, // No name change
-          updatedPriority
-        )
-      }
-    }
-
-    showDeleteDialog.value = false
-
-    router.push({
-      path: '/'
-    })
-  } catch (error) {
-    if (error instanceof APIError) {
-      if (error.status === 404) {
-        errorMessage.value = t('error-not-found', {
-          name: global.findMoneyboxById(props.id).name
-        })
-      } else if (error.status === 405) {
-        errorMessage.value = t('error-delete-with-balance')
-      } else if (error.status === 422) {
-        errorMessage.value = t('error-must-be-string')
-      } else if (error.status === 500) {
-        errorMessage.value = error.message
-      }
-    } else {
-      errorMessage.value = error.name + ': ' + error.message
-    }
+  if (deletedMoneybox.balance > 0) {
+    errorMessage.value = t('error-delete-with-balance')
     showErrorDialog.value = true
+  } else {
+    try {
+      const deletedMoneyboxPriority = deletedMoneybox
+        ? deletedMoneybox.priority
+        : null
+
+      await deleteMoneybox(deletedMoneybox)
+
+      if (deletedMoneyboxPriority !== null) {
+        // Adjust priorities for remaining moneyboxes
+        // global.findMoneyboxById() needed for mutability and reactivity
+        const moneyboxesToUpdate = global.moneyboxes
+          .filter((mb) => mb.priority > deletedMoneyboxPriority)
+          .map((mb) => global.findMoneyboxById(mb.id))
+
+        for (const moneybox of moneyboxesToUpdate) {
+          const updatedPriority = moneybox.priority - 1
+          await updateMoneybox(
+            moneybox,
+            null, // No name change
+            updatedPriority
+          )
+        }
+      }
+
+      showDeleteDialog.value = false
+
+      router.push({
+        path: '/'
+      })
+    } catch (error) {
+      if (error instanceof APIError) {
+        if (error.status === 404) {
+          errorMessage.value = t('error-not-found', {
+            name: global.findMoneyboxById(props.id).name
+          })
+        } else if (error.status === 405) {
+          errorMessage.value = t('error-delete-with-balance')
+        } else if (error.status === 422) {
+          errorMessage.value = t('error-must-be-string')
+        } else if (error.status === 500) {
+          errorMessage.value = error.message
+        }
+      } else {
+        errorMessage.value = error.name + ': ' + error.message
+      }
+      showErrorDialog.value = true
+    }
   }
 }
 
