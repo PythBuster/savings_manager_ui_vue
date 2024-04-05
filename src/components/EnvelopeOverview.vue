@@ -27,7 +27,7 @@
               <td>{{ $t('goal-amount') }}</td>
               <td>
                 {{
-                  !global.findMoneyboxById(id).noLimit
+                  !global.findMoneyboxById(id).no_limit
                     ? formatCurrency(global.findMoneyboxById(id).goal)
                     : $t('no-limit')
                 }}
