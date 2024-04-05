@@ -17,7 +17,7 @@
         <v-card-text>
           <p>
             {{
-              !global.findMoneyboxById(id).noLimit
+              !global.findMoneyboxById(id).no_limit
                 ? $t('goal') + formatCurrency(global.findMoneyboxById(id).goal)
                 : $t('goal') + $t('no-limit')
             }}

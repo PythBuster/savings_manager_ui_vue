@@ -15,8 +15,8 @@ export class Moneybox {
   _goal
   /** @member {Number} increment */
   _increment
-  /** @member {Boolean} noLimit */
-  _noLimit
+  /** @member {Boolean} no_limit */
+  _no_limit
   /** @member {Number} priority */
   _priority
   /** @member {Boolean} is_overflow */
@@ -33,7 +33,7 @@ export class Moneybox {
    * @param {String} modified_at - The modification ISO8601 time/date of the moneybox
    * @param {Number} goal - The savings goal for the moneybox
    * @param {Number} increment - The savings increment value for the moneybox
-   * @param {Boolean} noLimit - Indicates whether the moneybox has no saving limit.
+   * @param {Boolean} no_limit - Indicates whether the moneybox has no saving limit.
    * @param {Number} priority - The priority of the moneybox
    * @param {Boolean} is_overflow - Indicates whether the moneybox is overflow
    * @param {TransactionLogs|null} transactionLogs - The transaction logs for the moneybox - null if not initialized
@@ -46,7 +46,7 @@ export class Moneybox {
     modified_at,
     goal,
     increment,
-    noLimit,
+    no_limit,
     priority,
     is_overflow = false,
     transactionLogs = null
@@ -58,7 +58,7 @@ export class Moneybox {
     this.modified_at = modified_at
     this.goal = goal
     this.increment = increment
-    this.noLimit = noLimit
+    this.no_limit = no_limit
     this.priority = priority
     this.is_overflow = is_overflow
     this.transactionLogs = transactionLogs
@@ -78,7 +78,7 @@ export class Moneybox {
       rawMoneybox.modified_at,
       rawMoneybox.goal,
       rawMoneybox.increment,
-      rawMoneybox.noLimit,
+      rawMoneybox.no_limit,
       rawMoneybox.priority,
       rawMoneybox.is_overflow
     )
@@ -148,13 +148,13 @@ export class Moneybox {
     this._increment = value
   }
 
-  get noLimit() {
-    return this._noLimit
+  get no_limit() {
+    return this._no_limit
   }
-  set noLimit(value) {
+  set no_limit(value) {
     if (typeof value !== 'boolean')
-      throw new TypeError('noLimit must be a boolean')
-    this._noLimit = value
+      throw new TypeError('no_limit must be a boolean')
+    this._no_limit = value
   }
 
   get priority() {

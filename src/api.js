@@ -64,7 +64,7 @@ export async function getMoneyboxes() {
       ...moneybox,
       goal: 0.0,
       increment: 0.0,
-      noLimit: true
+      no_limit: true
     }))
     .map(Moneybox.fromJSON)
 
@@ -89,7 +89,7 @@ export async function getMoneybox(moneybox_id) {
   // Add dummy values, since API fetch not implemented yet
   jsonData.goal = 0.0
   jsonData.increment = 0.0
-  jsonData.noLimit = true
+  jsonData.no_limit = true
 
   return Moneybox.fromJSON(jsonData)
 }
@@ -153,7 +153,7 @@ export async function addMoneybox(name, isOverflow = false) {
   // Add dummy values, since API fetch not implemented yet
   jsonData.goal = 0.0
   jsonData.increment = 0.0
-  jsonData.noLimit = true
+  jsonData.no_limit = true
 
   const newMoneybox = Moneybox.fromJSON(jsonData)
 
