@@ -58,15 +58,7 @@ export async function getMoneyboxes() {
     throw new DataError('Invalid data from API')
   }
 
-  // Add dummy values, since API fetch not implemented yet
-  const modifiedMoneyboxes = jsonData.moneyboxes
-    .map((moneybox) => ({
-      ...moneybox,
-      goal: 0.0,
-      increment: 0.0,
-      no_limit: true
-    }))
-    .map(Moneybox.fromJSON)
+  const modifiedMoneyboxes = jsonData.moneyboxes.map(Moneybox.fromJSON)
 
   global.setMoneyboxes(modifiedMoneyboxes)
 }
@@ -86,42 +78,52 @@ export async function getMoneybox(moneybox_id) {
 
   const jsonData = await response.json()
 
-  // Add dummy values, since API fetch not implemented yet
-  jsonData.goal = 0.0
-  jsonData.increment = 0.0
-  jsonData.no_limit = true
-
   return Moneybox.fromJSON(jsonData)
 }
 
 /**
- * Updates name and/or priority of a specific moneybox
+ * Updates name, priority, goal increment or no_limit of a specific moneybox
  * @param {Moneybox} moneyboxInstance - The Moneybox instance to update.
  * @param {Object} options - The options object containing update parameters.
  * @param {string} [options.newName] - The new name for the moneybox. If undefined, the name won't be updated.
  * @param {number} [options.newPriority] - The new priority for the moneybox. If undefined, the priority won't be updated.
+ * @param {goal}  [options.newGoal] - The new savings goal for the moneybox. If undefined, the savings goal won't be updated.
+ * @param {increment}  [options.newIncrement] - The new savings increment for the moneybox. If undefined, the savings increment won't be updated.
+ * @param {no_limit}  [options.newNoLimit] - The new no limit flag for the moneybox. If undefined, the no limit flag won't be updated.
  * @returns {Promise<void>} A promise that resolves once the moneybox has been updated.
  */
 export async function updateMoneybox(
   moneyboxInstance,
-  { newName, newPriority } = {}
+  { newName, newPriority, newGoal, newIncrement, newNoLimit } = {}
 ) {
-  if (Object.keys({ newName, newPriority }).length === 0) {
+  const updates = {
+    newName: 'name',
+    newPriority: 'priority',
+    newGoal: 'goal',
+    newIncrement: 'increment',
+    newNoLimit: 'no_limit'
+  }
+
+  const updatePayload = Object.entries({
+    newName,
+    newPriority,
+    newGoal,
+    newIncrement,
+    newNoLimit
+  }).reduce((payload, [key, value]) => {
+    if (value !== undefined) {
+      payload[updates[key]] = value
+    }
+    return payload
+  }, {})
+
+  if (Object.keys(updatePayload).length === 0) {
     throw new Error(
-      'The options object cannot be empty. Please provide newName or newPriority to update.'
+      'The options object cannot be empty. Please provide at least one field to update.'
     )
   }
 
   const moneybox_id = moneyboxInstance.id
-  const updatePayload = {}
-
-  if (typeof newName !== 'undefined') {
-    updatePayload.name = newName
-  }
-
-  if (typeof newPriority !== 'undefined') {
-    updatePayload.priority = newPriority
-  }
 
   const response = await fetch(`${serverURL}/api/moneybox/${moneybox_id}`, {
     method: 'PATCH',
@@ -132,38 +134,56 @@ export async function updateMoneybox(
   await checkResponse(response)
   const jsonData = await response.json()
 
-  if (typeof newName !== 'undefined') {
-    moneyboxInstance.name = jsonData.name
-  }
-  if (typeof newPriority !== 'undefined') {
-    moneyboxInstance.priority = jsonData.priority
-  }
+  Object.keys(updatePayload).forEach((updateKey) => {
+    const originalKey = Object.keys(updates).find(
+      (key) => updates[key] === updateKey
+    )
+    if (originalKey && jsonData[updateKey] !== undefined) {
+      moneyboxInstance[updateKey] = jsonData[updateKey]
+    }
+  })
 }
 
 /**
- * Adds a new moneybox with the specified name and optionally marks it as overflow.
- * @param {string} name - The name of the new moneybox to create.
- * @param {boolean} [isOverflow=false] - Flag to mark the new moneybox as overflow.
+ * Adds a new moneybox with the specified name, goal and increment, optionally sets no_limit and is_overflow
+ * @param {Object} options - The options object containing additional parameters.
+ * @param {string} options.name - The name of the new moneybox to create.
+ * @param {number} options.goal - The savings goal for the new moneybox.
+ * @param {number} options.increment - The savings increment for the new moneybox.
+ * @param {boolean} [options.noLimit=false] - Flag to mark the new moneybox as having no savings limit.
+ * @param {boolean} [options.isOverflow=false] - Flag to mark the new moneybox as overflow.
  * @returns {Promise<Moneybox>} - A promise that resolves to a new Moneybox instance
  */
-export async function addMoneybox(name, isOverflow = false) {
+export async function addMoneybox({
+  name,
+  goal,
+  increment,
+  noLimit = false,
+  isOverflow = false
+}) {
+  if (Object.keys({ name, goal, increment }).length === 0) {
+    throw new Error(
+      'The options object has to include name, goal and increment.'
+    )
+  }
+
+  const addPayload = {}
+
+  addPayload.name = name
+  addPayload.goal = goal
+  addPayload.increment = increment
+  addPayload.is_overflow = isOverflow
+  addPayload.no_limit = noLimit
+
   const response = await fetch(`${serverURL}/api/moneybox`, {
     method: 'POST',
     headers: sendReceiveJsonHeaders,
-    body: JSON.stringify({
-      name: name,
-      is_overflow: isOverflow
-    })
+    body: JSON.stringify(addPayload)
   })
 
   await checkResponse(response)
 
   const jsonData = await response.json()
-
-  // Add dummy values, since API fetch not implemented yet
-  jsonData.goal = 0.0
-  jsonData.increment = 0.0
-  jsonData.no_limit = true
 
   const newMoneybox = Moneybox.fromJSON(jsonData)
 

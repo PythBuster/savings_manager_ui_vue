@@ -26,8 +26,12 @@ const router = createRouter({
             )
 
             if (!overflowExists) {
-              // name will not be used in UI, but it's required by the API
-              await addMoneybox('OVERFLOW', true)
+              await addMoneybox({
+                name: 'OVERFLOW',
+                isOverflow: true,
+                goal: 0,
+                increment: 0
+              })
               // global.overflowExists = true
             } else {
               // global.overflowExists = true
@@ -147,7 +151,12 @@ const router = createRouter({
           )
 
           if (!overflowMoneybox) {
-            overflowMoneybox = await addMoneybox('OVERFLOW', true)
+            overflowMoneybox = await addMoneybox({
+              name: 'OVERFLOW',
+              isOverflow: true,
+              goal: 0,
+              increment: 0
+            })
           }
 
           if (overflowMoneybox.transactionLogs === null) {
@@ -238,7 +247,12 @@ const router = createRouter({
           )
 
           if (!overflowMoneybox) {
-            overflowMoneybox = await addMoneybox('OVERFLOW', true)
+            await addMoneybox({
+              name: 'OVERFLOW',
+              isOverflow: true,
+              goal: 0,
+              increment: 0
+            })
           }
 
           if (overflowMoneybox.transactionLogs === null) {
