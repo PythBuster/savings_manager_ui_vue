@@ -4,16 +4,27 @@
 
 <script setup>
 import { useCurrencyInput } from 'vue-currency-input'
+import { watch } from 'vue'
 
-defineModel()
+const props = defineProps({ modelValue: Number })
 
-const { inputRef, formattedValue } = useCurrencyInput({
+// define update:Modelvalue to prevent tainting attrs and change to prevent warning (now that emits are defined)
+defineEmits(['update:modelValue', 'change'])
+
+const { inputRef, formattedValue, setValue } = useCurrencyInput({
   currency: 'EUR',
   hideCurrencySymbolOnFocus: false,
   hideGroupingSeparatorOnFocus: false,
   precision: 2,
   valueRange: { min: 0 },
-  locale: 'de-DE',
-  autoEmit: false // handled by defineModel()
+  locale: 'de-DE'
 })
+
+// For updating value from parent component, not used atm, but left in for possible future use
+watch(
+  () => props.modelValue,
+  (value) => {
+    setValue(value)
+  }
+)
 </script>
