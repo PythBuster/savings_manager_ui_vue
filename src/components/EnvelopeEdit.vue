@@ -63,7 +63,9 @@ async function saveClicked() {
     showErrorDialog.value = true
   } else {
     try {
-      await updateMoneybox(global.findMoneyboxById(props.id), newTitle.value)
+      await updateMoneybox(global.findMoneyboxById(props.id), {
+        newName: newTitle.value
+      })
       router.push({
         path: `/envelope/${props.id}`
       })

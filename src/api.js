@@ -97,15 +97,25 @@ export async function getMoneybox(moneybox_id) {
 /**
  * Updates name and/or priority of a specific moneybox
  * @param {Moneybox} moneyboxInstance - The Moneybox instance to update.
- * @param {string} [newName] - The new name for the moneybox. If null, the name won't be updated.
- * @param {number} [newPriority] - The new priority for the moneybox. If undefined, the priority won't be updated.
+ * @param {Object} options - The options object containing update parameters.
+ * @param {string} [options.newName] - The new name for the moneybox. If undefined, the name won't be updated.
+ * @param {number} [options.newPriority] - The new priority for the moneybox. If undefined, the priority won't be updated.
  * @returns {Promise<void>} A promise that resolves once the moneybox has been updated.
  */
-export async function updateMoneybox(moneyboxInstance, newName, newPriority) {
+export async function updateMoneybox(
+  moneyboxInstance,
+  { newName, newPriority } = {}
+) {
+  if (Object.keys({ newName, newPriority }).length === 0) {
+    throw new Error(
+      'The options object cannot be empty. Please provide newName or newPriority to update.'
+    )
+  }
+
   const moneybox_id = moneyboxInstance.id
   const updatePayload = {}
 
-  if (newName !== null) {
+  if (typeof newName !== 'undefined') {
     updatePayload.name = newName
   }
 
@@ -122,7 +132,7 @@ export async function updateMoneybox(moneyboxInstance, newName, newPriority) {
   await checkResponse(response)
   const jsonData = await response.json()
 
-  if (newName !== null) {
+  if (typeof newName !== 'undefined') {
     moneyboxInstance.name = jsonData.name
   }
   if (typeof newPriority !== 'undefined') {

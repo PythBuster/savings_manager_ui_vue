@@ -109,11 +109,8 @@ async function saveClicked() {
     if (moneyboxInstance) {
       try {
         // Update the moneybox with the new priority
-        await updateMoneybox(
-          moneyboxInstance,
-          null, // No name change
-          newPriority
-        )
+
+        await updateMoneybox(moneyboxInstance, { newPriority: newPriority })
       } catch (error) {
         console.error(
           `Failed to update priority for ${moneyboxInstance.name}:`,

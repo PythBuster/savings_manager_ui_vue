@@ -291,11 +291,7 @@ async function handleDeleteConfirm() {
 
         for (const moneybox of moneyboxesToUpdate) {
           const updatedPriority = moneybox.priority - 1
-          await updateMoneybox(
-            moneybox,
-            null, // No name change
-            updatedPriority
-          )
+          await updateMoneybox(moneybox, { newPriority: updatedPriority })
         }
       }
 
