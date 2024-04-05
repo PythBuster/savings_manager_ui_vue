@@ -97,7 +97,7 @@ export async function getMoneybox(moneybox_id) {
 /**
  * Updates name and/or priority of a specific moneybox
  * @param {Moneybox} moneyboxInstance - The Moneybox instance to update.
- * @param {string} newName - The new name for the moneybox. If null, the name won't be updated.
+ * @param {string} [newName] - The new name for the moneybox. If null, the name won't be updated.
  * @param {number} [newPriority] - The new priority for the moneybox. If undefined, the priority won't be updated.
  * @returns {Promise<void>} A promise that resolves once the moneybox has been updated.
  */
