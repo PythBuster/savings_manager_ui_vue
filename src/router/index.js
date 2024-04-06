@@ -32,9 +32,6 @@ const router = createRouter({
                 goal: 0,
                 increment: 0
               })
-              // global.overflowExists = true
-            } else {
-              // global.overflowExists = true
             }
 
             next()
@@ -134,7 +131,6 @@ const router = createRouter({
     },
     {
       path: '/logs/overflow',
-
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
@@ -170,7 +166,6 @@ const router = createRouter({
         }
       }
     },
-
     {
       path: '/priority',
       // route level code-splitting

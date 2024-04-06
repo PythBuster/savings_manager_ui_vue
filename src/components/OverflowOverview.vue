@@ -111,9 +111,7 @@ async function handleTransactionConfirm(transactionDetails) {
       await depositIntoMoneybox(
         global.findMoneyboxById(overflow.value.id),
         transactionDetails.amount,
-        transactionDetails.description,
-        'manually', // only option for now
-        'direct' // only option for now
+        transactionDetails.description
       )
       // update transaction logs
       await getTransactionLogs(global.findMoneyboxById(overflow.value.id))
@@ -142,9 +140,7 @@ async function handleTransactionConfirm(transactionDetails) {
       await withdrawFromMoneybox(
         global.findMoneyboxById(overflow.value.id),
         transactionDetails.amount,
-        transactionDetails.description,
-        'manually', // only option for now
-        'direct' // only option for now
+        transactionDetails.description
       )
       // update transaction logs
       await getTransactionLogs(global.findMoneyboxById(overflow.value.id))
@@ -177,9 +173,7 @@ async function handleTransferConfirm(transferSelection) {
       global.findMoneyboxById(overflow.value.id),
       transferSelection.amount,
       global.findMoneyboxById(transferSelection.selectedId),
-      transferSelection.description,
-      'manually', // only option for now
-      'direct' // only option for now
+      transferSelection.description
     )
     // update transaction logs
     await getTransactionLogs(global.findMoneyboxById(overflow.value.id))
