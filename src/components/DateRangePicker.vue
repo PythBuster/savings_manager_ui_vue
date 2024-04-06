@@ -214,19 +214,4 @@ watchEffect(() => {
 watch(anyDate, (newValue) => {
   menuForDateRanges.value = newValue
 })
-
-// onMounted(() => {
-//   emit('selected-date-range', {
-//     startDate: dateStart.value.toISOString(),
-//     endDate: dateEnd.value.toISOString()
-//   })
-// })
-
-// onMounted(() => {
-//   emitDateRangeSelected()
-// })
-
-// onMounted(() => {
-//   console.log(anyDate.value)
-// })
 </script>

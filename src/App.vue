@@ -113,7 +113,7 @@ const menuItems = computed(() => [
 ])
 
 // Dummy data
-const totalAmount = 0.0
+const totalAmount = 0
 
 function languageSelected(language) {
   selectedLanguage.value = language

@@ -111,7 +111,7 @@ const tableHeaders = computed(() => {
       title: t('date-time'),
       value: 'dateTime',
       sortable: props.showAll,
-      customSort: (a, b) => new Date(a.rawDateTime) - new Date(b.rawDateTime) // Custom sort based on rawDateTime
+      customSort: (a, b) => new Date(a.rawDateTime) - new Date(b.rawDateTime)
     },
     {
       title: t('action'),
@@ -135,14 +135,14 @@ const tableHeaders = computed(() => {
       value: 'amount',
       key: 'rawAmount',
       sortable: props.showAll,
-      customSort: (a, b) => a.rawAmount - b.rawAmount // Custom sort based on rawAmount
+      customSort: (a, b) => a.rawAmount - b.rawAmount
     },
     {
       title: t('total'),
       value: 'total',
       key: 'rawTotal',
       sortable: props.showAll,
-      customSort: (a, b) => a.rawTotal - b.rawTotal // Custom sort based on rawTotal
+      customSort: (a, b) => a.rawTotal - b.rawTotal
     }
   ])
 
