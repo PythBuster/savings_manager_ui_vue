@@ -34,7 +34,6 @@ async function checkResponse(response) {
 /**
  * Fetches moneyboxes from the server, converts them to Moneybox instances,
  * and updates the global store with these instances. Does not return any value.
- * @async
  * @returns {Promise<void>} A promise that resolves when the moneyboxes have been fetched and the store has been updated.
  */
 export async function getMoneyboxes() {
@@ -289,7 +288,7 @@ export async function getTransactionLogs(moneyboxInstance) {
     }
   )
 
-  await checkResponse(response) // This will throw if the response is not OK
+  await checkResponse(response)
 
   if (response.status === 204) {
     return
@@ -297,8 +296,6 @@ export async function getTransactionLogs(moneyboxInstance) {
 
   const jsonData = await response.json()
 
-  // Assuming the API now returns transaction_logs with a valid transaction_time
-  // No need to modify the transaction logs, directly use the data from the API
   const transactionLogsInstance = TransactionLogs.fromJSON(jsonData)
   global.addTransactionLogsToMoneybox(moneybox_id, transactionLogsInstance)
 }

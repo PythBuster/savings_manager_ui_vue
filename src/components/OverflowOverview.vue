@@ -46,7 +46,7 @@
 import router from '@/router/index.js'
 import { formatCurrency } from '@/utils.js'
 
-const balance = formatCurrency(125.0)
+const balance = formatCurrency(125)
 
 const changeSettingsClicked = () => {
   router.push({

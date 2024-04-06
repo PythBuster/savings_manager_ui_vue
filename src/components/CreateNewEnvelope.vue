@@ -40,8 +40,8 @@ import { APIError } from '@/customerrors.js'
 const { t, locale } = useI18n({})
 
 // Dummy data
-const saveAmount = ref(10.0)
-const targetAmount = ref()
+const saveAmount = ref(0)
+const targetAmount = ref(0)
 
 const envelopeName = ref(t('new-envelope2'))
 

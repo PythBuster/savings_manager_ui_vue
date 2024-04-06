@@ -82,10 +82,9 @@ async function loadMoneyboxes() {
   }
 }
 
-// Doing this in onMounted() loads them when parent component is mounted
 watch(dialogVisible, (newVal) => {
+  // Specifically check for the dialog opening
   if (newVal) {
-    // Specifically check for the dialog opening
     loadMoneyboxes()
   }
 })

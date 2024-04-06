@@ -26,7 +26,7 @@ import router from '@/router/index.js'
 import { ref } from 'vue'
 
 // Dummy data
-const saveAmount = ref(100.0)
+const saveAmount = ref(100)
 
 function saveClicked() {
   router.push({
