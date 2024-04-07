@@ -22,7 +22,7 @@
                 : $t('goal') + $t('no-limit')
             }}
           </p>
-          <p class="font-weight-bold">
+          <p class="font-weight-bold text-body-1">
             {{ formatCurrency(global.findMoneyboxById(id).balance) }}
           </p>
           <p>+{{ formatCurrency(global.findMoneyboxById(id).increment) }}</p>
