@@ -10,7 +10,7 @@
         <v-card-item>
           <v-card-title>{{ $t('overflow-envelope') }}</v-card-title>
         </v-card-item>
-        <v-card-text class="font-weight-bold">
+        <v-card-text class="font-weight-bold text-body-1">
           {{ formatCurrency(currentAmount) }}
         </v-card-text>
       </v-col>
