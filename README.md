@@ -12,9 +12,9 @@ NodeJS/Express implementation of backend:
 
 https://github.com/Jasmin68k/savings-manager-backend-js
 
-Check it out here (auto-deployed `feature/temp-express-only` branch using NodeJS/Express backend):
+Check it out here (currently `feature/temp-express-only` branch using NodeJS/Express backend):
 
-https://savings-manager-frontend.netlify.app/
+https://savings-manager.siliconmoon.com/
 
 ## Configuration
 
