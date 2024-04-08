@@ -54,7 +54,7 @@
   "fetch-envelopes-fail": "Error fetching envelopes.",
   "close": "Close",
   "delete-envelope-question-1": "Are you sure you want to delete ",
-  "delete-envelope-question-2": "",
+  "delete-envelope-question-2": "?",
   "delete": "Delete",
   "cancel": "Cancel",
   "error-duplicate-name": "An envelope with the name '{name}' already exists. Please choose a different name.",

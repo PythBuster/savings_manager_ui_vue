@@ -82,7 +82,7 @@
           <span class="font-weight-bold">{{
             global.findMoneyboxById(id).name
           }}</span
-          >{{ $t('delete-envelope-question-2') }}?
+          >{{ $t('delete-envelope-question-2') }}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
