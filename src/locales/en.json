@@ -100,5 +100,6 @@
   "last-month": "Last month",
   "last-three-months": "Last three months",
   "any-date": "Any date",
-  "date-range": "Date range"
+  "date-range": "Date range",
+  "transactions": "Transactions"
 }

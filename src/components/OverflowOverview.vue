@@ -46,7 +46,7 @@
         />
       </v-col>
       <v-col cols="12" md="4">
-        <BarChart />
+        <BarChart :id="overflow.id" />
       </v-col>
     </v-row>
 
