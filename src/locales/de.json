@@ -98,5 +98,6 @@
   "last-month": "Letzter Monat",
   "last-three-months": "Letzte drei Monate",
   "any-date": "Jedes Datum",
-  "date-range": "Datumsbereich"
+  "date-range": "Datumsbereich",
+  "transactions": "Transaktionen"
 }

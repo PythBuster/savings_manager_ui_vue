@@ -65,7 +65,7 @@
         <TransactionLogs :id="id" :showAll="false" />
       </v-col>
       <v-col cols="12" lg="3">
-        <BarChart />
+        <BarChart :id="id" />
       </v-col>
     </v-row>
     <v-dialog
