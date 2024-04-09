@@ -68,7 +68,7 @@
             </v-list>
             <div class="flex-grow-1"></div>
             <SavingsSettingsOverview />
-            <TotalSavings :totalAmount="totalAmount" />
+            <TotalSavings />
           </v-col>
         </v-row>
       </v-container>
@@ -85,6 +85,7 @@ import { ref, computed, onMounted } from 'vue'
 import router from '@/router/index.js'
 import { useTheme } from 'vuetify'
 import Cookies from 'js-cookie'
+import { fetchOrCreateSettings } from '@/utils.js'
 
 // t used for menuItems and languageSelected(), otherwise $t globally available
 import { useI18n } from 'vue-i18n'
@@ -112,9 +113,6 @@ const menuItems = computed(() => [
   { title: t('savings-settings'), path: '/savingssettings' }
 ])
 
-// Dummy data
-const totalAmount = 0
-
 function languageSelected(language) {
   selectedLanguage.value = language
   Cookies.set('locale', language)
@@ -141,6 +139,7 @@ function goHome() {
 }
 
 onMounted(() => {
+  fetchOrCreateSettings()
   const savedLocale = Cookies.get('locale')
   if (savedLocale) {
     locale.value = savedLocale.toLowerCase()

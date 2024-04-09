@@ -347,3 +347,108 @@ export async function getTransactionLogs(moneyboxInstance) {
   const transactionLogsInstance = TransactionLogs.fromJSON(jsonData)
   global.addTransactionLogsToMoneybox(moneybox_id, transactionLogsInstance)
 }
+
+/**
+ * Fetches settings from the backend API and initializes or updates the local singleton instance of settings.
+ * @returns {Promise<void>} A promise that resolves when the settings have been fetched and processed.
+ */
+export async function getSettings() {
+  const response = await fetch(`${serverURL}/api/settings`, {
+    method: 'GET',
+    headers: receiveJsonHeaders
+  })
+
+  if (response.status === 204) {
+    return
+  }
+
+  await checkResponse(response)
+
+  const jsonData = await response.json()
+
+  if (!jsonData || Object.keys(jsonData).length === 0) {
+    throw new DataError('No result from API')
+  }
+  if (!jsonData.savings_amount && !jsonData.savings_cycle) {
+    throw new DataError('Invalid data from API')
+  }
+
+  global.createAndSetSettings(jsonData)
+}
+
+/**
+ * Updates existing settings by calling the backend API with patch data. This function allows for partial updates, so savings_amount amd/or savings_cycle can be provided.
+ * @param {Object} patchData The data to patch the settings with.
+ * @param {number} [patchData.savings_amount] - The new savings amount to be set. Optional.
+ * @param {string} [patchData.savings_cycle] - The new savings cycle to be set. Optional.
+ * @returns {Promise<void>} A promise that resolves when the settings have been successfully updated.
+ */
+export async function updateSettings(patchData) {
+  // savings_amount 0 is valid!
+  if (
+    (patchData.savings_amount === undefined ||
+      patchData.savings_amount === null) &&
+    !patchData.savings_cycle
+  ) {
+    throw new DataError('Must provide savings_cycle and/or savings_amount')
+  }
+
+  const response = await fetch(`${serverURL}/api/settings`, {
+    method: 'PATCH',
+    headers: sendReceiveJsonHeaders,
+    body: JSON.stringify(patchData)
+  })
+
+  await checkResponse(response)
+
+  const jsonData = await response.json()
+
+  if (!jsonData || Object.keys(jsonData).length === 0) {
+    throw new DataError('No result from API')
+  }
+  if (!jsonData.savings_amount && !jsonData.savings_cycle) {
+    throw new DataError('Invalid data from API')
+  }
+
+  // savings_amount 0 is valid!
+  if (
+    patchData.savings_amount !== undefined &&
+    patchData.savings_amount !== null
+  ) {
+    global.settings.value.savings_amount = jsonData.savings_amount
+  }
+  if (patchData.savings_cycle) {
+    global.settings.value.savings_cycle = jsonData.savings_cycle
+  }
+}
+
+/**
+ * Creates settings by calling the backend API and initializes a singleton instance locally.
+ * @param {Object} options The options for creating settings.
+ * @param {number} options.savings_amount - The savings amount to be set.
+ * @param {string} options.savings_cycle - The savings cycle to be set.
+ * @returns {Promise<void>} A promise that resolves when the settings have been created and initialized locally.
+ */
+export async function createSettings({ savings_amount, savings_cycle }) {
+  const response = await fetch(`${serverURL}/api/settings`, {
+    method: 'POST',
+    headers: sendReceiveJsonHeaders,
+    body: JSON.stringify({
+      savings_amount: savings_amount,
+      savings_cycle: savings_cycle
+    })
+  })
+
+  await checkResponse(response)
+
+  const jsonData = await response.json()
+
+  if (!jsonData || Object.keys(jsonData).length === 0) {
+    throw new DataError('No result from API')
+  }
+  if (!jsonData.savings_amount && !jsonData.savings_cycle) {
+    throw new DataError('Invalid data from API')
+  }
+
+  global.createAndSetSettings(jsonData)
+}

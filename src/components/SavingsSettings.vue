@@ -17,11 +17,11 @@
             <v-list-item
               v-for="(mode, index) in modes"
               :key="index"
-              :value="mode"
-              @click="selectedMode = mode"
-              :class="{ 'v-list-item--active': selectedMode === mode }"
+              :value="mode.value"
+              @click="selectedMode = mode.value"
+              :class="{ 'v-list-item--active': selectedMode === mode.value }"
             >
-              <v-list-item-title>{{ mode }}</v-list-item-title>
+              <v-list-item-title>{{ mode.label }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-card>
@@ -36,30 +36,57 @@
         >
       </v-col>
     </v-row>
+    <ErrorDialog
+      v-model="showErrorDialog"
+      :error-message="errorMessage"
+    ></ErrorDialog>
   </v-container>
 </template>
 <script setup>
 import router from '@/router/index.js'
 import { ref, watchEffect } from 'vue'
+import global from '@/global.js'
+import { updateSettings } from '@/api.js'
+
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n({})
 
-const selectedMode = ref(t('monthly'))
+const showErrorDialog = ref(false)
+const errorMessage = ref('')
+
+const selectedMode = ref(global.settings.value.savings_cycle)
 
 const modes = ref([])
 
-// Dummy data
-const saveAmount = ref(100)
+const saveAmount = ref(global.settings.value.savings_amount)
+
+const modeKeys = ['daily', 'weekly', 'monthly', 'yearly']
 
 // Use watchEffect to automatically update when locale changes
+// need non-localized keys for API
 watchEffect(() => {
-  modes.value = [t('daily'), t('weekly'), t('monthly'), t('yearly')]
+  modes.value = modeKeys.map((key) => ({ value: key, label: t(key) }))
 })
 
-function saveClicked() {
-  router.push({
-    path: '/'
-  })
+async function saveClicked() {
+  const updates = {}
+
+  if (saveAmount.value !== global.settings.value.savings_amount) {
+    updates.savings_amount = saveAmount.value
+  }
+  if (selectedMode.value !== global.settings.value.savings_cycle) {
+    updates.savings_cycle = selectedMode.value
+  }
+
+  if (Object.keys(updates).length === 0) {
+    errorMessage.value = t('error-no-changes')
+    showErrorDialog.value = true
+  } else {
+    await updateSettings(updates)
+    router.push({
+      path: '/'
+    })
+  }
 }
 </script>

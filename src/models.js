@@ -416,3 +416,55 @@ export class TransactionLogs {
     return new TransactionLogs(rawLogs.transaction_logs[0].moneybox_id, entries)
   }
 }
+
+export class Settings {
+  static instance = null
+  _savings_amount
+  _savings_cycle
+
+  /**
+   * Creates an instance of Settings (Singleton).
+   * @param {Number} savings_amount - The amount to save in each cycle
+   * @param {String} savings_cycle - The savings cycle (one of 'daily', 'weekly', 'monthly', 'yearly')
+   */
+  constructor(savings_amount, savings_cycle) {
+    if (Settings.instance) {
+      return Settings.instance
+    }
+    this._savings_amount = savings_amount
+    this._savings_cycle = savings_cycle
+    Settings.instance = this
+  }
+
+  /**
+   * Static method to create a Settings instance from a JSON object.
+   * @param {Object} rawSettings A JSON object with properties matching the Settings class.
+   * @returns {Settings} A new instance of Settings (Singleton)
+   */
+  static fromJSON({ savings_amount, savings_cycle }) {
+    return new Settings(savings_amount, savings_cycle)
+  }
+
+  get savings_amount() {
+    return this._savings_amount
+  }
+
+  set savings_amount(value) {
+    if (typeof value !== 'number' || value < 0) {
+      throw new Error('savings_amount must be a non-negative number')
+    }
+    this._savings_amount = value
+  }
+
+  get savings_cycle() {
+    return this._savings_cycle
+  }
+
+  set savings_cycle(value) {
+    const validCycles = ['daily', 'weekly', 'monthly', 'yearly']
+    if (!validCycles.includes(value)) {
+      throw new Error(`savings_cycle must be one of ${validCycles.join(', ')}`)
+    }
+    this._savings_cycle = value
+  }
+}
