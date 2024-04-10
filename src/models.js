@@ -421,18 +421,20 @@ export class Settings {
   static instance = null
   _savings_amount
   _savings_cycle
-
+  _savings_mode
   /**
    * Creates an instance of Settings (Singleton).
    * @param {Number} savings_amount - The amount to save in each cycle
    * @param {String} savings_cycle - The savings cycle (one of 'daily', 'weekly', 'monthly', 'yearly')
+   * @param {String} savings_mode - The savings mode (one of 'add-up', 'fill-envelopes', 'collect')
    */
-  constructor(savings_amount, savings_cycle) {
+  constructor(savings_amount, savings_cycle, savings_mode) {
     if (Settings.instance) {
       return Settings.instance
     }
     this._savings_amount = savings_amount
     this._savings_cycle = savings_cycle
+    this._savings_mode = savings_mode
     Settings.instance = this
   }
 
@@ -441,8 +443,8 @@ export class Settings {
    * @param {Object} rawSettings A JSON object with properties matching the Settings class.
    * @returns {Settings} A new instance of Settings (Singleton)
    */
-  static fromJSON({ savings_amount, savings_cycle }) {
-    return new Settings(savings_amount, savings_cycle)
+  static fromJSON({ savings_amount, savings_cycle, savings_mode }) {
+    return new Settings(savings_amount, savings_cycle, savings_mode)
   }
 
   get savings_amount() {
@@ -466,5 +468,16 @@ export class Settings {
       throw new Error(`savings_cycle must be one of ${validCycles.join(', ')}`)
     }
     this._savings_cycle = value
+  }
+
+  get savings_mode() {
+    return this._savings_mode
+  }
+  set savings_mode(value) {
+    const validModes = ['add-up', 'fill-envelopes', 'collect']
+    if (!validModes.includes(value)) {
+      throw new Error(`savings_mode must be one of ${validModes.join(', ')}`)
+    }
+    this._savings_mode = value
   }
 }

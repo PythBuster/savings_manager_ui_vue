@@ -62,7 +62,11 @@ export async function fetchOrCreateSettings() {
 
       if (!global.settings.value) {
         // initialize with default values
-        await createSettings({ savings_amount: 0, savings_cycle: 'monthly' })
+        await createSettings({
+          savings_amount: 0,
+          savings_cycle: 'monthly',
+          savings_mode: 'add-up'
+        })
       }
     }
   } catch (error) {

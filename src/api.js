@@ -369,7 +369,11 @@ export async function getSettings() {
   if (!jsonData || Object.keys(jsonData).length === 0) {
     throw new DataError('No result from API')
   }
-  if (!jsonData.savings_amount && !jsonData.savings_cycle) {
+  if (
+    !jsonData.savings_amount &&
+    !jsonData.savings_cycle &&
+    !jsonData.savings_mode
+  ) {
     throw new DataError('Invalid data from API')
   }
 
@@ -381,6 +385,7 @@ export async function getSettings() {
  * @param {Object} patchData The data to patch the settings with.
  * @param {number} [patchData.savings_amount] - The new savings amount to be set. Optional.
  * @param {string} [patchData.savings_cycle] - The new savings cycle to be set. Optional.
+ * @param {string} [patchData.savings_mode] - The new savings mode to be set. Optional.
  * @returns {Promise<void>} A promise that resolves when the settings have been successfully updated.
  */
 export async function updateSettings(patchData) {
@@ -388,9 +393,12 @@ export async function updateSettings(patchData) {
   if (
     (patchData.savings_amount === undefined ||
       patchData.savings_amount === null) &&
-    !patchData.savings_cycle
+    !patchData.savings_cycle &&
+    !patchData.savings_mode
   ) {
-    throw new DataError('Must provide savings_cycle and/or savings_amount')
+    throw new DataError(
+      'Must provide savings_cycle, savings_amount or savings_mode'
+    )
   }
 
   const response = await fetch(`${serverURL}/api/settings`, {
@@ -406,7 +414,11 @@ export async function updateSettings(patchData) {
   if (!jsonData || Object.keys(jsonData).length === 0) {
     throw new DataError('No result from API')
   }
-  if (!jsonData.savings_amount && !jsonData.savings_cycle) {
+  if (
+    !jsonData.savings_amount &&
+    !jsonData.savings_cycle &&
+    !jsonData.savings_mode
+  ) {
     throw new DataError('Invalid data from API')
   }
 
@@ -420,6 +432,9 @@ export async function updateSettings(patchData) {
   if (patchData.savings_cycle) {
     global.settings.value.savings_cycle = jsonData.savings_cycle
   }
+  if (patchData.savings_mode) {
+    global.settings.value.savings_mode = jsonData.savings_mode
+  }
 }
 
 /**
@@ -427,15 +442,21 @@ export async function updateSettings(patchData) {
  * @param {Object} options The options for creating settings.
  * @param {number} options.savings_amount - The savings amount to be set.
  * @param {string} options.savings_cycle - The savings cycle to be set.
+ * @param {string} options.savings_mode - The savings mode to be set.
  * @returns {Promise<void>} A promise that resolves when the settings have been created and initialized locally.
  */
-export async function createSettings({ savings_amount, savings_cycle }) {
+export async function createSettings({
+  savings_amount,
+  savings_cycle,
+  savings_mode
+}) {
   const response = await fetch(`${serverURL}/api/settings`, {
     method: 'POST',
     headers: sendReceiveJsonHeaders,
     body: JSON.stringify({
       savings_amount: savings_amount,
-      savings_cycle: savings_cycle
+      savings_cycle: savings_cycle,
+      savings_mode: savings_mode
     })
   })
 
@@ -446,7 +467,11 @@ export async function createSettings({ savings_amount, savings_cycle }) {
   if (!jsonData || Object.keys(jsonData).length === 0) {
     throw new DataError('No result from API')
   }
-  if (!jsonData.savings_amount && !jsonData.savings_cycle) {
+  if (
+    !jsonData.savings_amount &&
+    !jsonData.savings_cycle &&
+    !jsonData.savings_mode
+  ) {
     throw new DataError('Invalid data from API')
   }
 
