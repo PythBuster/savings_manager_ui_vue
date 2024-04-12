@@ -9,6 +9,9 @@
       <v-col cols="12" sm="6">
         <CurrencyInput :label="$t('savings-amount')" v-model="saveAmount" />
       </v-col>
+      <v-col cols="12" sm="6" md="4" offset-md="1">
+        <SavingsSettingsOverview />
+      </v-col>
     </v-row>
     <v-row>
       <v-col class="d-flex justify-end">
