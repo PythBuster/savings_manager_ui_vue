@@ -42,6 +42,17 @@ const chartLabels = computed(() =>
   getLast6MonthsKeys().map((month) => t(month))
 )
 
+const themeBasedColors = computed(() => ({
+  errorColor:
+    theme.global.name.value === 'dark'
+      ? theme.themes.value.dark.colors.error
+      : theme.themes.value.light.colors.error,
+  successColor:
+    theme.global.name.value === 'dark'
+      ? theme.themes.value.dark.colors.success
+      : theme.themes.value.light.colors.success
+}))
+
 const processTransactionLogs = (id) => {
   const moneybox = global.findMoneyboxById(id)
   if (!moneybox || !moneybox.transactionLogs) {
@@ -51,7 +62,7 @@ const processTransactionLogs = (id) => {
 
   let balances = new Array(6).fill(0)
   let sums = new Array(6).fill(0)
-  let colors = new Array(6).fill('green')
+  let colors = new Array(6).fill(themeBasedColors.value.successColor)
 
   const transactionsByMonth = new Map()
   moneybox.transactionLogs.entries.forEach((entry) => {
@@ -83,7 +94,10 @@ const processTransactionLogs = (id) => {
     })
     balances[index] = latestTransaction ? latestTransaction.balance : 0
 
-    colors[index] = sums[index] < 0 ? 'red' : 'green'
+    colors[index] =
+      sums[index] < 0
+        ? themeBasedColors.value.errorColor
+        : themeBasedColors.value.successColor
     sums[index] = Math.abs(sums[index]) // Use the absolute value for sums (bar is red to indicate negative)
   })
 

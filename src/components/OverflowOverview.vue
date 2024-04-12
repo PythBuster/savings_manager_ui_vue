@@ -24,13 +24,21 @@
         </v-table>
       </v-col>
       <v-col cols="auto" class="d-flex flex-column">
-        <v-btn @click="handleTransactionDialog('deposit')" class="mb-2">{{
-          $t('deposit')
+        <v-btn
+          color="success"
+          @click="handleTransactionDialog('deposit')"
+          class="mb-2"
+          >{{ $t('deposit') }}</v-btn
+        >
+        <v-btn
+          color="warning"
+          @click="handleTransactionDialog('withdraw')"
+          class="mb-2"
+          >{{ $t('withdraw') }}</v-btn
+        >
+        <v-btn color="info" @click="handleTransferDialog">{{
+          $t('transfer')
         }}</v-btn>
-        <v-btn @click="handleTransactionDialog('withdraw')" class="mb-2">{{
-          $t('withdraw')
-        }}</v-btn>
-        <v-btn @click="handleTransferDialog">{{ $t('transfer') }}</v-btn>
       </v-col>
       <v-col cols="auto" class="d-flex flex-column">
         <v-btn @click="changeSettingsClicked" class="mb-2">{{

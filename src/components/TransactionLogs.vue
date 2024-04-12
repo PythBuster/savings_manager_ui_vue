@@ -59,6 +59,11 @@
 
             {{ item.action }}
           </template>
+          <template v-slot:[`item.rawAmount`]="{ item }">
+            <span :class="item.rawAmount >= 0 ? 'text-success' : 'text-error'">
+              {{ item.amount }}
+            </span>
+          </template>
           <!-- hide-default-footer and disable-pagination not implemented yet in Vuetify 3 - https://github.com/vuetifyjs/vuetify/issues/17651 -->
           <template v-slot:bottom v-if="!showAll"></template>
           <template v-slot:no-data></template>
@@ -135,14 +140,16 @@ const tableHeaders = computed(() => {
       value: 'amount',
       key: 'rawAmount',
       sortable: props.showAll,
-      customSort: (a, b) => a.rawAmount - b.rawAmount
+      customSort: (a, b) => a.rawAmount - b.rawAmount,
+      align: 'end'
     },
     {
       title: t('total'),
       value: 'total',
       key: 'rawTotal',
       sortable: props.showAll,
-      customSort: (a, b) => a.rawTotal - b.rawTotal
+      customSort: (a, b) => a.rawTotal - b.rawTotal,
+      align: 'end'
     }
   ])
 
