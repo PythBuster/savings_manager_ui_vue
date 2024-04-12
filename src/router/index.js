@@ -193,7 +193,22 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/Savings.vue')
+      component: () => import('@/views/Savings.vue'),
+      beforeEnter: async (_to, _from, next) => {
+        if (!global.moneyboxesLoaded) {
+          try {
+            await getMoneyboxes()
+            global.moneyboxesLoaded = true
+            next()
+          } catch (error) {
+            console.error('Failed to fetch moneyboxes:', error)
+            // TODO: Show error message to user or redirect to error page
+            next(false)
+          }
+        } else {
+          next()
+        }
+      }
     },
     {
       path: '/createenvelope',
@@ -266,7 +281,22 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/EditOverflow.vue')
+      component: () => import('@/views/EditOverflow.vue'),
+      beforeEnter: async (_to, _from, next) => {
+        if (!global.moneyboxesLoaded) {
+          try {
+            await getMoneyboxes()
+            global.moneyboxesLoaded = true
+            next()
+          } catch (error) {
+            console.error('Failed to fetch moneyboxes:', error)
+            // TODO: Show error message to user or redirect to error page
+            next(false)
+          }
+        } else {
+          next()
+        }
+      }
     }
   ]
 })
