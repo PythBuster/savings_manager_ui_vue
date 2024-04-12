@@ -3,14 +3,16 @@
     <v-card-item>
       <v-card-title>{{ $t('savings-settings') }}</v-card-title>
     </v-card-item>
-    <v-table>
-      <tbody>
-        <tr v-for="item in tableItems" :key="item.name">
-          <td>{{ item.name }}</td>
-          <td>{{ item.data }}</td>
-        </tr>
-      </tbody>
-    </v-table>
+    <v-card-text>
+      <v-row v-for="item in tableItems" :key="item.name">
+        <v-col class="text-truncate pr-0">
+          {{ item.name }}
+        </v-col>
+        <v-col cols="auto" class="pl-0">
+          {{ item.data }}
+        </v-col>
+      </v-row>
+    </v-card-text>
   </v-card>
 </template>
 
