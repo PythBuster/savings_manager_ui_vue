@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
     <v-row :class="display.smAndUp ? 'mt-16' : ''">
-      <v-col cols="12" sm="6">
+      <v-col cols="12" sm="6" class="d-flex align-center">
         <CurrencyInput :label="$t('savings-amount')" v-model="saveAmount" />
       </v-col>
       <v-col cols="12" sm="6" md="4" offset-md="1">
