@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
     <v-row :class="display.smAndUp ? 'mt-16' : ''">
-      <v-col cols="12" sm="6">
+      <v-col cols="12" sm="6" class="d-flex flex-column justify-center">
         <v-card>
           <v-list v-model="selectedMode">
             <v-list-item

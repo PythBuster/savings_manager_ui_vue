@@ -7,26 +7,38 @@
     </v-row>
     <v-row :class="display.smAndUp ? 'mt-16' : ''">
       <v-col cols="12" sm="6">
-        <CurrencyInput :label="$t('savings-amount')" v-model="saveAmount" />
+        <v-row>
+          <v-col>
+            <CurrencyInput :label="$t('savings-amount')" v-model="saveAmount" />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-card>
+              <v-list v-model="selectedMode">
+                <v-list-item
+                  v-for="(mode, index) in modes"
+                  :key="index"
+                  :value="mode.value"
+                  @click="selectedMode = mode.value"
+                  :class="{
+                    'v-list-item--active': selectedMode === mode.value
+                  }"
+                >
+                  <v-list-item-title>{{ mode.label }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" sm="6">
-        <v-card>
-          <v-list v-model="selectedMode">
-            <v-list-item
-              v-for="(mode, index) in modes"
-              :key="index"
-              :value="mode.value"
-              @click="selectedMode = mode.value"
-              :class="{ 'v-list-item--active': selectedMode === mode.value }"
-            >
-              <v-list-item-title>{{ mode.label }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-card>
-      </v-col>
-      <v-col cols="12" sm="6" md="4" offset-md="1">
+      <v-col
+        cols="12"
+        sm="6"
+        md="4"
+        offset-md="1"
+        class="d-flex flex-column justify-center"
+      >
         <SavingsSettingsOverview />
       </v-col>
     </v-row>
@@ -45,6 +57,7 @@
     ></ErrorDialog>
   </v-container>
 </template>
+
 <script setup>
 import router from '@/router/index.js'
 import { ref, watchEffect } from 'vue'
