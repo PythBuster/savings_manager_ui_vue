@@ -5,7 +5,7 @@
         <h1 class="text-h4">{{ $t('savings-settings') }}</h1>
       </v-col>
     </v-row>
-    <v-row class="mt-16">
+    <v-row :class="display.smAndUp ? 'mt-16' : ''">
       <v-col cols="12" sm="6">
         <CurrencyInput :label="$t('savings-amount')" v-model="saveAmount" />
       </v-col>
@@ -50,6 +50,9 @@ import router from '@/router/index.js'
 import { ref, watchEffect } from 'vue'
 import global from '@/global.js'
 import { updateSettings } from '@/api.js'
+import { useDisplay } from 'vuetify'
+
+const display = ref(useDisplay())
 
 import { useI18n } from 'vue-i18n'
 

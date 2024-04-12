@@ -5,7 +5,7 @@
         <h1 class="text-h4">{{ $t('new-envelope-settings') }}</h1>
       </v-col>
     </v-row>
-    <v-row class="mt-16">
+    <v-row :class="display.smAndUp ? 'mt-16' : ''">
       <v-col cols="12" sm="6">
         <v-text-field :label="$t('envelope-name')" v-model="envelopeName" />
         <CurrencyInput
@@ -36,6 +36,9 @@ import router from '@/router/index.js'
 import { addMoneybox } from '@/api.js'
 import { useI18n } from 'vue-i18n'
 import { APIError } from '@/customerrors.js'
+import { useDisplay } from 'vuetify'
+
+const display = ref(useDisplay())
 
 // t used for envelopeName and error dialog, otherwise $t globally available
 const { t, locale } = useI18n({})

@@ -5,7 +5,7 @@
         <h1 class="text-h4">{{ $t('settings') }}</h1>
       </v-col>
     </v-row>
-    <v-row class="mt-16">
+    <v-row :class="display.smAndUp ? 'mt-16' : ''">
       <v-col cols="12" sm="6">
         <v-text-field :label="$t('envelope-name')" v-model="newTitle" />
         <CurrencyInput
@@ -35,6 +35,9 @@ import global from '@/global.js'
 import { updateMoneybox } from '@/api.js'
 import { useI18n } from 'vue-i18n'
 import { APIError } from '@/customerrors.js'
+import { useDisplay } from 'vuetify'
+
+const display = ref(useDisplay())
 
 // t used for error dialog, otherwise $t globally available
 const { t } = useI18n({})
