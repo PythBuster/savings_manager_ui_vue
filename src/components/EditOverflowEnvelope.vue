@@ -5,7 +5,7 @@
         <h1 class="text-h4">{{ $t('settings') }}</h1>
       </v-col>
     </v-row>
-    <v-row class="mt-16">
+    <v-row :class="display.smAndUp ? 'mt-16' : ''">
       <v-col cols="12" sm="6">
         <v-card>
           <v-list v-model="selectedMode">
@@ -37,6 +37,9 @@
 import router from '@/router/index.js'
 import { ref, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useDisplay } from 'vuetify'
+
+const display = ref(useDisplay())
 
 const { t } = useI18n({})
 

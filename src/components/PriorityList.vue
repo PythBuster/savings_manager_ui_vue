@@ -5,7 +5,7 @@
         <h1 class="text-h4">{{ $t('priority-list') }}</h1>
       </v-col>
     </v-row>
-    <v-row class="mt-16">
+    <v-row :class="display.smAndUp ? 'mt-16' : ''">
       <v-col cols="12" sm="6">
         <v-card v-click-outside="unselectItems">
           <v-list>
@@ -55,6 +55,9 @@
 import router from '@/router/index.js'
 import { ref, onMounted } from 'vue'
 import global from '@/global.js'
+import { useDisplay } from 'vuetify'
+
+const display = ref(useDisplay())
 
 const items = ref([])
 
