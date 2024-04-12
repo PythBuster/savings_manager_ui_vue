@@ -8,7 +8,14 @@
         <v-col class="text-truncate pr-0">
           {{ item.name }}
         </v-col>
-        <v-col cols="auto" class="pl-0">
+        <v-col
+          cols="auto"
+          class="pl-0"
+          :class="{
+            'text-success': item.name === t('allocated'),
+            'text-primary': item.name === t('uncommitted')
+          }"
+        >
           {{ item.data }}
         </v-col>
       </v-row>

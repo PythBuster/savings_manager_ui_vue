@@ -17,8 +17,12 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="grey" @click="cancel">{{ $t('cancel') }}</v-btn>
-        <v-btn color="primary" @click="confirm">OK</v-btn>
+        <v-btn color="surface-variant" @click="cancel">{{
+          $t('cancel')
+        }}</v-btn>
+        <v-btn color="info" :disabled="!(amount > 0)" @click="confirm"
+          >OK</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>
