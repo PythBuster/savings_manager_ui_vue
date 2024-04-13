@@ -53,8 +53,20 @@
           :showAll="false"
         />
       </v-col>
-      <v-col cols="12" lg="3">
-        <BarChart :id="overflow.id" />
+      <!-- Conditional classes and forced unmount/remount of BarChart with v-if
+      to ensure proper size/aspect ratio of chart on page (re)load and when chart wraps
+      back and forth between below amd right of the transaction table on window resize -->
+      <v-col
+        cols="12"
+        lg="3"
+        :class="display.lgAndUp ? '' : 'position-relative pt-50-percent'"
+      >
+        <BarChart :id="overflow.id" v-if="display.lgAndUp" />
+        <BarChart
+          :id="overflow.id"
+          v-if="!display.lgAndUp"
+          class="position-absolute top-0"
+        />
       </v-col>
     </v-row>
 
@@ -88,6 +100,9 @@ import {
 } from '@/api.js'
 import { useI18n } from 'vue-i18n'
 import { APIError } from '@/customerrors'
+import { useDisplay } from 'vuetify'
+
+const display = ref(useDisplay())
 
 // t used for dialogs, otherwise $t globally available
 const { t } = useI18n({})
@@ -222,3 +237,11 @@ function viewCompleteClicked() {
   })
 }
 </script>
+<style scoped>
+.pt-50-percent {
+  padding-top: 50%; /* 2:1 Aspect Ratio */
+}
+.top-0 {
+  top: 0;
+}
+</style>
