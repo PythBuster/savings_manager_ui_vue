@@ -66,7 +66,14 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, watchEffect } from 'vue'
+import {
+  ref,
+  computed,
+  watch,
+  watchEffect,
+  onMounted,
+  onBeforeUnmount
+} from 'vue'
 import { formatDate } from '@/utils.js'
 
 // t used for range, otherwise $t globally available
@@ -213,5 +220,17 @@ watchEffect(() => {
 
 watch(anyDate, (newValue) => {
   menuForDateRanges.value = newValue
+})
+
+function windowResized() {
+  menu1.value = false
+  menu2.value = false
+  menuForDateRanges.value = false
+}
+onMounted(() => {
+  window.addEventListener('resize', windowResized)
+})
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', windowResized)
 })
 </script>
