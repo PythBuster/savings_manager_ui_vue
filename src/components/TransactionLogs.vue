@@ -60,7 +60,15 @@
             {{ item.action }}
           </template>
           <template v-slot:[`item.rawAmount`]="{ item }">
-            <span :class="item.rawAmount >= 0 ? 'text-success' : 'text-error'">
+            <span
+              :class="
+                item.amount !== '---'
+                  ? item.rawAmount >= 0
+                    ? 'text-success'
+                    : 'text-error'
+                  : ''
+              "
+            >
               {{ item.amount }}
             </span>
           </template>
