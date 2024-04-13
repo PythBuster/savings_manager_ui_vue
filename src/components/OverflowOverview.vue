@@ -33,10 +33,10 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" md="8">
+      <v-col cols="12" lg="9">
         <TransactionLogs />
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" lg="3">
         <BarChart />
       </v-col>
     </v-row>
