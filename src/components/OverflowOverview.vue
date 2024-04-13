@@ -36,15 +36,27 @@
       <v-col cols="12" lg="9">
         <TransactionLogs />
       </v-col>
-      <v-col cols="12" lg="3">
-        <BarChart />
+      <!-- Conditional classes and forced unmount/remount of BarChart with v-if
+      to ensure proper size/aspect ratio of chart on page (re)load and when chart wraps
+      back and forth between below amd right of the transaction table on window resize -->
+      <v-col
+        cols="12"
+        lg="3"
+        :class="display.lgAndUp ? '' : 'position-relative pt-50-percent'"
+      >
+        <BarChart v-if="display.lgAndUp" />
+        <BarChart v-if="!display.lgAndUp" class="position-absolute top-0" />
       </v-col>
     </v-row>
   </v-container>
 </template>
 <script setup>
+import { ref } from 'vue'
 import router from '@/router/index.js'
 import { formatCurrency } from '@/utils.js'
+import { useDisplay } from 'vuetify'
+
+const display = ref(useDisplay())
 
 const balance = formatCurrency(125)
 
@@ -54,3 +66,11 @@ const changeSettingsClicked = () => {
   })
 }
 </script>
+<style scoped>
+.pt-50-percent {
+  padding-top: 50%; /* 2:1 Aspect Ratio */
+}
+.top-0 {
+  top: 0;
+}
+</style>
