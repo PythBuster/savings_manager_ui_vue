@@ -14,6 +14,9 @@
     </v-row>
     <v-row>
       <v-col class="d-flex justify-end">
+        <v-btn @click="backClicked" class="mr-2">{{
+          $t('back-to-overview')
+        }}</v-btn>
         <v-btn
           @click="saveClicked"
           :disabled="
@@ -91,5 +94,11 @@ async function saveClicked() {
       showErrorDialog.value = true
     }
   }
+}
+
+function backClicked() {
+  router.push({
+    path: `/envelope/${props.id}`
+  })
 }
 </script>

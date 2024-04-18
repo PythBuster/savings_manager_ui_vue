@@ -27,6 +27,9 @@
     </v-row>
     <v-row>
       <v-col class="d-flex justify-end">
+        <v-btn @click="backClicked" class="mr-2">{{
+          $t('back-to-overview')
+        }}</v-btn>
         <v-btn @click="saveClicked">{{ $t('save') }}</v-btn>
       </v-col>
     </v-row>
@@ -53,6 +56,12 @@ watchEffect(() => {
 })
 
 function saveClicked() {
+  router.push({
+    path: '/overflow'
+  })
+}
+
+function backClicked() {
   router.push({
     path: '/overflow'
   })
