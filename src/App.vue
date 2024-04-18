@@ -2,7 +2,10 @@
   <v-app>
     <v-app-bar>
       <v-app-bar-title>
-        <v-btn prepend-icon="mdi-home" @click="goHome">Savings Manager</v-btn>
+        <v-btn v-if="!display.xs" prepend-icon="mdi-home" @click="goHome"
+          >Savings Manager</v-btn
+        >
+        <v-btn v-if="display.xs" icon="mdi-home" @click="goHome"></v-btn>
       </v-app-bar-title>
       <v-menu offset-y>
         <template v-slot:activator="{ props }">
@@ -85,6 +88,9 @@ import { ref, computed, onMounted } from 'vue'
 import router from '@/router/index.js'
 import { useTheme } from 'vuetify'
 import Cookies from 'js-cookie'
+import { useDisplay } from 'vuetify'
+
+const display = ref(useDisplay())
 
 // t used for menuItems and languageSelected(), otherwise $t globally available
 import { useI18n } from 'vue-i18n'
