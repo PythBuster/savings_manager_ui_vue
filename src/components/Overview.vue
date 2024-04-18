@@ -2,7 +2,9 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <h1 class="text-h4">{{ $t('my-envelopes') }}</h1>
+        <h1 :class="display.mdAndUp ? 'text-h4' : 'text-h5'">
+          {{ $t('my-envelopes') }}
+        </h1>
       </v-col>
     </v-row>
     <v-row>
@@ -29,8 +31,11 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import global from '@/global.js'
+import { useDisplay } from 'vuetify'
+
+const display = ref(useDisplay())
 
 const sortedMoneyboxes = computed(() => {
   return global.moneyboxes

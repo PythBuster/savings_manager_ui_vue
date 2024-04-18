@@ -2,7 +2,7 @@
   <v-container>
     <v-row v-if="overflow" class="d-flex justify-space-between align-center">
       <v-col cols="auto" md="auto">
-        <h1 class="text-h4">
+        <h1 :class="display.mdAndUp ? 'text-h4' : 'text-h5'">
           {{ $t('envelope') + ': ' + $t('overflow-envelope') }}
         </h1>
       </v-col>
