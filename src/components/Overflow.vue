@@ -1,6 +1,6 @@
 <template>
   <v-card
-    @click="OverflowEnvelopeClicked"
+    @click="overflowClicked"
     variant="tonal"
     min-height="180"
     class="d-flex align-center justify-center text-center"
@@ -26,7 +26,7 @@ defineProps({
   currentAmount: Number
 })
 
-function OverflowEnvelopeClicked() {
+function overflowClicked() {
   router.push({
     path: '/overflow'
   })
