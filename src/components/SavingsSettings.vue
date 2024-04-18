@@ -35,6 +35,7 @@
         </v-row>
       </v-col>
       <v-col
+        v-if="display.mdAndUp"
         cols="12"
         sm="6"
         md="4"
@@ -43,8 +44,25 @@
       >
         <SavingsSettingsOverview />
       </v-col>
+      <v-col
+        v-if="!display.mdAndUp"
+        cols="12"
+        sm="6"
+        md="4"
+        offset-md="1"
+        class="d-flex flex-column"
+      >
+        <SavingsSettingsOverview />
+        <v-spacer></v-spacer>
+        <v-btn
+          class="align-self-end mt-2"
+          @click="saveClicked"
+          :disabled="saveAmount === null || isNaN(saveAmount)"
+          >{{ $t('save') }}</v-btn
+        >
+      </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="display.mdAndUp">
       <v-col class="d-flex justify-end">
         <v-btn
           @click="saveClicked"
