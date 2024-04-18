@@ -22,7 +22,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" sm="6">
-        <OverflowEnvelope :currentAmount="overflow ? overflow.balance : 0" />
+        <Overflow :currentAmount="overflow ? overflow.balance : 0" />
       </v-col>
     </v-row>
   </v-container>
