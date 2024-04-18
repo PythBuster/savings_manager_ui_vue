@@ -89,7 +89,7 @@
   "deposit2": "Einzahlung",
   "invalid-selection": "Ungültige Auswahl",
   "view-complete-logs": "Vollständige Logs ansehen",
-  "back-to-overview": "Zurück zur Übersicht",
+  "back-to-overview": "Zur Übersicht",
   "search": "Suchen",
   "error-delete-with-balance": "Du kannst keine Kasse löschen, die noch einen Kontostand hat. Bitte hebe zunächst das Geld ab oder transferiere es.",
   "action": "Aktion",
