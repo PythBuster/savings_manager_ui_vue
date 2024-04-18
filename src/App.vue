@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar>
       <v-app-bar-title>
-        <v-btn @click="goHome">Savings Manager</v-btn>
+        <v-btn prepend-icon="mdi-home" @click="goHome">Savings Manager</v-btn>
       </v-app-bar-title>
       <v-menu offset-y>
         <template v-slot:activator="{ props }">
