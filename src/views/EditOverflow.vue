@@ -1,5 +1,5 @@
 <template>
   <v-main>
-    <EditOverflowEnvelope />
+    <OverflowEdit />
   </v-main>
 </template>
