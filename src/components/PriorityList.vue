@@ -5,7 +5,7 @@
         <h1 class="text-h4">{{ $t('priority-list') }}</h1>
       </v-col>
     </v-row>
-    <v-row :class="display.smAndUp ? 'mt-16' : ''">
+    <v-row :class="display.mdAndUp ? 'mt-16' : ''">
       <v-col cols="12" sm="6">
         <v-card v-click-outside="unselectItems">
           <v-list>

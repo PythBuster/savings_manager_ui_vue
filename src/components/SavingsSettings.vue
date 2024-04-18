@@ -5,7 +5,7 @@
         <h1 class="text-h4">{{ $t('savings-settings') }}</h1>
       </v-col>
     </v-row>
-    <v-row :class="display.smAndUp ? 'mt-16' : ''">
+    <v-row :class="display.mdAndUp ? 'mt-16' : ''">
       <v-col cols="12" sm="6" class="d-flex align-center">
         <CurrencyInput :label="$t('savings-amount')" v-model="saveAmount" />
       </v-col>
