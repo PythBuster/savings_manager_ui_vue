@@ -39,13 +39,8 @@
           </v-card-actions>
         </v-card>
       </v-col>
-      <v-col
-        @click="saveClicked"
-        cols="12"
-        sm="6"
-        class="d-flex align-end justify-end"
-      >
-        <v-btn>{{ $t('save') }}</v-btn>
+      <v-col class="d-flex align-end justify-end">
+        <v-btn @click="saveClicked">{{ $t('save') }}</v-btn>
       </v-col>
     </v-row>
   </v-container>
