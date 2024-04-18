@@ -11,8 +11,20 @@
         <CurrencyInput :label="$t('target-amount')" v-model="newTargetAmount" />
         <CurrencyInput :label="$t('savings-amount')" v-model="newSaveAmount" />
       </v-col>
+      <v-col v-if="!display.mdAndUp" class="d-flex align-end justify-end">
+        <v-btn @click="backClicked" class="mr-2">{{
+          $t('back-to-overview')
+        }}</v-btn>
+        <v-btn
+          @click="saveClicked"
+          :disabled="
+            newSaveAmount === null || isNaN(newSaveAmount) || newTitle === ''
+          "
+          >{{ $t('save') }}</v-btn
+        >
+      </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="display.mdAndUp">
       <v-col class="d-flex justify-end">
         <v-btn @click="backClicked" class="mr-2">{{
           $t('back-to-overview')
