@@ -39,7 +39,12 @@
           </v-card-actions>
         </v-card>
       </v-col>
-      <v-col class="d-flex align-end justify-end">
+      <v-col v-if="!display.mdAndUp" class="d-flex align-end justify-end">
+        <v-btn @click="saveClicked">{{ $t('save') }}</v-btn>
+      </v-col>
+    </v-row>
+    <v-row v-if="display.mdAndUp">
+      <v-col class="d-flex justify-end">
         <v-btn @click="saveClicked">{{ $t('save') }}</v-btn>
       </v-col>
     </v-row>

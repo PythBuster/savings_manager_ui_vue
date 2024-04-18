@@ -16,8 +16,17 @@
         />
         <CurrencyInput :label="$t('savings-amount')" v-model="saveAmount" />
       </v-col>
+      <v-col v-if="!display.mdAndUp" class="d-flex align-end justify-end">
+        <v-btn
+          @click="createClicked"
+          :disabled="
+            saveAmount === null || isNaN(saveAmount) || envelopeName === ''
+          "
+          >{{ $t('create-continue-priorities') }}</v-btn
+        >
+      </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="display.mdAndUp">
       <v-col class="d-flex justify-end">
         <v-btn @click="createClicked">{{
           $t('create-continue-priorities')
