@@ -1,15 +1,20 @@
 <template>
   <v-app>
-    <v-app-bar>
+    <v-app-bar :density="display.smAndDown ? 'compact' : ''">
       <v-app-bar-title>
-        <v-btn v-if="!display.xs" prepend-icon="mdi-home" @click="goHome"
-          >Savings Manager</v-btn
+        <v-btn v-if="!display.xs" @click="goHome">
+          <v-icon size="x-large" class="mr-2">mdi-home</v-icon>
+          Savings Manager</v-btn
         >
-        <v-btn v-if="display.xs" icon="mdi-home" @click="goHome"></v-btn>
+        <v-btn v-if="display.xs" @click="goHome">
+          <v-icon size="x-large">mdi-home</v-icon></v-btn
+        >
       </v-app-bar-title>
-      <v-menu offset-y>
+      <v-menu>
         <template v-slot:activator="{ props }">
-          <v-btn v-bind="props"><v-icon>mdi-theme-light-dark</v-icon></v-btn>
+          <v-btn v-bind="props" class="mr-2"
+            ><v-icon size="x-large">mdi-theme-light-dark</v-icon></v-btn
+          >
         </template>
         <v-list>
           <v-list-item
@@ -26,9 +31,9 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <v-menu offset-y>
+      <v-menu>
         <template v-slot:activator="{ props }">
-          <v-btn v-bind="props">{{ selectedLanguage }}</v-btn>
+          <v-btn v-bind="props" class="mr-2">{{ selectedLanguage }}</v-btn>
         </template>
         <v-list>
           <v-list-item
@@ -43,7 +48,7 @@
       </v-menu>
       <v-menu>
         <template v-slot:activator="{ props }">
-          <v-app-bar-nav-icon v-bind="props"> </v-app-bar-nav-icon>
+          <v-btn v-bind="props"><v-icon size="x-large">mdi-menu</v-icon></v-btn>
         </template>
         <v-list>
           <v-list-item
