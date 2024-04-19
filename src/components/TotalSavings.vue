@@ -10,9 +10,15 @@
 </template>
 
 <script setup>
+import { ref, watchEffect } from 'vue'
+import global from '@/global.js'
 import { formatCurrency } from '@/utils.js'
 
-defineProps({
-  totalAmount: Number
+const totalAmount = ref('0')
+
+watchEffect(() => {
+  totalAmount.value = global.moneyboxes.reduce((total, moneybox) => {
+    return total + moneybox.balance
+  }, 0)
 })
 </script>

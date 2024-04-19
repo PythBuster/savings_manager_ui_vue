@@ -1,6 +1,22 @@
 // Not using Pinia (for now at least), since there's not much global data to manage
 
-import { reactive, readonly } from 'vue'
+import { reactive, readonly, ref } from 'vue'
+import { Settings } from '@/models.js'
+
+// Singleton instance, not created initially
+let settingsInstance = ref(null)
+
+function createAndSetSettings(jsonData) {
+  // Singleton
+
+  if (!settingsInstance.value) {
+    const instance = Settings.fromJSON(jsonData)
+
+    settingsInstance.value = reactive(instance)
+  } else {
+    throw new Error('Settings instance already exists')
+  }
+}
 
 // this reactive() tracks changes to the array itself, like adding/removing moneyboxes
 const moneyboxes = reactive([])
@@ -61,5 +77,7 @@ export default {
   deleteMoneybox,
   setMoneyboxes,
   findMoneyboxById,
-  addTransactionLogsToMoneybox
+  addTransactionLogsToMoneybox,
+  settings: settingsInstance,
+  createAndSetSettings
 }

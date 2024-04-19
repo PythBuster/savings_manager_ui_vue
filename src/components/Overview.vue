@@ -9,7 +9,7 @@
     </v-row>
     <v-row>
       <v-col
-        v-for="(card, index) in global.moneyboxes"
+        v-for="(card, index) in sortedMoneyboxes"
         :key="index"
         cols="12"
         sm="6"
@@ -24,19 +24,26 @@
     </v-row>
     <v-row>
       <v-col cols="12" sm="6">
-        <Overflow :currentAmount="currentAmount" />
+        <Overflow :currentAmount="overflow ? overflow.balance : 0" />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import global from '@/global.js'
 import { useDisplay } from 'vuetify'
 
 const display = ref(useDisplay())
 
-// Dummy data, API fetch not implemented yet
-const currentAmount = 0
+const sortedMoneyboxes = computed(() => {
+  return global.moneyboxes
+    .filter((moneybox) => !moneybox.is_overflow)
+    .sort((a, b) => a.priority - b.priority)
+})
+
+const overflow = computed(() => {
+  return global.moneyboxes.find((moneybox) => moneybox.is_overflow === true)
+})
 </script>

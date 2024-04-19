@@ -140,7 +140,8 @@ import {
   depositIntoMoneybox,
   getTransactionLogs,
   transferFromMoneyboxToMoneybox,
-  withdrawFromMoneybox
+  withdrawFromMoneybox,
+  updateMoneybox
 } from '@/api.js'
 import { useI18n } from 'vue-i18n'
 import { APIError } from '@/customerrors.js'
@@ -296,7 +297,25 @@ async function handleDeleteConfirm() {
     showErrorDialog.value = true
   } else {
     try {
-      await deleteMoneybox(global.findMoneyboxById(props.id))
+      const deletedMoneyboxPriority = deletedMoneybox
+        ? deletedMoneybox.priority
+        : null
+
+      await deleteMoneybox(deletedMoneybox)
+
+      if (deletedMoneyboxPriority !== null) {
+        // Adjust priorities for remaining moneyboxes
+        // global.findMoneyboxById() needed for mutability and reactivity
+        const moneyboxesToUpdate = global.moneyboxes
+          .filter((mb) => mb.priority > deletedMoneyboxPriority)
+          .map((mb) => global.findMoneyboxById(mb.id))
+
+        for (const moneybox of moneyboxesToUpdate) {
+          const updatedPriority = moneybox.priority - 1
+          await updateMoneybox(moneybox, { newPriority: updatedPriority })
+        }
+      }
+
       showDeleteDialog.value = false
 
       router.push({

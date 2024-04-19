@@ -182,7 +182,9 @@ const transactionItems = computed(() => {
 
     let origin = ''
     if (action === t('transfer2')) {
-      origin = entry.counterparty_moneybox_name
+      origin = entry.counterparty_moneybox_is_overflow
+        ? t('overflow-envelope')
+        : entry.counterparty_moneybox_name
     }
 
     const trigger =

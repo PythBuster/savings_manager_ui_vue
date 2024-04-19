@@ -10,7 +10,12 @@
     <v-row :class="display.mdAndUp ? 'mt-16' : ''">
       <v-col cols="12" sm="6">
         <v-text-field :label="$t('envelope-name')" v-model="newTitle" />
-        <CurrencyInput :label="$t('target-amount')" v-model="newTargetAmount" />
+        <CurrencyInput
+          :label="newNoLimit ? $t('no-limit') : $t('target-amount')"
+          v-model="newTargetAmount"
+          v-model:noLimit="newNoLimit"
+          :showToggleIcon="true"
+        />
         <CurrencyInput :label="$t('savings-amount')" v-model="newSaveAmount" />
       </v-col>
       <v-col v-if="!display.mdAndUp" class="d-flex align-end justify-end">
@@ -31,13 +36,7 @@
         <v-btn @click="backClicked" class="mr-2">{{
           $t('back-to-overview')
         }}</v-btn>
-        <v-btn
-          @click="saveClicked"
-          :disabled="
-            newSaveAmount === null || isNaN(newSaveAmount) || newTitle === ''
-          "
-          >{{ $t('save') }}</v-btn
-        >
+        <v-btn @click="saveClicked">{{ $t('save') }}</v-btn>
       </v-col>
     </v-row>
     <ErrorDialog
@@ -47,7 +46,7 @@
   </v-container>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import router from '@/router/index.js'
 import global from '@/global.js'
 import { updateMoneybox } from '@/api.js'
@@ -69,21 +68,51 @@ const errorMessage = ref('')
 
 const originalTitle = global.findMoneyboxById(props.id).name
 const newTitle = ref(originalTitle)
+const originalTargetAmount = global.findMoneyboxById(props.id).goal
+const newTargetAmount =
+  global.findMoneyboxById(props.id).no_limit === true
+    ? ref(null)
+    : ref(originalTargetAmount)
+const originalSaveAmount = global.findMoneyboxById(props.id).increment
+const newSaveAmount = ref(originalSaveAmount)
+const originalNoLimit = global.findMoneyboxById(props.id).no_limit
+const newNoLimit = ref(originalNoLimit)
 
-// These are currently not saved, since the API does not support updating these values yet.
-// When the API is updated, these values should be saved in the API
-// and proper checks should be added to the saveClicked function.
-// Make sure, unchanged values are not being sent to the API (name unchanged is already caugt).
-const newTargetAmount = ref(global.findMoneyboxById(props.id).goal)
-const newSaveAmount = ref(global.findMoneyboxById(props.id).increment)
+watch(newNoLimit, (currentValue) => {
+  if (currentValue) {
+    newTargetAmount.value = null
+  } else {
+    newTargetAmount.value = originalTargetAmount
+  }
+})
 
 async function saveClicked() {
-  if (newTitle.value === originalTitle) {
-    errorMessage.value = t('error-name-unchanged')
+  let changes = {}
+
+  if (newTitle.value !== originalTitle) {
+    changes.newName = newTitle.value
+  }
+
+  let effectiveNewTargetAmount = newNoLimit.value ? 0 : newTargetAmount.value
+  if (effectiveNewTargetAmount !== originalTargetAmount) {
+    changes.newGoal = effectiveNewTargetAmount
+  }
+
+  if (newSaveAmount.value !== originalSaveAmount) {
+    changes.newIncrement =
+      newSaveAmount.value === null ? 0 : newSaveAmount.value
+  }
+
+  if (newNoLimit.value !== originalNoLimit) {
+    changes.newNoLimit = newNoLimit.value
+  }
+
+  if (Object.keys(changes).length === 0) {
+    errorMessage.value = t('error-no-changes')
     showErrorDialog.value = true
   } else {
     try {
-      await updateMoneybox(global.findMoneyboxById(props.id), newTitle.value)
+      await updateMoneybox(global.findMoneyboxById(props.id), changes)
       router.push({
         path: `/envelope/${props.id}`
       })
@@ -98,7 +127,7 @@ async function saveClicked() {
             name: newTitle.value
           })
         } else if (error.status === 422) {
-          errorMessage.value = t('error-must-be-string')
+          errorMessage.value = t('error-envelope-validation')
         } else if (error.status === 500) {
           errorMessage.value = error.message
         }

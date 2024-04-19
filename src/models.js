@@ -19,6 +19,8 @@ export class Moneybox {
   _no_limit
   /** @member {Number} priority */
   _priority
+  /** @member {Boolean} is_overflow */
+  _is_overflow
   /** @member {TransactionLogs|null} transactionLogs */
   _transactionLogs
 
@@ -33,6 +35,7 @@ export class Moneybox {
    * @param {Number} increment - The savings increment value for the moneybox
    * @param {Boolean} no_limit - Indicates whether the moneybox has no saving limit.
    * @param {Number} priority - The priority of the moneybox
+   * @param {Boolean} is_overflow - Indicates whether the moneybox is overflow
    * @param {TransactionLogs|null} transactionLogs - The transaction logs for the moneybox - null if not initialized
    */
   constructor(
@@ -45,6 +48,7 @@ export class Moneybox {
     increment,
     no_limit,
     priority,
+    is_overflow = false,
     transactionLogs = null
   ) {
     this.id = id
@@ -56,6 +60,7 @@ export class Moneybox {
     this.increment = increment
     this.no_limit = no_limit
     this.priority = priority
+    this.is_overflow = is_overflow
     this.transactionLogs = transactionLogs
   }
 
@@ -74,7 +79,8 @@ export class Moneybox {
       rawMoneybox.goal,
       rawMoneybox.increment,
       rawMoneybox.no_limit,
-      rawMoneybox.priority
+      rawMoneybox.priority,
+      rawMoneybox.is_overflow
     )
   }
 
@@ -160,6 +166,15 @@ export class Moneybox {
     this._priority = value
   }
 
+  get is_overflow() {
+    return this._is_overflow
+  }
+  set is_overflow(value) {
+    if (typeof value !== 'boolean')
+      throw new TypeError('is_overflow must be a boolean')
+    this._is_overflow = value
+  }
+
   get transactionLogs() {
     return this._transactionLogs
   }
@@ -194,6 +209,8 @@ export class TransactionLogsEntry {
   _counterparty_moneybox_name
   /** @member {String} created_at */
   _created_at
+  /** @member {Boolean} counterparty_moneybox_is_overflow */
+  _counterparty_moneybox_is_overflow
 
   /**
    * Creates an instance of TransactionLogsEntry.
@@ -207,6 +224,7 @@ export class TransactionLogsEntry {
    * @param {String} transaction_type - The type of the transaction = 'direct' or 'distribution'
    * @param {String} counterparty_moneybox_name - The name of the counterparty moneybox
    * @param {String} created_at - The creation ISO8601 time/date of the transaction
+   * @param {Boolean} counterparty_moneybox_is_overflow - Indicates whether the counterparty moneybox is overflow
    */
   constructor(
     id,
@@ -218,7 +236,8 @@ export class TransactionLogsEntry {
     transaction_trigger,
     transaction_type,
     counterparty_moneybox_name,
-    created_at
+    created_at,
+    counterparty_moneybox_is_overflow
   ) {
     this.id = id
     this.moneybox_id = moneybox_id
@@ -230,6 +249,7 @@ export class TransactionLogsEntry {
     this.transaction_type = transaction_type
     this.counterparty_moneybox_name = counterparty_moneybox_name
     this.created_at = created_at
+    this.counterparty_moneybox_is_overflow = counterparty_moneybox_is_overflow
   }
 
   get id() {
@@ -322,6 +342,14 @@ export class TransactionLogsEntry {
     }
     this._created_at = value
   }
+  get counterparty_moneybox_is_overflow() {
+    return this._counterparty_moneybox_is_overflow
+  }
+  set counterparty_moneybox_is_overflow(value) {
+    if (typeof value !== 'boolean')
+      throw new TypeError('is_overflow must be a boolean')
+    this._counterparty_moneybox_is_overflow = value
+  }
 }
 
 export class TransactionLogs {
@@ -381,9 +409,75 @@ export class TransactionLogs {
           log.transaction_trigger,
           log.transaction_type,
           log.counterparty_moneybox_name,
-          log.created_at
+          log.created_at,
+          log.counterparty_moneybox_is_overflow
         )
     )
     return new TransactionLogs(rawLogs.transaction_logs[0].moneybox_id, entries)
+  }
+}
+
+export class Settings {
+  static instance = null
+  _savings_amount
+  _savings_cycle
+  _savings_mode
+  /**
+   * Creates an instance of Settings (Singleton).
+   * @param {Number} savings_amount - The amount to save in each cycle
+   * @param {String} savings_cycle - The savings cycle (one of 'daily', 'weekly', 'monthly', 'yearly')
+   * @param {String} savings_mode - The savings mode (one of 'add-up', 'fill-envelopes', 'collect')
+   */
+  constructor(savings_amount, savings_cycle, savings_mode) {
+    if (Settings.instance) {
+      return Settings.instance
+    }
+    this._savings_amount = savings_amount
+    this._savings_cycle = savings_cycle
+    this._savings_mode = savings_mode
+    Settings.instance = this
+  }
+
+  /**
+   * Static method to create a Settings instance from a JSON object.
+   * @param {Object} rawSettings A JSON object with properties matching the Settings class.
+   * @returns {Settings} A new instance of Settings (Singleton)
+   */
+  static fromJSON({ savings_amount, savings_cycle, savings_mode }) {
+    return new Settings(savings_amount, savings_cycle, savings_mode)
+  }
+
+  get savings_amount() {
+    return this._savings_amount
+  }
+
+  set savings_amount(value) {
+    if (typeof value !== 'number' || value < 0) {
+      throw new Error('savings_amount must be a non-negative number')
+    }
+    this._savings_amount = value
+  }
+
+  get savings_cycle() {
+    return this._savings_cycle
+  }
+
+  set savings_cycle(value) {
+    const validCycles = ['daily', 'weekly', 'monthly', 'yearly']
+    if (!validCycles.includes(value)) {
+      throw new Error(`savings_cycle must be one of ${validCycles.join(', ')}`)
+    }
+    this._savings_cycle = value
+  }
+
+  get savings_mode() {
+    return this._savings_mode
+  }
+  set savings_mode(value) {
+    const validModes = ['add-up', 'fill-envelopes', 'collect']
+    if (!validModes.includes(value)) {
+      throw new Error(`savings_mode must be one of ${validModes.join(', ')}`)
+    }
+    this._savings_mode = value
   }
 }
