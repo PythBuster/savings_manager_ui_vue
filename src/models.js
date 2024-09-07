@@ -1,5 +1,6 @@
 import { isValidISO8601 } from '@/utils.js'
 
+
 export class Moneybox {
   /** @member {Number} id */
   _id
@@ -7,61 +8,46 @@ export class Moneybox {
   _name
   /** @member {Number} balance */
   _balance
-  /** @member {String} created_at */
-  _created_at
-  /** @member {String} modified_at */
-  _modified_at
-  /** @member {Number} goal */
-  _goal
-  /** @member {Number} increment */
-  _increment
-  /** @member {Boolean} no_limit */
-  _no_limit
+  /** @member {String} createdAt */
+  _createdAt
+  /** @member {String} modifiedAt */
+  _modifiedAt
   /** @member {Number} priority */
   _priority
-  /** @member {Boolean} is_overflow */
-  _is_overflow
-  /** @member {TransactionLogs|null} transactionLogs */
-  _transactionLogs
+  /** @member {Number} savingsAmount */
+  _savingsAmount  
+  /** @member {Number} savingsTarget */
+  _savingsTarget
 
   /**
    * Creates an instance of Moneybox.
    * @param {Number} id - The unique identifier for the moneybox
    * @param {String} name - The name of the moneybox
    * @param {Number} balance - The current balance of the moneybox
-   * @param {String} created_at - The creation ISO8601 time/date of the moneybox
-   * @param {String} modified_at - The modification ISO8601 time/date of the moneybox
-   * @param {Number} goal - The savings goal for the moneybox
-   * @param {Number} increment - The savings increment value for the moneybox
-   * @param {Boolean} no_limit - Indicates whether the moneybox has no saving limit.
+   * @param {String} createdAt - The creation ISO8601 time/date of the moneybox
+   * @param {String} modifiedAt - The modification ISO8601 time/date of the moneybox
    * @param {Number} priority - The priority of the moneybox
-   * @param {Boolean} is_overflow - Indicates whether the moneybox is overflow
-   * @param {TransactionLogs|null} transactionLogs - The transaction logs for the moneybox - null if not initialized
-   */
+   * @param {Number} savingsAmount - The savings amount of the moneybox
+   * @param {Number} savingsTarget - The savings target of the moneybox
+   * */
   constructor(
     id,
     name,
     balance,
-    created_at,
-    modified_at,
-    goal,
-    increment,
-    no_limit,
+    createdAt,
+    modifiedAt,
     priority,
-    is_overflow = false,
-    transactionLogs = null
+    savingsAmount,
+    savingsTarget
   ) {
     this.id = id
     this.name = name
     this.balance = balance
-    this.created_at = created_at
-    this.modified_at = modified_at
-    this.goal = goal
-    this.increment = increment
-    this.no_limit = no_limit
+    this.createdAt = createdAt
+    this.modifiedAt = modifiedAt
     this.priority = priority
-    this.is_overflow = is_overflow
-    this.transactionLogs = transactionLogs
+    this.savingsAmount = savingsAmount
+    this.savingsTarget = savingsTarget
   }
 
   /**
@@ -74,13 +60,11 @@ export class Moneybox {
       rawMoneybox.id,
       rawMoneybox.name,
       rawMoneybox.balance,
-      rawMoneybox.created_at,
-      rawMoneybox.modified_at,
-      rawMoneybox.goal,
-      rawMoneybox.increment,
-      rawMoneybox.no_limit,
+      rawMoneybox.createdAt,
+      rawMoneybox.modifiedAt,
       rawMoneybox.priority,
-      rawMoneybox.is_overflow
+      rawMoneybox.savingsAmount,
+      rawMoneybox.savingsTarget
     )
   }
 
@@ -100,24 +84,24 @@ export class Moneybox {
     this._name = value
   }
 
-  get created_at() {
-    return this._created_at
+  get createdAt() {
+    return this._createdAt
   }
-  set created_at(value) {
+  set createdAt(value) {
     if (!isValidISO8601(value)) {
-      throw new TypeError('created_at must be in ISO8601 format')
+      throw new TypeError('createdAt must be in ISO8601 format')
     }
-    this._created_at = value
+    this._createdAt = value
   }
 
-  get modified_at() {
-    return this._modified_at
+  get modifiedAt() {
+    return this._modifiedAt
   }
-  set modified_at(value) {
+  set modifiedAt(value) {
     if (!isValidISO8601(value) && value !== null) {
-      throw new TypeError('modified_at must be in ISO8601 format')
+      throw new TypeError('modifiedAt must be in ISO8601 format')
     }
-    this._modified_at = value
+    this._modifiedAt = value
   }
 
   get balance() {
@@ -129,62 +113,32 @@ export class Moneybox {
     this._balance = value
   }
 
-  get goal() {
-    return this._goal
-  }
-  set goal(value) {
-    if (isNaN(value))
-      throw new TypeError('Expected value for goal to be a number')
-    if (value < 0) throw new RangeError('Goal needs to be greater or equal 0')
-    this._goal = value
-  }
-
-  get increment() {
-    return this._increment
-  }
-  set increment(value) {
-    if (typeof value !== 'number' || value < 0)
-      throw new RangeError('increment must be a number and >= 0')
-    this._increment = value
-  }
-
-  get no_limit() {
-    return this._no_limit
-  }
-  set no_limit(value) {
-    if (typeof value !== 'boolean')
-      throw new TypeError('no_limit must be a boolean')
-    this._no_limit = value
-  }
-
+ 
   get priority() {
     return this._priority
   }
   set priority(value) {
-    if (!Number.isInteger(value) || value < 1)
+    if (!Number.isInteger(value) || value < 0)
       throw new RangeError('priority must be an integer and >= 1')
     this._priority = value
   }
 
-  get is_overflow() {
-    return this._is_overflow
+  get savingsAmount() {
+    return this._savingsAmount
   }
-  set is_overflow(value) {
-    if (typeof value !== 'boolean')
-      throw new TypeError('is_overflow must be a boolean')
-    this._is_overflow = value
+  set savingsAmount(value) {
+    if (!Number.isInteger(value))
+      throw new RangeError('savingsAmount must be an integer')
+    this._savingsAmount = value
   }
 
-  get transactionLogs() {
-    return this._transactionLogs
+  get savingsTarget() {
+    return this._savingsTarget
   }
-  set transactionLogs(value) {
-    if (value !== null && !(value instanceof TransactionLogs)) {
-      throw new TypeError(
-        'transactionLogs must be an instance of TransactionLogs or null'
-      )
-    }
-    this._transactionLogs = value
+  set savingsTarget(value) {
+    if (!Number.isInteger(value) && value !== null)
+      throw new RangeError('savingsTarget amount must be an integer or nullable')
+    this._savingsTarget = value
   }
 }
 

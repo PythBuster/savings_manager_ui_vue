@@ -17,16 +17,20 @@
         <v-card-text>
           <p class="text-info">
             {{
-              !global.findMoneyboxById(id).no_limit
-                ? $t('goal') + formatCurrency(global.findMoneyboxById(id).goal)
-                : $t('goal') + $t('no-limit')
+              global.findMoneyboxById(id).savingsTarget !== null
+                ? $t('savings-target') + formatCurrency(global.findMoneyboxById(id).savingsTarget)
+                : $t('savings-target') + $t('no-limit')
             }}
           </p>
           <p class="font-weight-bold text-body-1">
             {{ formatCurrency(global.findMoneyboxById(id).balance) }}
           </p>
           <p class="text-success">
-            +{{ formatCurrency(global.findMoneyboxById(id).increment) }}
+            {{
+              !global.findMoneyboxById(id).savings_amout
+                ? $t('savings-amount') + formatCurrency(global.findMoneyboxById(id).savingsAmount)
+                : "+" + $t('savings-amount') + $t('no-limit')
+            }}
           </p>
         </v-card-text>
       </v-col>

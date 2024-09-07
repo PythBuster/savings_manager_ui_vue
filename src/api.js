@@ -47,7 +47,6 @@ export async function getMoneyboxes() {
   }
 
   await checkResponse(response)
-
   const jsonData = await response.json()
 
   if (!jsonData || Object.keys(jsonData).length === 0) {
