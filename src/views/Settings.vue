@@ -1,5 +1,5 @@
 <template>
   <v-main>
-    <SavingsSettings />
+    <AppSettings />
   </v-main>
 </template>

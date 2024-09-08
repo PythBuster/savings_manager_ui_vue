@@ -1,5 +1,5 @@
 import { DataError, APIError } from '@/customerrors.js'
-import { Moneybox, TransactionLogs } from '@/models.js'
+import { Prioritylist, Moneybox, TransactionLogs } from '@/models.js'
 import global from '@/global.js'
 
 const serverURL = import.meta.env.VITE_BACKEND_URL
@@ -59,6 +59,49 @@ export async function getMoneyboxes() {
   const modifiedMoneyboxes = jsonData.moneyboxes.map(Moneybox.fromJSON)
 
   global.setMoneyboxes(modifiedMoneyboxes)
+}
+
+
+/**
+ * Retrieves the prioritylist.
+ * @returns {Promise<Prioritylist>} - A promise that resolves to a Prioritylist instance
+ */
+export async function getPrioritylist() {
+  const response = await fetch(`${serverURL}/api/prioritylist`, {
+    method: 'GET',
+    headers: receiveJsonHeaders
+  })
+
+  await checkResponse(response)
+
+  const jsonData = await response.json()
+
+  const prioritylist = jsonData.prioritylist.map(Prioritylist.fromJSON)
+  return prioritylist
+}
+
+
+/**
+ * Patches the prioritylist.
+ * @returns {Promise<Prioritylist>} - A promise that resolves to a Prioritylist instance
+ */
+export async function updatePrioritylist(newPrioritylist) {
+  const updatePayload = {
+    prioritylist: newPrioritylist
+  };
+
+  const response = await fetch(`${serverURL}/api/prioritylist`, {
+    method: 'PATCH',
+    headers: sendReceiveJsonHeaders,
+    body: JSON.stringify(updatePayload)
+  })
+
+  await checkResponse(response)
+
+  const jsonData = await response.json()
+
+  const prioritylist = jsonData.prioritylist.map(Prioritylist.fromJSON)
+  return prioritylist
 }
 
 /**
@@ -143,7 +186,6 @@ export async function updateMoneybox(
  * @param {number} options.goal - The savings goal for the new moneybox.
  * @param {number} options.increment - The savings increment for the new moneybox.
  * @param {boolean} [options.noLimit=false] - Flag to mark the new moneybox as having no savings limit.
- * @param {boolean} [options.isOverflow=false] - Flag to mark the new moneybox as overflow.
  * @returns {Promise<Moneybox>} - A promise that resolves to a new Moneybox instance
  */
 export async function addMoneybox({

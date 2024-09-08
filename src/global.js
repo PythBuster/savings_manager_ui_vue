@@ -57,6 +57,8 @@ function findMoneyboxById(id) {
   return moneyboxesMap.get(id)
 }
 
+
+
 /**
  * Adds a TransactionLogs instance to a specific Moneybox instance.
  * @param {Number} moneyboxId The ID of the Moneybox to which the TransactionLogs will be added

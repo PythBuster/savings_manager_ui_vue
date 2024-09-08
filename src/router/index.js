@@ -3,11 +3,9 @@ import Home from '@/views/Home.vue'
 import {
   getMoneyboxes,
   getMoneybox,
-  getTransactionLogs,
-  addMoneybox
+  getTransactionLogs
 } from '@/api.js'
 import global from '@/global.js'
-import { APIError } from '@/customerrors'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,7 +18,7 @@ const router = createRouter({
           try {
             await getMoneyboxes()
             global.moneyboxesLoaded = true
-
+<
             next()
           } catch (error) {
             console.error('Failed to fetch moneyboxes:', error)
@@ -89,33 +87,27 @@ const router = createRouter({
       }
     },
     {
-      path: '/priority',
+      path: '/prioritylist',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('@/views/Priority.vue'),
       beforeEnter: async (_to, _from, next) => {
-        if (!global.moneyboxesLoaded) {
-          try {
-            await getMoneyboxes()
-            global.moneyboxesLoaded = true
-            next()
-          } catch (error) {
-            console.error('Failed to fetch moneyboxes:', error)
-            // TODO: Show error message to user or redirect to error page
-            next(false)
-          }
-        } else {
+        try {
           next()
+        } catch (error) {
+          console.error('Failed to fetch moneyboxes:', error)
+          // TODO: Show error message to user or redirect to error page
+          next(false)
         }
       }
     },
     {
-      path: '/savingssettings',
+      path: '/settings',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/Savings.vue'),
+      component: () => import('@/views/Settings.vue'),
       beforeEnter: async (_to, _from, next) => {
         if (!global.moneyboxesLoaded) {
           try {
@@ -153,65 +145,6 @@ const router = createRouter({
             next()
           } catch (error) {
             console.error(`Failed to fetch moneybox with id ${id}:`, error)
-            // TODO: Show error message to user or redirect to error page
-            next(false)
-          }
-        } else {
-          next()
-        }
-      }
-    },
-    {
-      path: '/overflow',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/Overflow.vue'),
-      beforeEnter: async (_to, _from, next) => {
-        try {
-          if (!global.moneyboxesLoaded) {
-            await getMoneyboxes()
-            global.moneyboxesLoaded = true
-          }
-
-          let overflowMoneybox = global.moneyboxes.find(
-            (moneybox) => moneybox.is_overflow === true
-          )
-
-          if (!overflowMoneybox) {
-            await addMoneybox({
-              name: 'OVERFLOW',
-              isOverflow: true,
-              goal: 0,
-              increment: 0
-            })
-          }
-
-          if (overflowMoneybox.transactionLogs === null) {
-            await getTransactionLogs(overflowMoneybox)
-          }
-
-          next()
-        } catch (error) {
-          console.error('Error handling overflow moneybox:', error)
-          next(false)
-        }
-      }
-    },
-    {
-      path: '/editoverflow',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/EditOverflow.vue'),
-      beforeEnter: async (_to, _from, next) => {
-        if (!global.moneyboxesLoaded) {
-          try {
-            await getMoneyboxes()
-            global.moneyboxesLoaded = true
-            next()
-          } catch (error) {
-            console.error('Failed to fetch moneyboxes:', error)
             // TODO: Show error message to user or redirect to error page
             next(false)
           }

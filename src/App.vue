@@ -120,8 +120,8 @@ const languages = [
 
 const menuItems = computed(() => [
   { title: t('my-envelopes'), path: '/' },
-  { title: t('priority-list'), path: '/priority' },
-  { title: t('savings-settings'), path: '/savingssettings' }
+  { title: t('priority-list'), path: '/prioritylist' },
+  { title: t('settings'), path: '/settings' }
 ])
 
 function languageSelected(language) {

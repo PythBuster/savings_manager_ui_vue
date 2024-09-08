@@ -10,7 +10,7 @@
     <v-row>
       <v-col
         v-for="(card, index) in sortedMoneyboxes.slice(1,)"
-        :key="index"
+        :key="card.id"
         cols="12"
         sm="6"
         md="4"
@@ -40,9 +40,7 @@ import { useDisplay } from 'vuetify'
 const display = ref(useDisplay())
 
 const sortedMoneyboxes = computed(() => {
-  return global.moneyboxes
-    .filter((moneybox) => !moneybox.is_overflow)
-    .sort((a, b) => a.priority - b.priority)
+  return [...global.moneyboxes].sort((a, b) => a.priority - b.priority);
 })
 
 </script>

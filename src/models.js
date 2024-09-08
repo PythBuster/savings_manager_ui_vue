@@ -1,5 +1,68 @@
 import { isValidISO8601 } from '@/utils.js'
 
+export class Prioritylist {
+  /** @member {Number} moneyboxId */
+  _moneyboxId
+  /** @member {String} name */
+  _name
+  /** @member {Number} priority */
+  _priority
+
+  /**
+   * Creates an instance of Prioritylist.
+   * @param {Number} moneyboxId - The unique identifier for the moneybox
+   * @param {String} name - The name of the moneybox
+   * @param {Number} priority - The priority of the moneybox
+   * */
+  constructor(
+    moneyboxId,
+    name,
+    priority
+  ) {
+    this.moneyboxId = moneyboxId
+    this.name = name
+    this.priority = priority
+  }
+
+  /**
+   * Static method to create a Prioritylist instance from a JSON object.
+   * @param {Object} rawPrioritylist A JSON object with properties matching the Prioritylist class.
+   * @returns {Priortylist} A new instance of Prioritylist.
+   */
+  static fromJSON(rawPrioritylist) {
+    return new Prioritylist(
+      rawPrioritylist.moneyboxId,
+      rawPrioritylist.name,
+      rawPrioritylist.priority
+    )
+  }
+
+  get moneyboxId() {
+    return this._moneyboxId
+  }
+  set moneyboxId(value) {
+    if (!Number.isInteger(value)) throw new TypeError('id must be an integer')
+    this._moneyboxId = value
+  }
+
+  get name() {
+    return this._name
+  }
+  set name(value) {
+    if (typeof value !== 'string') throw new TypeError('name must be a string')
+    this._name = value
+  }
+
+  get priority() {
+    return this._priority
+  }
+  set priority(value) {
+    if (!Number.isInteger(value) || value < 0)
+      throw new RangeError('priority must be an integer and >= 1')
+    this._priority = value
+  }
+}
+
 
 export class Moneybox {
   /** @member {Number} id */

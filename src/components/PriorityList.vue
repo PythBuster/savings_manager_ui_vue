@@ -13,7 +13,7 @@
           <v-list>
             <v-list-item
               v-for="(item, index) in items"
-              :key="item.id"
+              :key="item.moneyboxId"
               :class="{ 'v-list-item--active': selectedIndex === index }"
               @click="selectItem(index)"
               draggable="true"
@@ -21,7 +21,7 @@
               @dragover.prevent
               @drop="drop(index)"
             >
-              {{ item.name }}
+              {{ item.name }} (ID: {{ item.moneyboxId }})
             </v-list-item>
           </v-list>
           <v-card-actions>
@@ -57,8 +57,11 @@
 import router from '@/router/index.js'
 import { ref, onMounted } from 'vue'
 import global from '@/global.js'
-import { updateMoneybox } from '@/api.js'
+import { updatePrioritylist } from '@/api.js'
 import { useDisplay } from 'vuetify'
+import {
+  getPrioritylist
+} from '@/api.js'
 
 const display = ref(useDisplay())
 
@@ -105,35 +108,55 @@ const moveDown = () => {
 }
 
 async function saveClicked() {
+
+  let newPrioritylist = [];
+
   for (let index = 0; index < items.value.length; index++) {
     const item = items.value[index]
     const newPriority = index + 1 // Calculate the new priority based on array position
 
-    const moneyboxInstance = global.findMoneyboxById(item.id)
+      // Füge ein neues Objekt zur Liste hinzu
+    newPrioritylist.push({
+      priority: newPriority,
+      moneyboxId: item.moneyboxId // Nutze moneyboxId statt id
+    });
+  }
+
+  await updatePrioritylist(newPrioritylist)
+
+  for (let index = 0; index < items.value.length; index++) {
+    const item = items.value[index]
+    const moneyboxInstance = global.findMoneyboxById(item.moneyboxId)
+    const newPriority = index + 1 // Calculate the new priority based on array position
 
     if (moneyboxInstance) {
-      try {
-        // Update the moneybox with the new priority
-        await updateMoneybox(moneyboxInstance, { newPriority: newPriority })
-      } catch (error) {
-        console.error(
-          `Failed to update priority for ${moneyboxInstance.name}:`,
-          error
-        )
+        try {
+          // Update the moneybox with the new priority
+          moneyboxInstance["priority"] = newPriority
+        } catch (error) {
+          console.error(
+            `Failed to update priority for ${moneyboxInstance.name}:`,
+            error
+          )
+        }
+      } else {
+        console.error(`Moneybox with id ${item.id} not found.`)
       }
-    } else {
-      console.error(`Moneybox with id ${item.id} not found.`)
-    }
   }
+
   router.push({
     path: '/'
   })
 }
 
-onMounted(() => {
-  items.value = global.moneyboxes
-    .filter((moneybox) => !moneybox.is_overflow) // Exclude moneyboxes with is_overflow set to true
-    .map(({ id, name, priority }) => ({ id, name, priority })) // Extract needed properties
-    .sort((a, b) => a.priority - b.priority) // Sort by priority
+onMounted(async () => {
+  try {
+    const prioritylist = await getPrioritylist()
+    items.value = prioritylist.map(
+      ({ moneyboxId, name, priority }) => ({ moneyboxId, name, priority })
+    ) // Extract needed properties
+  } catch (error) {
+    console.error('Failed to fetch priority list:', error)
+  }
 })
 </script>
