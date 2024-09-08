@@ -92,19 +92,16 @@ async function createClicked() {
     try {
       await addMoneybox({
         name: envelopeName.value,
-        goal: targetAmount.value,
-        increment: saveAmount.value,
-        noLimit: noLimit.value
+        savingsTarget: targetAmount.value,
+        savingsAmount: saveAmount.value
       })
-      router.push({
-        path: '/priority'
-      })
+      router.back();
     } catch (error) {
       if (noLimit.value) {
         targetAmount.value = null
       }
       if (error instanceof APIError) {
-        if (error.status === 405) {
+        if (error.status === 405 || error.status === 409) {
           errorMessage.value = t('error-duplicate-name', {
             name: envelopeName.value
           })

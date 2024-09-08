@@ -309,9 +309,8 @@ async function handleDeleteConfirm() {
 
       showDeleteDialog.value = false
 
-      router.push({
-        path: '/'
-      })
+      router.back();
+
     } catch (error) {
       if (error instanceof APIError) {
         if (error.status === 404) {

@@ -154,12 +154,10 @@ export async function updateMoneybox(
  */
 export async function addMoneybox({
   name,
-  goal,
-  increment,
-  noLimit = false,
-  isOverflow = false
+  savingsAmount,
+  savingsTarget
 }) {
-  if (Object.keys({ name, goal, increment }).length === 0) {
+  if (Object.keys({ name, savingsAmount, savingsTarget }).length === 0) {
     throw new Error(
       'The options object has to include name, goal and increment.'
     )
@@ -168,10 +166,8 @@ export async function addMoneybox({
   const addPayload = {}
 
   addPayload.name = name
-  addPayload.goal = goal
-  addPayload.increment = increment
-  addPayload.is_overflow = isOverflow
-  addPayload.no_limit = noLimit
+  addPayload.savingsTarget = savingsTarget
+  addPayload.savingsTarget = savingsTarget
 
   const response = await fetch(`${serverURL}/api/moneybox`, {
     method: 'POST',
