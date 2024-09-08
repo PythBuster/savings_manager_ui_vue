@@ -402,11 +402,6 @@ export async function getSettings() {
   if (!jsonData || Object.keys(jsonData).length === 0) {
     throw new DataError('No result from API')
   }
-  if (
-    !jsonData.savingsAmount
-  ) {
-    throw new DataError('Invalid data from API')
-  }
 
   global.createAndSetSettings(jsonData)
 }
