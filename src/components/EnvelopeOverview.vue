@@ -24,11 +24,11 @@
               <td>{{ formatCurrency(global.findMoneyboxById(id).balance) }}</td>
             </tr>
             <tr>
-              <td>{{ $t('goal-amount') }}</td>
+              <td>{{ $t('savings-target') }}</td>
               <td>
                 {{
-                  !global.findMoneyboxById(id).no_limit
-                    ? formatCurrency(global.findMoneyboxById(id).goal)
+                  global.findMoneyboxById(id).savingsTarget !== null
+                    ? formatCurrency(global.findMoneyboxById(id).savingsTarget)
                     : $t('no-limit')
                 }}
               </td>
@@ -36,7 +36,7 @@
             <tr>
               <td>{{ $t('savings-amount') }}:</td>
               <td>
-                {{ formatCurrency(global.findMoneyboxById(id).increment) }}
+                {{ formatCurrency(global.findMoneyboxById(id).savingsAmount) }}
               </td>
             </tr>
           </tbody>
@@ -72,21 +72,7 @@
       <v-col cols="12" lg="9">
         <TransactionLogs :id="id" :showAll="false" />
       </v-col>
-      <!-- Conditional classes and forced unmount/remount of BarChart with v-if
-      to ensure proper size/aspect ratio of chart on page (re)load and when chart wraps
-      back and forth between below amd right of the transaction table on window resize -->
-      <v-col
-        cols="12"
-        lg="3"
-        :class="display.lgAndUp ? '' : 'position-relative pt-50-percent'"
-      >
-        <BarChart :id="id" v-if="display.lgAndUp" />
-        <BarChart
-          :id="id"
-          v-if="!display.lgAndUp"
-          class="position-absolute top-0"
-        />
-      </v-col>
+      
     </v-row>
     <v-dialog
       v-if="global.findMoneyboxById(id)"

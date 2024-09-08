@@ -48,9 +48,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" lg="9">
-        <TransactionLogs
-          :id="overflow ? overflow.id : undefined"
-          :showAll="false"
+        <TransactionLogs :showAll="true"
         />
       </v-col>
       <!-- Conditional classes and forced unmount/remount of BarChart with v-if

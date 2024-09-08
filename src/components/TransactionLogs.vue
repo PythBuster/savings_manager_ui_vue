@@ -27,38 +27,14 @@
           :items="transactionItems"
           :search="search"
         >
-          <template v-slot:[`item.action`]="{ item }">
-            <v-icon
-              v-if="
-                !showAll &&
-                item.trigger === $t('manual') &&
-                item.action !== '---'
-              "
-              >mdi-pencil</v-icon
-            >
-            <v-icon
-              v-else-if="
-                !showAll &&
-                item.trigger !== $t('manual') &&
-                item.action !== '---'
-              "
-              >mdi-cogs</v-icon
-            >
-            <v-icon
-              v-if="
-                !showAll && item.type === $t('direct') && item.action !== '---'
-              "
-              >mdi-transfer-right</v-icon
-            >
-            <v-icon
-              v-else-if="
-                !showAll && item.type !== $t('direct') && item.action !== '---'
-              "
-              >mdi-multicast</v-icon
-            >
-
-            {{ item.action }}
+          <template v-slot:[`item.type`]="{ item }">
+            {{ item.type }}
           </template>
+
+          <template v-slot:[`item.trigger`]="{ item }">
+            {{ item.trigger }}
+          </template>
+
           <template v-slot:[`item.rawAmount`]="{ item }">
             <span
               :class="
@@ -109,9 +85,7 @@ const numberOfEntries = 4
 const generatePlaceholderData = (count) =>
   Array.from({ length: count }, () => ({
     dateTime: '---',
-    action: '---',
     description: '---',
-    origin: '---',
     trigger: '---',
     type: '---',
     amount: '---',
@@ -126,21 +100,12 @@ const tableHeaders = computed(() => {
       key: 'rawDateTime',
       sortable: props.showAll
     },
-    {
-      title: t('action'),
-      value: 'action',
-      sortable: props.showAll
-    },
-    { title: t('description'), value: 'description', sortable: props.showAll },
-    { title: t('origin'), value: 'origin', sortable: props.showAll }
-  ]
+    { title: t('type'), value: 'type', sortable: props.showAll },
 
-  if (props.showAll) {
-    headers = headers.concat([
-      { title: t('trigger'), value: 'trigger', sortable: props.showAll },
-      { title: t('type'), value: 'type', sortable: props.showAll }
-    ])
-  }
+    { title: t('trigger'), value: 'trigger', sortable: props.showAll },
+
+    { title: t('description'), value: 'description', sortable: props.showAll },
+  ]
 
   headers = headers.concat([
     {
@@ -163,48 +128,34 @@ const tableHeaders = computed(() => {
 })
 
 const transactionItems = computed(() => {
+
   if (!props.id || !global.findMoneyboxById(props.id).transactionLogs) {
     return props.showAll ? [] : generatePlaceholderData(numberOfEntries)
   }
 
   const transactionData = global.findMoneyboxById(props.id).transactionLogs
+
   const entries = props.showAll
     ? transactionData.entries
-    : transactionData.entries.slice(-numberOfEntries)
+    : transactionData.entries.slice(0, numberOfEntries)
 
   let items = entries.map((entry) => {
-    const action =
-      entry.amount > 0 && entry.counterparty_moneybox_id === null
-        ? t('deposit2')
-        : entry.amount <= 0 && entry.counterparty_moneybox_id === null
-          ? t('withdrawal')
-          : t('transfer2')
-
-    let origin = ''
-    if (action === t('transfer2')) {
-      origin = entry.counterparty_moneybox_is_overflow
-        ? t('overflow-envelope')
-        : entry.counterparty_moneybox_name
-    }
-
     const trigger =
-      entry.transaction_trigger === 'manually' ? t('manual') : t('automatic')
+      entry.transactionTrigger === 'manually' ? t('manual') : t('automatic')
 
     const type =
-      entry.transaction_type === 'direct' ? t('direct') : t('distribution')
+      entry.transactionType === 'direct' ? t('direct') : t('distribution')
 
     return {
-      dateTime: formatDateTime(entry.created_at),
-      action: action,
+      dateTime: formatDateTime(entry.createdAt),
       description: entry.description,
-      origin: origin,
       trigger: trigger,
       type: type,
       amount: formatCurrency(entry.amount),
       total: formatCurrency(entry.balance),
       rawAmount: entry.amount,
       rawTotal: entry.balance,
-      rawDateTime: entry.created_at
+      rawDateTime: entry.createdAt
     }
   })
 
