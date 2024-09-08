@@ -9,7 +9,7 @@
     </v-row>
     <v-row>
       <v-col
-        v-for="(card, index) in sortedMoneyboxes"
+        v-for="(card, index) in sortedMoneyboxes.slice(1,)"
         :key="index"
         cols="12"
         sm="6"
@@ -23,8 +23,10 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" sm="6">
-        <Overflow :currentAmount="overflow ? overflow.balance : 0" />
+      <v-col cols="12" sm="6"
+      :key="-1"
+      >
+        <Envelope :id="sortedMoneyboxes[0].id" />      
       </v-col>
     </v-row>
   </v-container>
@@ -43,7 +45,4 @@ const sortedMoneyboxes = computed(() => {
     .sort((a, b) => a.priority - b.priority)
 })
 
-const overflow = computed(() => {
-  return global.moneyboxes.find((moneybox) => moneybox.is_overflow === true)
-})
 </script>
