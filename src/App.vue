@@ -156,5 +156,7 @@ onMounted(() => {
     locale.value = savedLocale.toLowerCase()
     selectedLanguage.value = savedLocale
   }
+
 })
+
 </script>

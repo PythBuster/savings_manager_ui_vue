@@ -15,6 +15,7 @@ const sendReceiveJsonHeaders = new Headers({
 
 async function checkResponse(response) {
   if (!response.ok) {
+  
     let errorDetails = null
     if (response.status !== 500) {
       try {
@@ -419,16 +420,6 @@ export async function getSettings() {
  * @returns {Promise<void>} A promise that resolves when the settings have been successfully updated.
  */
 export async function updateSettings(patchData) {
-  // savings_amount 0 is valid!
-  if (
-    (patchData.savingsAmount === undefined ||
-      patchData.savingsAmount === null)
-  ) {
-    throw new DataError(
-      'Must provide savingsAmount'
-    )
-  }
-
   const response = await fetch(`${serverURL}/api/settings`, {
     method: 'PATCH',
     headers: sendReceiveJsonHeaders,
@@ -439,21 +430,36 @@ export async function updateSettings(patchData) {
 
   const jsonData = await response.json()
 
-  if (!jsonData || Object.keys(jsonData).length === 0) {
-    throw new DataError('No result from API')
-  }
-  if (
-    !jsonData.savingsAmount
-  ) {
-    throw new DataError('Invalid data from API')
-  }
-
   // savings_amount 0 is valid!
   if (
     patchData.savingsAmount !== undefined &&
     patchData.savingsAmount !== null
   ) {
     global.settings.value.savingsAmount = jsonData.savingsAmount
+  }
+
+  if (
+    patchData.isAutomatedSavingActive !== undefined &&  patchData.isAutomatedSavingActive !== null
+  ) {
+    global.settings.value.isAutomatedSavingActive = jsonData.isAutomatedSavingActive
+  }
+
+  if (
+    patchData.sendReportsViaEmail !== undefined &&  patchData.sendReportsViaEmail !== null
+  ) {
+    global.settings.value.sendReportsViaEmail = jsonData.sendReportsViaEmail
+  }
+
+  if (
+    patchData.overflowMoneyboxAutomatedSavingsMode !== undefined && patchData.overflowMoneyboxAutomatedSavingsMode !== null
+  ) {
+    global.settings.value.overflowMoneyboxAutomatedSavingsMode = jsonData.overflowMoneyboxAutomatedSavingsMode
+  }
+
+  if (
+    patchData.userEmailAddress !== undefined
+  ) {
+    global.settings.value.userEmailAddress = jsonData.userEmailAddress
   }
 }
 

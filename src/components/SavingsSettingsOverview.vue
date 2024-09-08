@@ -1,7 +1,7 @@
 <template>
   <v-card variant="outlined">
     <v-card-item>
-      <v-card-title>{{ $t('savings-settings') }}</v-card-title>
+      <v-card-title>{{ $t('settings') }}</v-card-title>
     </v-card-item>
 
     <v-card-text>

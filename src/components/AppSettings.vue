@@ -16,23 +16,40 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-card>
-              <v-list v-model="selectedMode">
-                <v-list-item
-                  v-for="(mode, index) in modes"
-                  :key="index"
-                  :value="mode.value"
-                  @click="selectedMode = mode.value"
-                  :class="{
-                    'v-list-item--active': selectedMode === mode.value
-                  }"
-                >
-                  <v-list-item-title>{{ mode.label }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-card>
+            <v-checkbox :label="$t('enable-automated-savings')" v-model="saveAutoSaveEnable" />
           </v-col>
         </v-row>
+
+        <v-row>
+          <v-col>
+            <v-checkbox 
+            :label="$t('enable-receiving-html-emails')" v-model="saveReceivingHtmlEmails"
+            />
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col>
+          <v-text-field
+            label="Email address"
+            :placeholder="$t('email-placeholder')"
+            v-model="saveUsersEmailAddress"
+          ></v-text-field>
+        </v-col>
+       </v-row>
+
+        <v-row>
+          <v-col>
+          <v-select
+            :label="$t('overflow-moneybox-automated-savings-mode')"
+            :items="['collect', 'add', 'fill']"
+            v-model="selectedOption"
+          ></v-select>
+          </v-col>
+        </v-row>
+
+
+
       </v-col>
       <v-col
         v-if="display.mdAndUp"
@@ -42,7 +59,6 @@
         offset-md="1"
         class="d-flex flex-column justify-center"
       >
-        <SavingsSettingsOverview />
       </v-col>
       <v-col
         v-if="!display.mdAndUp"
@@ -80,7 +96,7 @@
 
 <script setup>
 import router from '@/router/index.js'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import global from '@/global.js'
 import { updateSettings } from '@/api.js'
 import { useDisplay } from 'vuetify'
@@ -94,23 +110,69 @@ const { t } = useI18n({})
 const showErrorDialog = ref(false)
 const errorMessage = ref('')
 
-const saveAmount = ref(global.settings.value.savingsAmount)
+const origSavingsAmount = global.settings.value.savingsAmount / 100
+const saveAmount = ref(origSavingsAmount)
+const isAutomatedSavingActive = global.settings.value.isAutomatedSavingActive
+const saveAutoSaveEnable = ref(isAutomatedSavingActive)
+const sendReportsViaEmail = global.settings.value.sendReportsViaEmail
+const saveReceivingHtmlEmails = ref(sendReportsViaEmail)
+const overflowMoneyboxAutomatedSavingsMode = global.settings.value.overflowMoneyboxAutomatedSavingsMode
+const usersEmailAddress = global.settings.value.userEmailAddress
+const saveUsersEmailAddress = ref(usersEmailAddress)
+
+const modesMap = new Map();
+modesMap.set("collect", "collect")
+modesMap.set("add_to_automated_savings_amount", "add")
+modesMap.set("fill_up_limited_moneyboxes", "fill")
+
+const reversedModesMap = new Map();
+reversedModesMap.set("collect", "collect")
+reversedModesMap.set("add", "add_to_automated_savings_amount")
+reversedModesMap.set("fill", "fill_up_limited_moneyboxes")
+
+const selectedOption = ref(modesMap.get(overflowMoneyboxAutomatedSavingsMode))
 
 async function saveClicked() {
   const updates = {}
 
-  if (saveAmount.value !== global.settings.value.savingsAmount) {
-    updates.savingsAmount = saveAmount.value
+  if (saveAmount.value !== global.settings.value.savingsAmount / 100) {
+    updates.savingsAmount = Math.trunc(saveAmount.value * 100)
   }
 
+  if (saveAutoSaveEnable.value !== global.settings.value.isAutomatedSavingActive) {
+    updates.isAutomatedSavingActive = saveAutoSaveEnable.value
+  }
+
+  if (saveReceivingHtmlEmails.value !== global.settings.value.sendReportsViaEmail) {
+    updates.sendReportsViaEmail = saveReceivingHtmlEmails.value
+  }
+
+  if (selectedOption.value !== modesMap.get(overflowMoneyboxAutomatedSavingsMode)) {
+    updates.overflowMoneyboxAutomatedSavingsMode = reversedModesMap.get(selectedOption.value)
+  }
+
+  if (saveUsersEmailAddress.value !== global.settings.value.userEmailAddress) {
+    updates.userEmailAddress = saveUsersEmailAddress.value
+
+    if (updates.userEmailAddress == "") {
+      updates.userEmailAddress = null
+    }
+  }
+ 
+  
   if (Object.keys(updates).length === 0) {
     errorMessage.value = t('error-no-changes')
     showErrorDialog.value = true
   } else {
-    await updateSettings(updates)
-    router.push({
-      path: '/'
-    })
+    try{
+      await updateSettings(updates)
+      router.back()
+
+    }  catch (error) {
+      errorMessage.value = "Error while updating."
+      showErrorDialog.value = true
+    }
   }
+
 }
 </script>

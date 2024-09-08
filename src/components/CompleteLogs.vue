@@ -34,8 +34,6 @@ const route = useRoute()
 const id = Number(route.params.id)
 
 function backClicked() {
-  router.push({
-    path: `/envelope/${id}`
-  })
+  router.back()
 }
 </script>

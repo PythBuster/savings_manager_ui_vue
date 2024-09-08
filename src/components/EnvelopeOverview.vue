@@ -23,7 +23,7 @@
               <td>{{ $t('balance') }}</td>
               <td>{{ formatCurrency(global.findMoneyboxById(id).balance) }}</td>
             </tr>
-            <tr>
+            <tr v-if="global.findMoneyboxById(id).priority != 0">
               <td>{{ $t('savings-target') }}</td>
               <td>
                 {{
@@ -33,7 +33,7 @@
                 }}
               </td>
             </tr>
-            <tr>
+            <tr v-if="global.findMoneyboxById(id).priority != 0">
               <td>{{ $t('savings-amount') }}:</td>
               <td>
                 {{ formatCurrency(global.findMoneyboxById(id).savingsAmount) }}
