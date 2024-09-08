@@ -83,31 +83,25 @@ export async function getMoneybox(moneybox_id) {
  * Updates name, priority, goal increment or no_limit of a specific moneybox
  * @param {Moneybox} moneyboxInstance - The Moneybox instance to update.
  * @param {Object} options - The options object containing update parameters.
- * @param {string} [options.newName] - The new name for the moneybox. If undefined, the name won't be updated.
- * @param {number} [options.newPriority] - The new priority for the moneybox. If undefined, the priority won't be updated.
- * @param {goal}  [options.newGoal] - The new savings goal for the moneybox. If undefined, the savings goal won't be updated.
- * @param {increment}  [options.newIncrement] - The new savings increment for the moneybox. If undefined, the savings increment won't be updated.
- * @param {no_limit}  [options.newNoLimit] - The new no limit flag for the moneybox. If undefined, the no limit flag won't be updated.
+ * @param {name} [options.newName] - The new name for the moneybox. If undefined, the name won't be updated.
+ * @param {savingsTarget}  [options.newSavingsTarget] - The new savings target for the moneybox. If undefined, the savings goal won't be updated.
+ * @param {savingsAmount}  [options.savingsAmount] - The new savings increment for the moneybox. If undefined, the savings increment won't be updated.
  * @returns {Promise<void>} A promise that resolves once the moneybox has been updated.
  */
 export async function updateMoneybox(
   moneyboxInstance,
-  { newName, newPriority, newGoal, newIncrement, newNoLimit } = {}
+  { newName, newSavingsTarget, newSavingsAmount } = {}
 ) {
   const updates = {
     newName: 'name',
-    newPriority: 'priority',
-    newGoal: 'goal',
-    newIncrement: 'increment',
-    newNoLimit: 'no_limit'
+    newSavingsTarget: 'savingsTarget',
+    newSavingsAmount: 'savingsAmount'
   }
 
   const updatePayload = Object.entries({
     newName,
-    newPriority,
-    newGoal,
-    newIncrement,
-    newNoLimit
+    newSavingsTarget,
+    newSavingsAmount
   }).reduce((payload, [key, value]) => {
     if (value !== undefined) {
       payload[updates[key]] = value

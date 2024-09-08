@@ -68,15 +68,11 @@ const errorMessage = ref('')
 
 const originalTitle = global.findMoneyboxById(props.id).name
 const newTitle = ref(originalTitle)
-const originalTargetAmount = global.findMoneyboxById(props.id).goal
-const newTargetAmount =
-  global.findMoneyboxById(props.id).no_limit === true
-    ? ref(null)
-    : ref(originalTargetAmount)
-const originalSaveAmount = global.findMoneyboxById(props.id).increment
+const originalTargetAmount = global.findMoneyboxById(props.id).savingsTarget !== null ? global.findMoneyboxById(props.id).savingsTarget / 100 : null
+const newTargetAmount = ref(originalTargetAmount)
+const originalSaveAmount = global.findMoneyboxById(props.id).savingsAmount / 100
 const newSaveAmount = ref(originalSaveAmount)
-const originalNoLimit = global.findMoneyboxById(props.id).no_limit
-const newNoLimit = ref(originalNoLimit)
+const newNoLimit = ref(originalTargetAmount !== null ? null : originalTargetAmount);
 
 watch(newNoLimit, (currentValue) => {
   if (currentValue) {
@@ -93,29 +89,22 @@ async function saveClicked() {
     changes.newName = newTitle.value
   }
 
-  let effectiveNewTargetAmount = newNoLimit.value ? 0 : newTargetAmount.value
-  if (effectiveNewTargetAmount !== originalTargetAmount) {
-    changes.newGoal = effectiveNewTargetAmount
+  let effectiveNewTargetAmount = newTargetAmount.value
+
+  if (effectiveNewTargetAmount !== null){
+    effectiveNewTargetAmount = Math.trunc(effectiveNewTargetAmount * 100)
   }
 
-  if (newSaveAmount.value !== originalSaveAmount) {
-    changes.newIncrement =
-      newSaveAmount.value === null ? 0 : newSaveAmount.value
-  }
-
-  if (newNoLimit.value !== originalNoLimit) {
-    changes.newNoLimit = newNoLimit.value
-  }
-
+  changes.newSavingsTarget = effectiveNewTargetAmount
+  changes.newSavingsAmount = Math.trunc(newSaveAmount.value * 100)
+  
   if (Object.keys(changes).length === 0) {
     errorMessage.value = t('error-no-changes')
     showErrorDialog.value = true
   } else {
     try {
       await updateMoneybox(global.findMoneyboxById(props.id), changes)
-      router.push({
-        path: `/envelope/${props.id}`
-      })
+      router.back()
     } catch (error) {
       if (error instanceof APIError) {
         if (error.status === 404) {
@@ -140,8 +129,6 @@ async function saveClicked() {
 }
 
 function backClicked() {
-  router.push({
-    path: `/envelope/${props.id}`
-  })
+  router.back()
 }
 </script>

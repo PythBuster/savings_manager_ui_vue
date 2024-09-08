@@ -59,7 +59,7 @@
           $t('transfer')
         }}</v-btn>
       </v-col>
-      <v-col cols="auto" class="d-flex flex-column">
+      <v-col v-if="global.findMoneyboxById(id).priority != 0" cols="auto" class="d-flex flex-column">
         <v-btn @click="changeSettingsClicked" class="mb-2">{{
           $t('change-settings')
         }}</v-btn>
