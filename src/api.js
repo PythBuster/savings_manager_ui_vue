@@ -204,7 +204,7 @@ export async function addMoneybox({
 
   addPayload.name = name
   addPayload.savingsTarget = savingsTarget
-  addPayload.savingsTarget = savingsTarget
+  addPayload.savingsAmount = savingsAmount
 
   const response = await fetch(`${serverURL}/api/moneybox`, {
     method: 'POST',

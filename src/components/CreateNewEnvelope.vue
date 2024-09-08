@@ -83,8 +83,8 @@ async function createClicked() {
     errorMessage.value = t('error-empty-name')
     showErrorDialog.value = true
   } else {
-    if (targetAmount.value === null) {
-      targetAmount.value = 0
+    if (targetAmount.value !== null) {
+      targetAmount.value = Math.trunc(targetAmount.value * 100)
     }
     if (saveAmount.value === null) {
       saveAmount.value = 0
@@ -93,7 +93,7 @@ async function createClicked() {
       await addMoneybox({
         name: envelopeName.value,
         savingsTarget: targetAmount.value,
-        savingsAmount: saveAmount.value
+        savingsAmount: Math.trunc(saveAmount.value * 100)
       })
       router.back();
     } catch (error) {
