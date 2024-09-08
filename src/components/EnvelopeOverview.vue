@@ -132,7 +132,10 @@ import {
 import { useI18n } from 'vue-i18n'
 import { APIError } from '@/customerrors.js'
 import { useDisplay } from 'vuetify'
+import { useRoute } from 'vue-router';
+import { computed } from 'vue';
 
+const route = useRoute();
 const display = ref(useDisplay())
 
 // t used for dialogs, otherwise $t globally available
@@ -143,6 +146,8 @@ const showDeleteDialog = ref(false)
 const props = defineProps({
   id: Number
 })
+
+const id = computed(() => props.id || route.params.id); // Nutzt die ID aus den Props oder der Route
 
 const showTransactionDialog = ref(false)
 const showTransferDialog = ref(false)
@@ -160,7 +165,7 @@ watch(showErrorDialog, (newValue) => {
 
 function changeSettingsClicked() {
   router.push({
-    path: `/editenvelope/${props.id}`
+    path: `/editenvelope/${id.value}`
   })
 }
 
@@ -181,21 +186,21 @@ async function handleTransactionConfirm(transactionDetails) {
   if (transactionDetails.action === 'deposit') {
     try {
       await depositIntoMoneybox(
-        global.findMoneyboxById(props.id),
+        global.findMoneyboxById(id.value),
         transactionDetails.amount,
         transactionDetails.description
       )
       // update transaction logs
-      await getTransactionLogs(global.findMoneyboxById(props.id))
+      await getTransactionLogs(global.findMoneyboxById(id.value))
     } catch (error) {
       if (error instanceof APIError) {
         if (error.status === 404) {
           errorMessage.value = t('error-not-found', {
-            name: global.findMoneyboxById(props.id).name
+            name: global.findMoneyboxById(id.value).name
           })
         } else if (error.status === 405) {
           errorMessage.value = t('error-not-enough-money', {
-            name: global.findMoneyboxById(props.id).name
+            name: global.findMoneyboxById(id.value).name
           })
         } else if (error.status === 422) {
           errorMessage.value = t('error-negative-amount')
@@ -210,21 +215,21 @@ async function handleTransactionConfirm(transactionDetails) {
   } else {
     try {
       await withdrawFromMoneybox(
-        global.findMoneyboxById(props.id),
+        global.findMoneyboxById(id.value),
         transactionDetails.amount,
         transactionDetails.description
       )
       // update transaction logs
-      await getTransactionLogs(global.findMoneyboxById(props.id))
+      await getTransactionLogs(global.findMoneyboxById(id.value))
     } catch (error) {
       if (error instanceof APIError) {
         if (error.status === 404) {
           errorMessage.value = t('error-not-found', {
-            name: global.findMoneyboxById(props.id).name
+            name: global.findMoneyboxById(id.value).name
           })
         } else if (error.status === 405) {
           errorMessage.value = t('error-not-enough-money', {
-            name: global.findMoneyboxById(props.id).name
+            name: global.findMoneyboxById(id.value).name
           })
         } else if (error.status === 422) {
           errorMessage.value = t('error-negative-amount')
@@ -242,13 +247,13 @@ async function handleTransactionConfirm(transactionDetails) {
 async function handleTransferConfirm(transferSelection) {
   try {
     await transferFromMoneyboxToMoneybox(
-      global.findMoneyboxById(props.id),
+      global.findMoneyboxById(id.value),
       transferSelection.amount,
       global.findMoneyboxById(transferSelection.selectedId),
       transferSelection.description
     )
     // update transaction logs
-    await getTransactionLogs(global.findMoneyboxById(props.id))
+    await getTransactionLogs(global.findMoneyboxById(id.value))
     await getTransactionLogs(
       global.findMoneyboxById(transferSelection.selectedId)
     )
@@ -256,11 +261,11 @@ async function handleTransferConfirm(transferSelection) {
     if (error instanceof APIError) {
       if (error.status === 404) {
         errorMessage.value = t('error-not-found', {
-          name: global.findMoneyboxById(props.id).name
+          name: global.findMoneyboxById(id.value).name
         })
       } else if (error.status === 405) {
         errorMessage.value = t('error-not-enough-money', {
-          name: global.findMoneyboxById(props.id).name
+          name: global.findMoneyboxById(id.value).name
         })
       } else if (error.status === 422) {
         errorMessage.value = t('error-negative-amount')
@@ -275,7 +280,7 @@ async function handleTransferConfirm(transferSelection) {
 }
 
 async function handleDeleteConfirm() {
-  const deletedMoneyboxId = props.id
+  const deletedMoneyboxId = id.value
   const deletedMoneybox = global.findMoneyboxById(deletedMoneyboxId)
 
   if (deletedMoneybox.balance > 0) {
@@ -311,7 +316,7 @@ async function handleDeleteConfirm() {
       if (error instanceof APIError) {
         if (error.status === 404) {
           errorMessage.value = t('error-not-found', {
-            name: global.findMoneyboxById(props.id).name
+            name: global.findMoneyboxById(id.value).name
           })
         } else if (error.status === 405) {
           errorMessage.value = t('error-delete-with-balance')
@@ -330,7 +335,7 @@ async function handleDeleteConfirm() {
 
 function viewCompleteClicked() {
   router.push({
-    path: `/logs/${props.id}`
+    path: `/logs/${id.value}`
   })
 }
 </script>

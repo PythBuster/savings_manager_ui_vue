@@ -21,19 +21,6 @@ const router = createRouter({
             await getMoneyboxes()
             global.moneyboxesLoaded = true
 
-            const overflowExists = global.moneyboxes.some(
-              (moneybox) => moneybox.is_overflow === true
-            )
-
-            if (!overflowExists) {
-              await addMoneybox({
-                name: 'OVERFLOW',
-                isOverflow: true,
-                goal: 0,
-                increment: 0
-              })
-            }
-
             next()
           } catch (error) {
             console.error('Failed to fetch moneyboxes:', error)
@@ -53,26 +40,11 @@ const router = createRouter({
       component: () => import('@/views/Envelope.vue'),
       beforeEnter: async (to, _from, next) => {
         const id = Number(to.params.id)
-        if (!global.findMoneyboxById(id)) {
+        const moneybox = global.findMoneyboxById(id)
+        
+        if (moneybox) {
           try {
-            const moneybox = await getMoneybox(id)
-            if (moneybox.is_overflow) {
-              throw new APIError('Overflow moneybox cannot be accessed by id')
-            }
-            global.addMoneybox(moneybox)
-            await getTransactionLogs(global.findMoneyboxById(id))
-            next()
-          } catch (error) {
-            console.error(`Failed to fetch moneybox with id ${id}:`, error)
-            // TODO: Show error message to user or redirect to error page
-            next(false)
-          }
-        } else if (global.findMoneyboxById(id).transactionLogs === null) {
-          try {
-            if (global.findMoneyboxById(id).is_overflow) {
-              throw new APIError('Overflow moneybox cannot be accessed by id')
-            }
-            await getTransactionLogs(global.findMoneyboxById(id))
+            await getTransactionLogs(moneybox)
             next()
           } catch (error) {
             console.error(
@@ -95,25 +67,12 @@ const router = createRouter({
       component: () => import('@/views/Logs.vue'),
       beforeEnter: async (to, _from, next) => {
         const id = Number(to.params.id)
-        if (!global.findMoneyboxById(id)) {
+        const moneybox = global.findMoneyboxById(id)
+
+      
+
+        if (moneybox && (!("transactionLogs" in moneybox) || moneybox.transactionLogs === null)) {
           try {
-            const moneybox = await getMoneybox(id)
-            if (moneybox.is_overflow) {
-              throw new APIError('Overflow moneybox cannot be accessed by id')
-            }
-            global.addMoneybox(moneybox)
-            await getTransactionLogs(global.findMoneyboxById(id))
-            next()
-          } catch (error) {
-            console.error(`Failed to fetch moneybox with id ${id}:`, error)
-            // TODO: Show error message to user or redirect to error page
-            next(false)
-          }
-        } else if (global.findMoneyboxById(id).transactionLogs === null) {
-          try {
-            if (global.findMoneyboxById(id).is_overflow) {
-              throw new APIError('Overflow moneybox cannot be accessed by id')
-            }
             await getTransactionLogs(global.findMoneyboxById(id))
             next()
           } catch (error) {
@@ -126,43 +85,6 @@ const router = createRouter({
           }
         } else {
           next()
-        }
-      }
-    },
-    {
-      path: '/logs/overflow',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/LogsOverflow.vue'),
-      beforeEnter: async (_to, _from, next) => {
-        try {
-          if (!global.moneyboxesLoaded) {
-            await getMoneyboxes()
-            global.moneyboxesLoaded = true
-          }
-
-          let overflowMoneybox = global.moneyboxes.find(
-            (moneybox) => moneybox.is_overflow === true
-          )
-
-          if (!overflowMoneybox) {
-            overflowMoneybox = await addMoneybox({
-              name: 'OVERFLOW',
-              isOverflow: true,
-              goal: 0,
-              increment: 0
-            })
-          }
-
-          if (overflowMoneybox.transactionLogs === null) {
-            await getTransactionLogs(overflowMoneybox)
-          }
-
-          next()
-        } catch (error) {
-          console.error('Error handling overflow moneybox:', error)
-          next(false)
         }
       }
     },

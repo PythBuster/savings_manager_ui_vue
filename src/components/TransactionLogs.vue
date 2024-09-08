@@ -56,17 +56,20 @@
     </v-col>
   </v-row>
 </template>
+
 <script setup>
 import { computed, ref } from 'vue'
 import { useDisplay } from 'vuetify'
 import global from '@/global.js'
 import { formatCurrency, formatDateTime } from '@/utils.js'
+import { useRoute } from 'vue-router';
 
 // t used for table, otherwise $t globally available
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n({})
 
 const display = ref(useDisplay())
+const route = useRoute();
 
 const search = ref('')
 
@@ -74,6 +77,7 @@ const props = defineProps({
   id: { type: Number, default: undefined },
   showAll: { type: Boolean, default: false } // Show all transactions, instead of just numberOfEntries
 })
+const id = computed(() => props.id || route.params.id); // Nutzt die ID aus den Props oder der Route
 
 const dateFilterEnabled = ref(false)
 
@@ -129,11 +133,11 @@ const tableHeaders = computed(() => {
 
 const transactionItems = computed(() => {
 
-  if (!props.id || !global.findMoneyboxById(props.id).transactionLogs) {
+  if (!id.value || !global.findMoneyboxById(id.value) || !("transactionLogs" in global.findMoneyboxById(id.value)) || global.findMoneyboxById(id.value).transactionLogs === null) {
     return props.showAll ? [] : generatePlaceholderData(numberOfEntries)
   }
 
-  const transactionData = global.findMoneyboxById(props.id).transactionLogs
+  const transactionData = global.findMoneyboxById(id.value).transactionLogs
 
   const entries = props.showAll
     ? transactionData.entries

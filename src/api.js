@@ -236,7 +236,7 @@ export async function depositIntoMoneybox(
       method: 'POST',
       headers: sendReceiveJsonHeaders,
       body: JSON.stringify({
-        amount: amount,
+        amount: Math.floor(amount * 100),
         description: description
       })
     }
@@ -268,7 +268,7 @@ export async function withdrawFromMoneybox(
       method: 'POST',
       headers: sendReceiveJsonHeaders,
       body: JSON.stringify({
-        amount: amount,
+        amount: Math.floor(amount * 100),
         description: description
       })
     }
@@ -294,6 +294,7 @@ export async function transferFromMoneyboxToMoneybox(
   destinationMoneyboxInstance,
   description
 ) {
+  console.log(amount)
   const sourceMoneyboxId = sourceMoneyboxInstance.id
   const destinationMoneyboxId = destinationMoneyboxInstance.id
 
@@ -303,8 +304,8 @@ export async function transferFromMoneyboxToMoneybox(
       method: 'POST',
       headers: sendReceiveJsonHeaders,
       body: JSON.stringify({
-        amount: amount,
-        to_moneybox_id: destinationMoneyboxId,
+        amount: Math.floor(amount * 100),
+        toMoneyboxId: destinationMoneyboxId,
         description: description
       })
     }

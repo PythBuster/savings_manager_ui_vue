@@ -62,11 +62,7 @@ const description = ref('')
 const valid = ref(false)
 
 const transferTitle = computed(() => {
-  const isOverflow = global.findMoneyboxById(props.sourceId).is_overflow
-
-  return isOverflow
-    ? `${t('transfer-from-envelope')} ${t('overflow-envelope')}`
-    : `${t('transfer-from-envelope')} ${global.findMoneyboxById(props.sourceId).name}`
+  return global.findMoneyboxById(props.sourceId).name
 })
 
 const validMoneyboxes = computed(() => {
@@ -74,7 +70,7 @@ const validMoneyboxes = computed(() => {
     .filter((obj) => obj.id !== props.sourceId)
     .map((moneybox) => ({
       id: moneybox.id,
-      name: moneybox.is_overflow ? t('overflow-envelope') : moneybox.name
+      name: moneybox.name
     }))
     .sort((a, b) => a.name.localeCompare(b.name))
 })
