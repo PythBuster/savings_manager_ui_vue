@@ -9,11 +9,13 @@
     </v-row>
     <v-row :class="display.mdAndUp ? 'mt-16' : ''">
       <v-col cols="12" sm="6">
+
         <v-row>
           <v-col>
             <CurrencyInput :label="$t('savings-amount')" v-model="saveAmount" />
           </v-col>
         </v-row>
+
         <v-row>
           <v-col>
             <v-checkbox :label="$t('enable-automated-savings')" v-model="saveAutoSaveEnable" />
@@ -73,7 +75,6 @@
         <v-btn
           class="align-self-end mt-2"
           @click="saveClicked"
-          :disabled="saveAmount === null || isNaN(saveAmount)"
           >{{ $t('save') }}</v-btn
         >
       </v-col>
@@ -82,7 +83,6 @@
       <v-col class="d-flex justify-end">
         <v-btn
           @click="saveClicked"
-          :disabled="saveAmount === null || isNaN(saveAmount)"
           >{{ $t('save') }}</v-btn
         >
       </v-col>
@@ -96,10 +96,11 @@
 
 <script setup>
 import router from '@/router/index.js'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import global from '@/global.js'
 import { updateSettings } from '@/api.js'
 import { useDisplay } from 'vuetify'
+import { centsToEuroString, euroStringToCents, centsToEuroFloat } from '@/utils.js'
 
 const display = ref(useDisplay())
 
@@ -110,7 +111,7 @@ const { t } = useI18n({})
 const showErrorDialog = ref(false)
 const errorMessage = ref('')
 
-const origSavingsAmount = global.settings.value.savingsAmount / 100
+const origSavingsAmount = centsToEuroFloat(global.settings.value.savingsAmount)
 const saveAmount = ref(origSavingsAmount)
 const isAutomatedSavingActive = global.settings.value.isAutomatedSavingActive
 const saveAutoSaveEnable = ref(isAutomatedSavingActive)
@@ -135,8 +136,8 @@ const selectedOption = ref(modesMap.get(overflowMoneyboxAutomatedSavingsMode))
 async function saveClicked() {
   const updates = {}
 
-  if (saveAmount.value !== global.settings.value.savingsAmount / 100) {
-    updates.savingsAmount = Math.trunc(saveAmount.value * 100)
+  if (saveAmount.value !== centsToEuroString(global.settings.value.savingsAmount)) {
+    updates.savingsAmount = euroStringToCents(saveAmount.value)
   }
 
   if (saveAutoSaveEnable.value !== global.settings.value.isAutomatedSavingActive) {

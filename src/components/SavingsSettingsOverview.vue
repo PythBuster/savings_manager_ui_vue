@@ -21,6 +21,8 @@
         </v-col>
       </v-row>
     </v-card-text>
+
+    <TotalSavings />
   </v-card>
 </template>
 

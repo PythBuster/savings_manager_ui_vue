@@ -55,6 +55,68 @@ export function isValidISO8601(dateString) {
   return regex.test(dateString)
 }
 
+export function centsToEuroString(cents) {
+  const euro = Math.floor(cents / 100);
+  const cent = cents % 100;
+  // Formatieren der Cent-Zahl auf genau zwei Stellen
+  const formattedCent = cent.toString().padStart(2, '0');
+  // Zusammenfügen von Euro und Cent
+  const euroString = euro + ',' + formattedCent;
+  return euroString;
+}
+
+export function centsToEuroFloat(cents) {
+  const euro = Math.floor(cents / 100);
+  const cent = cents % 100;
+  // Formatieren der Cent-Zahl auf genau zwei Stellen
+  const formattedCent = cent.toString().padStart(2, '0');
+  // Zusammenfügen von Euro und Cent
+  const euroString = euro + ',' + formattedCent;
+  return safeStringToFloat(euroString);
+}
+
+function safeStringToFloat(str) {
+  // Ersetze das Komma durch einen Punkt
+  let normalizedStr = str.replace(",", ".");
+  
+  // Wandle den String in eine Fließkommazahl um
+  let floatNumber = parseFloat(normalizedStr);
+  
+  // Überprüfen, ob parseFloat erfolgreich war
+  if (isNaN(floatNumber)) {
+      throw new Error("Der String konnte nicht in eine Zahl umgewandelt werden.");
+  }
+  
+  return floatNumber;
+}
+
+function formatToTwoDecimalPlaces(str) {
+  // Ersetze das Komma durch einen Punkt für die Verarbeitung
+  let normalizedStr = str.replace(",", ".");
+
+  // Teile den String in Ganzzahl- und Dezimalteil
+  let [integerPart, decimalPart = ""] = normalizedStr.split(".");
+
+  // Stelle sicher, dass der Dezimalteil genau zwei Stellen hat
+  let formattedDecimalPart = decimalPart.padEnd(2, '0').slice(0, 2);
+
+  // Füge den String wieder zusammen
+  let resultStr = integerPart + "," + formattedDecimalPart;
+
+  return resultStr;
+}
+
+export function euroStringToCents(euroString)
+{
+  console.log(euroString)
+
+  const euroString_ = formatToTwoDecimalPlaces(euroString.toString())
+  const cents = parseInt(euroString_.toString().replace(",", ""), 10);
+
+  console.log(cents)
+  return cents
+}
+
 export async function fetchOrCreateSettings() {
   try {
     if (!global.settings.value) {

@@ -53,6 +53,7 @@ import { updateMoneybox } from '@/api.js'
 import { useI18n } from 'vue-i18n'
 import { APIError } from '@/customerrors.js'
 import { useDisplay } from 'vuetify'
+import { centsToEuroString, euroStringToCents } from '@/utils.js'
 
 const display = ref(useDisplay())
 
@@ -68,9 +69,13 @@ const errorMessage = ref('')
 
 const originalTitle = global.findMoneyboxById(props.id).name
 const newTitle = ref(originalTitle)
-const originalTargetAmount = global.findMoneyboxById(props.id).savingsTarget !== null ? global.findMoneyboxById(props.id).savingsTarget / 100 : null
+
+let euroSavingsTarget = centsToEuroString(global.findMoneyboxById(props.id).savingsTarget)
+const originalTargetAmount = global.findMoneyboxById(props.id).savingsTarget !== null ? euroSavingsTarget : null
+
 const newTargetAmount = ref(originalTargetAmount)
-const originalSaveAmount = global.findMoneyboxById(props.id).savingsAmount / 100
+
+let originalSaveAmount = centsToEuroString(global.findMoneyboxById(props.id).savingsAmount)
 const newSaveAmount = ref(originalSaveAmount)
 const newNoLimit = ref(originalTargetAmount !== null ? null : originalTargetAmount);
 
@@ -90,13 +95,12 @@ async function saveClicked() {
   }
 
   let effectiveNewTargetAmount = newTargetAmount.value
-
   if (effectiveNewTargetAmount !== null){
-    effectiveNewTargetAmount = Math.trunc(effectiveNewTargetAmount * 100)
+    effectiveNewTargetAmount = euroStringToCents(effectiveNewTargetAmount)
   }
 
   changes.newSavingsTarget = effectiveNewTargetAmount
-  changes.newSavingsAmount = Math.trunc(newSaveAmount.value * 100)
+  changes.newSavingsAmount = euroStringToCents(newSaveAmount.value)
   
   if (Object.keys(changes).length === 0) {
     errorMessage.value = t('error-no-changes')

@@ -48,6 +48,7 @@ import { addMoneybox } from '@/api.js'
 import { useI18n } from 'vue-i18n'
 import { APIError } from '@/customerrors.js'
 import { useDisplay } from 'vuetify'
+import { centsToEuroString, euroStringToCents } from '@/utils.js'
 
 const display = ref(useDisplay())
 
@@ -83,17 +84,15 @@ async function createClicked() {
     errorMessage.value = t('error-empty-name')
     showErrorDialog.value = true
   } else {
-    if (targetAmount.value !== null) {
-      targetAmount.value = Math.trunc(targetAmount.value * 100)
-    }
+
     if (saveAmount.value === null) {
       saveAmount.value = 0
     }
     try {
       await addMoneybox({
         name: envelopeName.value,
-        savingsTarget: targetAmount.value,
-        savingsAmount: Math.trunc(saveAmount.value * 100)
+        savingsTarget: euroStringToCents(targetAmount.value),
+        savingsAmount: euroStringToCents(saveAmount.value)
       })
       router.back();
     } catch (error) {

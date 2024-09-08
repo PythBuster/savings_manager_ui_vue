@@ -263,13 +263,13 @@ export async function depositIntoMoneybox(
 ) {
   const moneybox_id = moneyboxInstance.id
 
-  const response = await fetch(
+  const response = await fetch(F
     `${serverURL}/api/moneybox/${moneybox_id}/balance/add`,
     {
       method: 'POST',
       headers: sendReceiveJsonHeaders,
       body: JSON.stringify({
-        amount: Math.floor(amount * 100),
+        amount: amount,
         description: description
       })
     }
@@ -301,7 +301,7 @@ export async function withdrawFromMoneybox(
       method: 'POST',
       headers: sendReceiveJsonHeaders,
       body: JSON.stringify({
-        amount: Math.floor(amount * 100),
+        amount: amount,
         description: description
       })
     }
@@ -337,7 +337,7 @@ export async function transferFromMoneyboxToMoneybox(
       method: 'POST',
       headers: sendReceiveJsonHeaders,
       body: JSON.stringify({
-        amount: Math.floor(amount * 100),
+        amount: amount,
         toMoneyboxId: destinationMoneyboxId,
         description: description
       })

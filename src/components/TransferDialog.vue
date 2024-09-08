@@ -60,6 +60,7 @@ const amount = ref(0)
 const selectedId = ref(undefined)
 const description = ref('')
 const valid = ref(false)
+import { centsToEuroString, euroStringToCents } from '@/utils.js'
 
 const transferTitle = computed(() => {
   return global.findMoneyboxById(props.sourceId).name

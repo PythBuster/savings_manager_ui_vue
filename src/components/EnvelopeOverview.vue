@@ -134,6 +134,8 @@ import { APIError } from '@/customerrors.js'
 import { useDisplay } from 'vuetify'
 import { useRoute } from 'vue-router';
 import { computed } from 'vue';
+import { centsToEuroString, euroStringToCents } from '@/utils.js'
+
 
 const route = useRoute();
 const display = ref(useDisplay())
@@ -187,7 +189,7 @@ async function handleTransactionConfirm(transactionDetails) {
     try {
       await depositIntoMoneybox(
         global.findMoneyboxById(id.value),
-        transactionDetails.amount,
+        euroStringToCents(transactionDetails.amount),
         transactionDetails.description
       )
       // update transaction logs
@@ -216,7 +218,7 @@ async function handleTransactionConfirm(transactionDetails) {
     try {
       await withdrawFromMoneybox(
         global.findMoneyboxById(id.value),
-        transactionDetails.amount,
+        euroStringToCents(transactionDetails.amount),
         transactionDetails.description
       )
       // update transaction logs
@@ -248,7 +250,7 @@ async function handleTransferConfirm(transferSelection) {
   try {
     await transferFromMoneyboxToMoneybox(
       global.findMoneyboxById(id.value),
-      transferSelection.amount,
+      euroStringToCents(transferSelection.amount),
       global.findMoneyboxById(transferSelection.selectedId),
       transferSelection.description
     )
