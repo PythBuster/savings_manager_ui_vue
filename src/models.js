@@ -363,22 +363,43 @@ export class TransactionLogs {
 
 export class Settings {
   static instance = null
-  _savings_amount
-  _savings_cycle
-  _savings_mode
+  _createdAt
+  _modifiedAt
+  _isAutomatedSavingActive
+  _overflowMoneyboxAutomatedSavingsMode
+  _savingsAmount
+  _sendReportsViaEmail
+  _userEmailAddress
+
   /**
    * Creates an instance of Settings (Singleton).
-   * @param {Number} savings_amount - The amount to save in each cycle
-   * @param {String} savings_cycle - The savings cycle (one of 'daily', 'weekly', 'monthly', 'yearly')
-   * @param {String} savings_mode - The savings mode (one of 'add-up', 'fill-envelopes', 'collect')
+   * @param {String} createdAt - The creation ISO8601 time/date of the settings
+   * @param {String} modifiedAt - The modification ISO8601 time/date of the setting
+   * @param {Boolean} isAutomatedSavingActive - The flag to indicate if automated savings is active or not
+   * @param {String} overflowMoneyboxAutomatedSavingsMode - The savings mode (one of 'add-up', 'fill-envelopes', 'collect')
+   * @param {String} savingsAmount - The savings amount for the automated savings
+   * @param {String} sendReportsViaEmail - The flag to indicate of user wants to be informed abut automated savings (receiving reports)
+   * @param {String} userEmailAddress - The users email address
    */
-  constructor(savings_amount, savings_cycle, savings_mode) {
+  constructor(
+    createdAt, 
+    modifiedAt, 
+    isAutomatedSavingActive, 
+    overflowMoneyboxAutomatedSavingsMode,
+    savingsAmount,
+    sendReportsViaEmail,
+    userEmailAddress
+  ) {
     if (Settings.instance) {
       return Settings.instance
     }
-    this._savings_amount = savings_amount
-    this._savings_cycle = savings_cycle
-    this._savings_mode = savings_mode
+    this._createdAt = createdAt
+    this._modifiedAt = modifiedAt
+    this._isAutomatedSavingActive = isAutomatedSavingActive
+    this._overflowMoneyboxAutomatedSavingsMode = overflowMoneyboxAutomatedSavingsMode
+    this._savingsAmount = savingsAmount
+    this._sendReportsViaEmail = sendReportsViaEmail
+    this._userEmailAddress = userEmailAddress
     Settings.instance = this
   }
 
@@ -387,41 +408,80 @@ export class Settings {
    * @param {Object} rawSettings A JSON object with properties matching the Settings class.
    * @returns {Settings} A new instance of Settings (Singleton)
    */
-  static fromJSON({ savings_amount, savings_cycle, savings_mode }) {
-    return new Settings(savings_amount, savings_cycle, savings_mode)
+  static fromJSON({     
+    createdAt, 
+    modifiedAt, 
+    isAutomatedSavingActive, 
+    overflowMoneyboxAutomatedSavingsMode,
+    savingsAmount,
+    sendReportsViaEmail,
+    userEmailAddress
+   }) {
+    return new Settings(    createdAt, 
+      modifiedAt, 
+      isAutomatedSavingActive, 
+      overflowMoneyboxAutomatedSavingsMode,
+      savingsAmount,
+      sendReportsViaEmail,
+      userEmailAddress
+    )
   }
 
-  get savings_amount() {
-    return this._savings_amount
+  get createdAt() {
+    return this._createdAt
+  }
+  set createdAt(value) {
+    if (!isValidISO8601(value)) {
+      throw new TypeError('createdAt must be in ISO8601 format')
+    }
+    this._createdAt = value
   }
 
-  set savings_amount(value) {
+  get modifiedAt() {
+    return this._modifiedAt
+  }
+  set modifiedAt(value) {
+    if (!isValidISO8601(value)) {
+      throw new TypeError('modifiedAt must be in ISO8601 format')
+    }
+    this._modifiedAt = value
+  }
+
+  get isAutomatedSavingActive() {
+    return this._isAutomatedSavingActive
+  }
+  set isAutomatedSavingActive(value) {
+    this._isAutomatedSavingActive = value
+  }
+
+  get overflowMoneyboxAutomatedSavingsMode() {
+    return this._overflowMoneyboxAutomatedSavingsMode
+  }
+  set overflowMoneyboxAutomatedSavingsMode(value) {
+    this._overflowMoneyboxAutomatedSavingsMode = value
+  }
+
+  get savingsAmount() {
+    return this._savingsAmount
+  }
+  set savingsAmount(value) {
     if (typeof value !== 'number' || value < 0) {
-      throw new Error('savings_amount must be a non-negative number')
+      throw new Error('_savingsAmount must be a non-negative number')
     }
-    this._savings_amount = value
+    this._savingsAmount = value
   }
 
-  get savings_cycle() {
-    return this._savings_cycle
+  get sendReportsViaEmail() {
+    return this._sendReportsViaEmail
+  }
+  set sendReportsViaEmail(value) {
+    this._sendReportsViaEmail = value
   }
 
-  set savings_cycle(value) {
-    const validCycles = ['daily', 'weekly', 'monthly', 'yearly']
-    if (!validCycles.includes(value)) {
-      throw new Error(`savings_cycle must be one of ${validCycles.join(', ')}`)
-    }
-    this._savings_cycle = value
+  get userEmailAddress() {
+    return this._userEmailAddress
   }
-
-  get savings_mode() {
-    return this._savings_mode
-  }
-  set savings_mode(value) {
-    const validModes = ['add-up', 'fill-envelopes', 'collect']
-    if (!validModes.includes(value)) {
-      throw new Error(`savings_mode must be one of ${validModes.join(', ')}`)
-    }
-    this._savings_mode = value
+  set userEmailAddress(value) {
+    this._userEmailAddress = value
   }
 }

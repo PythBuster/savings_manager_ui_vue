@@ -1,4 +1,7 @@
 {
+  "activated": "Aktiviert",
+  "deactivated": "Deaktiviert",
+  "automated-savings-enabled": "Autom. Sparen: ",
   "toggle-theme": "Theme wechseln",
   "savings-amount": "Sparbetrag: ",
   "savings-target": "Sparziel: ",

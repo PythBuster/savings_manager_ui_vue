@@ -369,9 +369,7 @@ export async function getSettings() {
     throw new DataError('No result from API')
   }
   if (
-    !jsonData.savings_amount &&
-    !jsonData.savings_cycle &&
-    !jsonData.savings_mode
+    !jsonData.savingsAmount
   ) {
     throw new DataError('Invalid data from API')
   }
@@ -390,13 +388,11 @@ export async function getSettings() {
 export async function updateSettings(patchData) {
   // savings_amount 0 is valid!
   if (
-    (patchData.savings_amount === undefined ||
-      patchData.savings_amount === null) &&
-    !patchData.savings_cycle &&
-    !patchData.savings_mode
+    (patchData.savingsAmount === undefined ||
+      patchData.savingsAmount === null)
   ) {
     throw new DataError(
-      'Must provide savings_cycle, savings_amount or savings_mode'
+      'Must provide savingsAmount'
     )
   }
 
@@ -414,48 +410,35 @@ export async function updateSettings(patchData) {
     throw new DataError('No result from API')
   }
   if (
-    !jsonData.savings_amount &&
-    !jsonData.savings_cycle &&
-    !jsonData.savings_mode
+    !jsonData.savingsAmount
   ) {
     throw new DataError('Invalid data from API')
   }
 
   // savings_amount 0 is valid!
   if (
-    patchData.savings_amount !== undefined &&
-    patchData.savings_amount !== null
+    patchData.savingsAmount !== undefined &&
+    patchData.savingsAmount !== null
   ) {
-    global.settings.value.savings_amount = jsonData.savings_amount
-  }
-  if (patchData.savings_cycle) {
-    global.settings.value.savings_cycle = jsonData.savings_cycle
-  }
-  if (patchData.savings_mode) {
-    global.settings.value.savings_mode = jsonData.savings_mode
+    global.settings.value.savingsAmount = jsonData.savingsAmount
   }
 }
 
 /**
  * Creates settings by calling the backend API and initializes a singleton instance locally.
  * @param {Object} options The options for creating settings.
- * @param {number} options.savings_amount - The savings amount to be set.
- * @param {string} options.savings_cycle - The savings cycle to be set.
- * @param {string} options.savings_mode - The savings mode to be set.
+ * @param {number} options.savingsAmount - The savings amount to be set.
+
  * @returns {Promise<void>} A promise that resolves when the settings have been created and initialized locally.
  */
 export async function createSettings({
-  savings_amount,
-  savings_cycle,
-  savings_mode
+  savingsAmount,
 }) {
   const response = await fetch(`${serverURL}/api/settings`, {
     method: 'POST',
     headers: sendReceiveJsonHeaders,
     body: JSON.stringify({
-      savings_amount: savings_amount,
-      savings_cycle: savings_cycle,
-      savings_mode: savings_mode
+      savings_amount: savingsAmount,
     })
   })
 
@@ -467,9 +450,7 @@ export async function createSettings({
     throw new DataError('No result from API')
   }
   if (
-    !jsonData.savings_amount &&
-    !jsonData.savings_cycle &&
-    !jsonData.savings_mode
+    !jsonData.savings_amount
   ) {
     throw new DataError('Invalid data from API')
   }

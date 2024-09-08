@@ -3,6 +3,7 @@
     <v-card-item>
       <v-card-title>{{ $t('savings-settings') }}</v-card-title>
     </v-card-item>
+
     <v-card-text>
       <v-row v-for="item in tableItems" :key="item.name">
         <v-col class="text-truncate pr-0">
@@ -42,27 +43,29 @@ let tableItems = computed(() => {
   }
 
   let allocated = global.moneyboxes.reduce((total, moneybox) => {
-    if (!moneybox.is_overflow) {
-      return total + moneybox.increment
+    if (moneybox.priority != 0) {
+      return total + moneybox.savingsAmount
     }
     return total
   }, 0)
 
-  allocated = Math.min(allocated, global.settings.value.savings_amount)
+  allocated = Math.min(allocated, global.settings.value.savingsAmount)
 
   let uncommitted = Math.max(
-    global.settings.value.savings_amount - allocated,
+    global.settings.value.savingsAmount - allocated,
     0
   )
 
+  const savings_active_status = global.settings.value.isAutomatedSavingActive ? t("activated") : t("deactivated");
+
   return [
     {
-      name: t('savings-amount') + ':',
-      data: formatCurrency(global.settings.value.savings_amount)
+      name: t('savings-amount'),
+      data: formatCurrency(global.settings.value.savingsAmount)
     },
     {
-      name: t('savings-cycle'),
-      data: t(global.settings.value.savings_cycle)
+      name: t('automated-savings-enabled'),
+      data: savings_active_status
     },
     {
       name: t('allocated'),

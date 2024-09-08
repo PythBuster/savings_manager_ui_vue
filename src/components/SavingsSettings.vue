@@ -80,7 +80,7 @@
 
 <script setup>
 import router from '@/router/index.js'
-import { ref, watchEffect } from 'vue'
+import { ref } from 'vue'
 import global from '@/global.js'
 import { updateSettings } from '@/api.js'
 import { useDisplay } from 'vuetify'
@@ -94,28 +94,13 @@ const { t } = useI18n({})
 const showErrorDialog = ref(false)
 const errorMessage = ref('')
 
-const selectedMode = ref(global.settings.value.savings_cycle)
-
-const modes = ref([])
-
-const saveAmount = ref(global.settings.value.savings_amount)
-
-const modeKeys = ['daily', 'weekly', 'monthly', 'yearly']
-
-// Use watchEffect to automatically update when locale changes
-// need non-localized keys for API
-watchEffect(() => {
-  modes.value = modeKeys.map((key) => ({ value: key, label: t(key) }))
-})
+const saveAmount = ref(global.settings.value.savingsAmount)
 
 async function saveClicked() {
   const updates = {}
 
-  if (saveAmount.value !== global.settings.value.savings_amount) {
-    updates.savings_amount = saveAmount.value
-  }
-  if (selectedMode.value !== global.settings.value.savings_cycle) {
-    updates.savings_cycle = selectedMode.value
+  if (saveAmount.value !== global.settings.value.savingsAmount) {
+    updates.savingsAmount = saveAmount.value
   }
 
   if (Object.keys(updates).length === 0) {

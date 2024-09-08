@@ -1,4 +1,7 @@
 {
+  "activated": "Activated",
+  "deactivated": "Deactivated",
+  "automated-savings-enabled": "Autom. Savings: ",
   "toggle-theme": "Toggle theme",
   "savings-amount": "Savings Amount: ",
   "savings-target": "Savings Target: ",
