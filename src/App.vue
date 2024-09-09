@@ -4,7 +4,7 @@
       <v-app-bar-title>
         <v-btn v-if="!display.xs" @click="goHome">
           <v-icon size="x-large" class="mr-2">mdi-home</v-icon>
-          Savings Manager</v-btn
+          {{ appName }} v{{ appVersion }}</v-btn
         >
         <v-btn v-if="display.xs" @click="goHome">
           <v-icon size="x-large">mdi-home</v-icon></v-btn
@@ -94,6 +94,7 @@ import { useTheme } from 'vuetify'
 import Cookies from 'js-cookie'
 import { fetchOrCreateSettings } from '@/utils.js'
 import { useDisplay } from 'vuetify'
+import { getAppMetadata  } from "@/api.js";
 
 const display = ref(useDisplay())
 
@@ -148,7 +149,15 @@ function goHome() {
   })
 }
 
-onMounted(() => {
+const appName = ref("")
+const appVersion = ref("")
+  
+
+onMounted(async () => {
+  const appData = await getAppMetadata()
+  appName.value = appData.appName
+  appVersion.value = appData.appVersion
+
   fetchOrCreateSettings()
   const savedLocale = Cookies.get('locale')
   if (savedLocale) {

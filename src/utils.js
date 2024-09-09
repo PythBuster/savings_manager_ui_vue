@@ -117,6 +117,7 @@ export function euroStringToCents(euroString)
   return cents
 }
 
+
 export async function fetchOrCreateSettings() {
   try {
     if (!global.settings.value) {

@@ -1,5 +1,5 @@
 import { DataError, APIError } from '@/customerrors.js'
-import { Prioritylist, Moneybox, TransactionLogs } from '@/models.js'
+import { AppMetadata, Prioritylist, Moneybox, TransactionLogs } from '@/models.js'
 import global from '@/global.js'
 
 const serverURL = import.meta.env.VITE_BACKEND_URL
@@ -263,7 +263,7 @@ export async function depositIntoMoneybox(
 ) {
   const moneybox_id = moneyboxInstance.id
 
-  const response = await fetch(F
+  const response = await fetch(
     `${serverURL}/api/moneybox/${moneybox_id}/balance/add`,
     {
       method: 'POST',
@@ -379,6 +379,28 @@ export async function getTransactionLogs(moneyboxInstance) {
 
   const transactionLogsInstance = TransactionLogs.fromJSON(jsonData)
   global.addTransactionLogsToMoneybox(moneybox_id, transactionLogsInstance)
+}
+
+
+/**
+ * Fetches app metadata from the backend API.
+ * @returns {Promise<void>} A promise that resolves when the app metaga have been fetched and processed.
+ */
+export async function getAppMetadata() {
+  const response = await fetch(`${serverURL}/api/app/metadata`, {
+    method: 'GET',
+    headers: receiveJsonHeaders
+  })
+
+  await checkResponse(response)
+
+  const jsonData = await response.json()
+
+  if (!jsonData || Object.keys(jsonData).length === 0) {
+    throw new DataError('No result from API')
+  }
+
+  return AppMetadata.fromJSON(jsonData)
 }
 
 /**

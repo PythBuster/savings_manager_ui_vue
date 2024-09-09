@@ -424,6 +424,69 @@ export class TransactionLogs {
   }
 }
 
+export class AppMetadata {
+  _appName
+  _appVersion
+  _appDescription
+
+  /**
+   * Creates an instance of AppMetadata.
+   * @param {String} appName - The name of the app
+   * @param {String} appVersion - The version of the app
+   * @param {String} appDescription - The desription of the app
+   */
+  constructor(
+    appName, 
+    appVersion, 
+    appDescription
+  ) {
+    if (Settings.instance) {
+      return Settings.instance
+    }
+    this._appName = appName
+    this._appVersion = appVersion
+    this._appDescription = appDescription
+  }
+
+  /**
+   * Static method to create a AppMetadata instance from a JSON object.
+   * @param {Object} rawAppMetadata A JSON object with properties matching the AppMetadata class.
+   * @returns {AppMetadata} A new instance of AppMetadata
+   */
+  static fromJSON({     
+    appName, 
+    appVersion, 
+    appDescription
+   }) {
+    return new AppMetadata(    
+      appName, 
+      appVersion, 
+      appDescription
+    )
+  }
+
+  get appName() {
+    return this._appName
+  }
+  set appName(value) {
+    this._appName = value
+  }
+
+  get appVersion() {
+    return this._appVersion
+  }
+  set appVersion(value) {
+    this._appVersion = value
+  }
+
+  get appDescription() {
+    return this._appDescription
+  }
+  set appDescription(value) {
+    this._appDescription = value
+  }
+}
+
 export class Settings {
   static instance = null
   _createdAt
