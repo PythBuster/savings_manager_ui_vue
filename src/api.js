@@ -327,7 +327,6 @@ export async function transferFromMoneyboxToMoneybox(
   destinationMoneyboxInstance,
   description
 ) {
-  console.log(amount)
   const sourceMoneyboxId = sourceMoneyboxInstance.id
   const destinationMoneyboxId = destinationMoneyboxInstance.id
 

@@ -108,12 +108,8 @@ function formatToTwoDecimalPlaces(str) {
 
 export function euroStringToCents(euroString)
 {
-  console.log(euroString)
-
   const euroString_ = formatToTwoDecimalPlaces(euroString.toString())
   const cents = parseInt(euroString_.toString().replace(",", ""), 10);
-
-  console.log(cents)
   return cents
 }
 

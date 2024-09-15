@@ -70,7 +70,6 @@ function addTransactionLogsToMoneybox(moneyboxId, transactionLogs) {
     return
   }
   moneybox.transactionLogs = transactionLogs
-  console.log("ADDED LOGS to " + moneyboxId)
 }
 
 export default {

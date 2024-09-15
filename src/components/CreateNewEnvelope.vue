@@ -91,7 +91,7 @@ async function createClicked() {
     try {
       await addMoneybox({
         name: envelopeName.value,
-        savingsTarget: euroStringToCents(targetAmount.value),
+        savingsTarget: targetAmount.value !== null ? euroStringToCents(targetAmount.value) : null,
         savingsAmount: euroStringToCents(saveAmount.value)
       })
       router.back();
