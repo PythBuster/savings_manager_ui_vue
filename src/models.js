@@ -254,7 +254,7 @@ export class TransactionLogsEntry {
   ) {
     this.id = id
     this.moneyboxId = moneyboxId
-    this.counterpartyoneybox_id = counterpartyMoneyboxId
+    this.counterpartyMoneyboxId = counterpartyMoneyboxId
     this.amount = amount
     this.balance = balance
     this.description = description

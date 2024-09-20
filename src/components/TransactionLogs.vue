@@ -111,6 +111,18 @@ const tableHeaders = computed(() => {
     { title: t('description'), value: 'description', sortable: props.showAll },
   ]
 
+  if(props.showAll) {
+    headers =  headers.concat([
+      {
+        title: t('origin'),
+        value: 'origin',
+        key: 'origin',
+        sortable: props.showAll,
+        align: 'end'
+      },
+    ])
+  }
+
   headers = headers.concat([
     {
       title: t('amount'),
@@ -147,12 +159,18 @@ const transactionItems = computed(() => {
     const trigger =
       entry.transactionTrigger === 'manually' ? t('manual') : t('automatic')
 
-    const type =
-      entry.transactionType === 'direct' ? t('direct') : t('distribution')
+    const type =entry.transactionType === 'direct' ? t('direct') : t('distribution')
+
+    let origin = ''
+
+    if (entry.counterpartyMoneyboxName !== null){
+      origin = entry.counterpartyMoneyboxName + " (ID: " + entry.counterpartyMoneyboxId + ")"
+    }
 
     return {
       dateTime: formatDateTime(entry.createdAt),
       description: entry.description,
+      origin: origin,
       trigger: trigger,
       type: type,
       amount: formatCurrency(entry.amount),
