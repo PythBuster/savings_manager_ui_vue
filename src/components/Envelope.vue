@@ -30,7 +30,7 @@
                 : $t('savings-target') + $t('no-limit')
             }}
           </p>
-          <p v-if="global.findMoneyboxById(id).savingsTarget !== null">
+          <p v-if="global.findMoneyboxById(id).savingsTarget !== null & global.findMoneyboxById(id).savingsAmount > 0">
             <span style="font-size: smaller;">
               {{$t('reached-in')}}: ~{{
                 Number( 
