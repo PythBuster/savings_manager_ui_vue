@@ -15,6 +15,14 @@
           >
         </v-card-item>
         <v-card-text>
+
+          <p class="text-success" v-if="global.findMoneyboxById(id).priority != 0">
+            {{
+              !global.findMoneyboxById(id).savings_amout
+                ? $t('savings-amount') + formatCurrency(global.findMoneyboxById(id).savingsAmount)
+                : "+" + $t('savings-amount') + $t('no-limit')
+            }}
+          </p>         
           <p class="text-info" v-if="global.findMoneyboxById(id).priority != 0">
             {{
               global.findMoneyboxById(id).savingsTarget !== null
@@ -22,16 +30,23 @@
                 : $t('savings-target') + $t('no-limit')
             }}
           </p>
+          <p v-if="global.findMoneyboxById(id).savingsTarget !== null">
+            <span style="font-size: smaller;">
+              {{$t('reached-in')}}: ~{{
+                Number( 
+                  global.findMoneyboxById(id).savingsTarget / global.findMoneyboxById(id).savingsAmount
+                ).toFixed(2)
+              }} {{$t('months')}}
+           </span>
+          </p>
+          <br >
           <p class="font-weight-bold text-body-1">
             {{ formatCurrency(global.findMoneyboxById(id).balance) }}
           </p>
-          <p class="text-success" v-if="global.findMoneyboxById(id).priority != 0">
-            {{
-              !global.findMoneyboxById(id).savings_amout
-                ? $t('savings-amount') + formatCurrency(global.findMoneyboxById(id).savingsAmount)
-                : "+" + $t('savings-amount') + $t('no-limit')
-            }}
-          </p>
+
+          <br >
+
+
         </v-card-text>
       </v-col>
     </v-row>
