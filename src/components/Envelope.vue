@@ -34,7 +34,8 @@
             <span style="font-size: smaller;">
               {{$t('reached-in')}}: ~{{
                 Number( 
-                  global.findMoneyboxById(id).savingsTarget / global.findMoneyboxById(id).savingsAmount
+                  ( global.findMoneyboxById(id).savingsTarget - global.findMoneyboxById(id).balance )
+                   / global.findMoneyboxById(id).savingsAmount
                 ).toFixed(2)
               }} {{$t('months')}}
            </span>
