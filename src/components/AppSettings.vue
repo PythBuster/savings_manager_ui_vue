@@ -167,8 +167,9 @@ async function saveClicked() {
   } else {
     try{
       await updateSettings(updates)
-      router.back()
-
+      console.log("here")
+      window.location.href = '/'; // Erzwingt ein komplettes Neuladen der Seite
+      
     }  catch (error) {
       errorMessage.value = "Error while updating."
       showErrorDialog.value = true

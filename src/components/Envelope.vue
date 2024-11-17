@@ -33,10 +33,7 @@
           <p v-if="global.findMoneyboxById(id).savingsTarget !== null & global.findMoneyboxById(id).savingsAmount > 0">
             <span style="font-size: smaller;">
               {{$t('reached-in')}}: ~{{
-                Number( 
-                  ( global.findMoneyboxById(id).savingsTarget - global.findMoneyboxById(id).balance )
-                   / global.findMoneyboxById(id).savingsAmount
-                ).toFixed(2)
+                global.findReachingSavingsTarget(id).amountOfMonths
               }} {{$t('months')}}
            </span>
           </p>

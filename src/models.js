@@ -205,6 +205,56 @@ export class Moneybox {
   }
 }
 
+export class ReachingSavingsTarget{
+  /** @member {Number} moneyboxId */
+  _moneyboxId
+  /** @member {Number} amountOfMonths */
+  _amountOfMonths
+
+  /**
+   * Creates an instance of ReachingSavingsTargetEntry.
+   * @param {Number} moneyboxId - The moneybox id of the moneybox
+   * @param {Number} amountOfMonths - The amount of months to reach the savings target
+   */
+  constructor(
+    moneyboxId,
+    amountOfMonths
+  ) {
+    this.moneyboxId = moneyboxId
+    this.amountOfMonths = amountOfMonths
+  }
+
+  /**
+   * Static method to create a ReachingSavingsTarget instance from a JSON object.
+   * @param {Object} rawReachingSavingsTarget A JSON object with properties matching the ReachingSavingsTarget class.
+   * @returns {ReachingSavingsTarget} A new instance of ReachingSavingsTarget.
+   */
+  static fromJSON(rawReachingSavingsTarget) {
+    return new ReachingSavingsTarget(
+      rawReachingSavingsTarget.moneyboxId,
+      rawReachingSavingsTarget.amountOfMonths
+    )
+  }
+
+  get moneyboxId() {
+    return this._moneyboxId
+  }
+  set moneyboxId(value) {
+    if (!Number.isInteger(value))
+      throw new TypeError('moneyboxId must be an integer')
+    this._moneyboxId = value
+  }
+
+  get amountOfMonths() {
+    return this._amountOfMonths
+  }
+  set amountOfMonths(value) {
+    if (!Number.isInteger(value))
+      throw new TypeError('amountOfMonths must be an integer')
+    this._amountOfMonths = value
+  }
+}
+
 export class TransactionLogsEntry {
   /** @member {Number} id */
   _id

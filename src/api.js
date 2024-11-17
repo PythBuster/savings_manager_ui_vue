@@ -1,5 +1,5 @@
 import { DataError, APIError } from '@/customerrors.js'
-import { AppMetadata, Prioritylist, Moneybox, TransactionLogs } from '@/models.js'
+import { AppMetadata, Prioritylist, Moneybox, TransactionLogs, ReachingSavingsTarget } from '@/models.js'
 import global from '@/global.js'
 
 const serverURL = import.meta.env.VITE_BACKEND_URL
@@ -60,6 +60,38 @@ export async function getMoneyboxes() {
   const modifiedMoneyboxes = jsonData.moneyboxes.map(Moneybox.fromJSON)
 
   global.setMoneyboxes(modifiedMoneyboxes)
+}
+
+/**
+ * Fetches moneyboxes from the server, converts them to Moneybox instances,
+ * and updates the global store with these instances. Does not return any value.
+ * @returns {Promise<void>} A promise that resolves when the moneyboxes have been fetched and the store has been updated.
+ */
+export async function getReachigSavingsTargets() {
+  const response = await fetch(`${serverURL}/api/moneyboxes/reaching_savings_targets`, {
+    method: 'GET',
+    headers: receiveJsonHeaders
+  })
+
+  if (response.status === 204) {
+    return []
+  }
+
+  await checkResponse(response)
+  const jsonData = await response.json()
+
+  if (!jsonData || Object.keys(jsonData).length === 0) {
+    throw new DataError('No result from API')
+  }
+  if (!jsonData.reachingSavingsTargets) {
+    throw new DataError('Invalid data from API')
+  }
+
+  const modifiedReachingSavingsTargets = jsonData.reachingSavingsTargets.map(
+    ReachingSavingsTarget.fromJSON
+  )
+
+  global.setReachingSavigsTargets(modifiedReachingSavingsTargets)
 }
 
 

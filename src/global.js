@@ -22,6 +22,8 @@ function createAndSetSettings(jsonData) {
 const moneyboxes = reactive([])
 
 const moneyboxesMap = new Map()
+const reachingSavingTargets = new Map()
+
 const moneyboxesLoaded = false
 
 // reactive() below tracks changes to the moneybox instances themselves, like changing name or balance
@@ -35,6 +37,14 @@ function setMoneyboxes(newMoneyboxes) {
       moneyboxesMap.set(newMoneybox.id, reactiveMoneybox)
     }
   })
+}
+
+function setReachingSavigsTargets(newReachingSavingTargets) {
+  newReachingSavingTargets.forEach(
+    (newReachingSavingTarget) => {
+      reachingSavingTargets.set(newReachingSavingTarget.moneyboxId, newReachingSavingTarget)
+    }
+  )
 }
 
 function addMoneybox(newMoneybox) {
@@ -57,7 +67,9 @@ function findMoneyboxById(id) {
   return moneyboxesMap.get(id)
 }
 
-
+function findReachingSavingsTarget(id) {
+  return reachingSavingTargets.get(id)
+}
 
 /**
  * Adds a TransactionLogs instance to a specific Moneybox instance.
@@ -78,7 +90,9 @@ export default {
   addMoneybox,
   deleteMoneybox,
   setMoneyboxes,
+  setReachingSavigsTargets,
   findMoneyboxById,
+  findReachingSavingsTarget,
   addTransactionLogsToMoneybox,
   settings: settingsInstance,
   createAndSetSettings
