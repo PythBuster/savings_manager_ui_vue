@@ -49,9 +49,9 @@ const amount = ref(0)
 const description = ref('')
 
 const title = computed(() => {
-  const isOverflow = global.findMoneyboxById(props.id).is_overflow
+  const isOverflow = global.findMoneyboxById(props.id).priority == 0
   const moneyboxName = isOverflow
-    ? t('overflow-envelope')
+    ? t('overflow-moneybox')
     : global.findMoneyboxById(props.id).name
 
   return props.action === 'deposit'

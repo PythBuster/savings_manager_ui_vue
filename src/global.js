@@ -23,6 +23,7 @@ const moneyboxes = reactive([])
 
 const moneyboxesMap = new Map()
 const reachingSavingTargets = new Map()
+const nextAutomatedSavingsMoneyboxes = new Map()
 
 const moneyboxesLoaded = false
 
@@ -43,6 +44,14 @@ function setReachingSavigsTargets(newReachingSavingTargets) {
   newReachingSavingTargets.forEach(
     (newReachingSavingTarget) => {
       reachingSavingTargets.set(newReachingSavingTarget.moneyboxId, newReachingSavingTarget)
+    }
+  )
+}
+
+function setNextAutomatedSavingsMoneyboxes(newNextAutomatedSavingsMoneyboxes) {
+  newNextAutomatedSavingsMoneyboxes.forEach(
+    (newNextAutomatedSavingsMoneybox) => {
+      nextAutomatedSavingsMoneyboxes.set(newNextAutomatedSavingsMoneybox.moneyboxId, newNextAutomatedSavingsMoneybox)
     }
   )
 }
@@ -71,6 +80,10 @@ function findReachingSavingsTarget(id) {
   return reachingSavingTargets.get(id)
 }
 
+function findNextAutomatedSavingsMoneyboxes(id) {
+  return nextAutomatedSavingsMoneyboxes.get(id)
+}
+
 /**
  * Adds a TransactionLogs instance to a specific Moneybox instance.
  * @param {Number} moneyboxId The ID of the Moneybox to which the TransactionLogs will be added
@@ -91,8 +104,10 @@ export default {
   deleteMoneybox,
   setMoneyboxes,
   setReachingSavigsTargets,
+  setNextAutomatedSavingsMoneyboxes,
   findMoneyboxById,
   findReachingSavingsTarget,
+  findNextAutomatedSavingsMoneyboxes,
   addTransactionLogsToMoneybox,
   settings: settingsInstance,
   createAndSetSettings

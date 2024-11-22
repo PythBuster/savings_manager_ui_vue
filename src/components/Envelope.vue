@@ -8,7 +8,39 @@
     <v-row>
       <v-col>
         <v-card-item>
-          <v-card-title>{{ global.findMoneyboxById(id).name }}</v-card-title>
+          <v-card-title 
+          v-if="global.findReachingSavingsTarget(id) != null"
+          >
+            <span
+            v-if="global.findReachingSavingsTarget(id).amountOfMonths > 0"
+            > 
+                <span  style="color: #43A047" v-if="global.findNextAutomatedSavingsMoneyboxes(id) != null">
+                {{ global.findMoneyboxById(id).name }}
+                </span>
+                <span
+                v-else
+                >
+                {{ global.findMoneyboxById(id).name }}
+                </span> 
+            </span>
+            <span style="color: #1E88E5"
+            v-else
+            >
+              {{ global.findMoneyboxById(id).name }}
+            </span>
+          </v-card-title>
+          <v-card-title v-else>
+
+                <span style="color: #43A047" v-if="global.findNextAutomatedSavingsMoneyboxes(id) != null">
+                {{ global.findMoneyboxById(id).name }}
+                </span>
+                <span
+                v-else
+                >
+                {{ global.findMoneyboxById(id).name }}
+                </span>               
+          </v-card-title>
+
           <v-card-subtitle v-if="global.findMoneyboxById(id).priority != 0"
             >{{ $t('priority') }}
             {{ global.findMoneyboxById(id).priority }}</v-card-subtitle
@@ -31,7 +63,7 @@
             }}
           </p>
           <p v-if="global.findMoneyboxById(id).savingsTarget !== null & global.findMoneyboxById(id).savingsAmount > 0">
-            <span style="font-size: smaller;">
+            <span style="font-size: smaller;" v-if="global.findReachingSavingsTarget(id) != null">
               {{$t('reached-in')}}: ~{{
                 global.findReachingSavingsTarget(id).amountOfMonths
               }} {{$t('months')}}

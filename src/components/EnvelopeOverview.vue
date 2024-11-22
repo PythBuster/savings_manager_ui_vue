@@ -5,8 +5,13 @@
       class="d-flex justify-space-between align-center"
     >
       <v-col cols="auto" md="auto">
-        <h1 :class="display.mdAndUp ? 'text-h4' : 'text-h5'">
+        <h1 :class="display.mdAndUp ? 'text-h4' : 'text-h5'"
+        v-if="global.findMoneyboxById(id).priority != 0">
           {{ $t('envelope') + ': ' + global.findMoneyboxById(id).name }}
+        </h1>
+        <h1 :class="display.mdAndUp ? 'text-h4' : 'text-h5'" 
+        v-if="global.findMoneyboxById(id).priority == 0">
+          {{ $t('envelope') + ': ' + $t("overflow-moneybox") }}
         </h1>
       </v-col>
       <v-col cols="auto" class="d-flex justify-end">

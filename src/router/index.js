@@ -3,6 +3,7 @@ import Home from '@/views/Home.vue'
 import {
   getMoneyboxes,
   getReachigSavingsTargets,
+  getNextAutomatedSavingsMoneyboxes,
   getMoneybox,
   getTransactionLogs
 } from '@/api.js'
@@ -19,6 +20,7 @@ const router = createRouter({
           try {
             await getMoneyboxes()
             await getReachigSavingsTargets()
+            await getNextAutomatedSavingsMoneyboxes()
 
             global.moneyboxesLoaded = true
 <
@@ -116,6 +118,7 @@ const router = createRouter({
           try {
             await getMoneyboxes()
             await getReachigSavingsTargets()
+            await getNextAutomatedSavingsMoneyboxes()
             global.moneyboxesLoaded = true
             next()
           } catch (error) {

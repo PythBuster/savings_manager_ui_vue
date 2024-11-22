@@ -1,5 +1,5 @@
 import { DataError, APIError } from '@/customerrors.js'
-import { AppMetadata, Prioritylist, Moneybox, TransactionLogs, ReachingSavingsTarget } from '@/models.js'
+import { AppMetadata, Prioritylist, Moneybox, TransactionLogs, ReachingSavingsTarget, NextAutomatedSavingsMoneybox } from '@/models.js'
 import global from '@/global.js'
 
 const serverURL = import.meta.env.VITE_BACKEND_URL
@@ -63,9 +63,9 @@ export async function getMoneyboxes() {
 }
 
 /**
- * Fetches moneyboxes from the server, converts them to Moneybox instances,
+ * Fetches ReachigSavingsTargets from the server, converts them to ReachigSavingsTarget instances,
  * and updates the global store with these instances. Does not return any value.
- * @returns {Promise<void>} A promise that resolves when the moneyboxes have been fetched and the store has been updated.
+ * @returns {Promise<void>}
  */
 export async function getReachigSavingsTargets() {
   const response = await fetch(`${serverURL}/api/moneyboxes/reaching_savings_targets`, {
@@ -92,6 +92,39 @@ export async function getReachigSavingsTargets() {
   )
 
   global.setReachingSavigsTargets(modifiedReachingSavingsTargets)
+}
+
+
+/**
+ * Fetches NextAutomatedSavingsMoneyboxes from the server, converts them to NextAutomatedSavingsMoneyboxe instances,
+ * and updates the global store with these instances. Does not return any value.
+ * @returns {Promise<void>}
+ */
+export async function getNextAutomatedSavingsMoneyboxes() {
+  const response = await fetch(`${serverURL}/api/moneyboxes/next_automated_savings_moneyboxes`, {
+    method: 'GET',
+    headers: receiveJsonHeaders
+  })
+
+  if (response.status === 204) {
+    return []
+  }
+
+  await checkResponse(response)
+  const jsonData = await response.json()
+
+  if (!jsonData || Object.keys(jsonData).length === 0) {
+    throw new DataError('No result from API')
+  }
+  if (!jsonData.moneyboxIds) {
+    throw new DataError('Invalid data from API')
+  }
+
+  const modifiedNextAutomatedSavingsMoneyboxes = jsonData.moneyboxIds.map(
+    NextAutomatedSavingsMoneybox.fromJSON
+  )
+
+  global.setNextAutomatedSavingsMoneyboxes(modifiedNextAutomatedSavingsMoneyboxes)
 }
 
 

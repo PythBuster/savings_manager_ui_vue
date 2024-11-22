@@ -255,6 +255,44 @@ export class ReachingSavingsTarget{
   }
 }
 
+
+export class NextAutomatedSavingsMoneybox{
+  /** @member {Number} moneyboxId */
+  _moneyboxId
+
+  /**
+   * Creates an instance of NextAutomatedSavingsMoneybox{.
+   * @param {Number} moneyboxId - The moneybox id of the moneybox
+   */
+  constructor(
+    moneyboxId
+  ) {
+    this.moneyboxId = moneyboxId
+  }
+
+  /**
+   * Static method to create a NextAutomatedSavingsMoneybox instance from a JSON object.
+   * @param {Object} ravNextAutomatedSavingsMoneybox A JSON object with properties matching the NextAutomatedSavingsMoneybox class.
+   * @returns {NextAutomatedSavingsMoneybox} A new instance of NextAutomatedSavingsMoneybox.
+   */
+  static fromJSON(rawNextAutomatedSavingsMoneybox) {
+    return new NextAutomatedSavingsMoneybox(
+      rawNextAutomatedSavingsMoneybox
+    )
+  }
+
+  get moneyboxId() {
+    return this._moneyboxId
+  }
+  set moneyboxId(value) {
+    if (!Number.isInteger(value))
+
+      throw new TypeError('moneyboxId must be an integer')
+    this._moneyboxId = value
+  }
+}
+
+
 export class TransactionLogsEntry {
   /** @member {Number} id */
   _id
