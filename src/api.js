@@ -329,7 +329,7 @@ export async function depositIntoMoneybox(
   const moneybox_id = moneyboxInstance.id
 
   const response = await fetch(
-    `${serverURL}/api/moneybox/${moneybox_id}/balance/add`,
+    `${serverURL}/api/moneybox/${moneybox_id}/deposit`,
     {
       method: 'POST',
       headers: sendReceiveJsonHeaders,
@@ -361,7 +361,7 @@ export async function withdrawFromMoneybox(
   const moneybox_id = moneyboxInstance.id
 
   const response = await fetch(
-    `${serverURL}/api/moneybox/${moneybox_id}/balance/sub`,
+    `${serverURL}/api/moneybox/${moneybox_id}/withdraw`,
     {
       method: 'POST',
       headers: sendReceiveJsonHeaders,
@@ -396,7 +396,7 @@ export async function transferFromMoneyboxToMoneybox(
   const destinationMoneyboxId = destinationMoneyboxInstance.id
 
   const response = await fetch(
-    `${serverURL}/api/moneybox/${sourceMoneyboxId}/balance/transfer`,
+    `${serverURL}/api/moneybox/${sourceMoneyboxId}/transfer`,
     {
       method: 'POST',
       headers: sendReceiveJsonHeaders,
