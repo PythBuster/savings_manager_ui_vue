@@ -73,12 +73,25 @@
         }}</v-btn>
       </v-col>
     </v-row>
+
+    <v-row>
+      <v-col cols="12" lg="9">
+        <v-textarea 
+        :label="$t('description')" 
+        :model-value=global.findMoneyboxById(id).description 
+        variant="filled"
+        auto-grow
+        readonly>
+        </v-textarea>                
+      </v-col>
+    </v-row>
+
     <v-row>
       <v-col cols="12" lg="9">
         <TransactionLogs :id="id" :showAll="false" />
-      </v-col>
-      
+      </v-col> 
     </v-row>
+
     <v-dialog
       v-if="global.findMoneyboxById(id)"
       v-model="showDeleteDialog"

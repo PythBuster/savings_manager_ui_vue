@@ -189,26 +189,29 @@ export async function getMoneybox(moneybox_id) {
 }
 
 /**
- * Updates name, priority, goal increment or no_limit of a specific moneybox
+ * Updates name, description, savingsTarget or savingsAmount of a specific moneybox
  * @param {Moneybox} moneyboxInstance - The Moneybox instance to update.
  * @param {Object} options - The options object containing update parameters.
  * @param {name} [options.newName] - The new name for the moneybox. If undefined, the name won't be updated.
+ * @param {description} [options.newDescription] - The new description for the moneybox. If undefined, the description won't be updated.
  * @param {savingsTarget}  [options.newSavingsTarget] - The new savings target for the moneybox. If undefined, the savings goal won't be updated.
  * @param {savingsAmount}  [options.savingsAmount] - The new savings increment for the moneybox. If undefined, the savings increment won't be updated.
  * @returns {Promise<void>} A promise that resolves once the moneybox has been updated.
  */
 export async function updateMoneybox(
   moneyboxInstance,
-  { newName, newSavingsTarget, newSavingsAmount } = {}
+  { newName, newDescription,newSavingsTarget, newSavingsAmount } = {}
 ) {
   const updates = {
     newName: 'name',
+    newDescription: 'description',
     newSavingsTarget: 'savingsTarget',
     newSavingsAmount: 'savingsAmount'
   }
 
   const updatePayload = Object.entries({
     newName,
+    newDescription,
     newSavingsTarget,
     newSavingsAmount
   }).reduce((payload, [key, value]) => {

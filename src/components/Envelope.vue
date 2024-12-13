@@ -23,10 +23,20 @@
                 {{ global.findMoneyboxById(id).name }}
                 </span> 
             </span>
-            <span style="color: #1E88E5"
+            <span
             v-else
             >
+              <span
+              v-if="global.findReachingSavingsTarget(id).amountOfMonths == 0"
+               style="color: #1E88E5"
+              > 
               {{ global.findMoneyboxById(id).name }}
+              </span>
+              <span
+              v-else
+              > 
+              {{ global.findMoneyboxById(id).name }}
+              </span> 
             </span>
           </v-card-title>
           <v-card-title v-else>
@@ -64,9 +74,16 @@
           </p>
           <p v-if="global.findMoneyboxById(id).savingsTarget !== null & global.findMoneyboxById(id).savingsAmount > 0">
             <span style="font-size: smaller;" v-if="global.findReachingSavingsTarget(id) != null">
-              {{$t('reached-in')}}: ~{{
+             <span
+              v-if="global.findReachingSavingsTarget(id).amountOfMonths == -1"
+              >
+              {{$t('reached-in')}}: {{$t('never')}}
+              </span>
+              <span v-else>
+                {{$t('reached-in')}}: ~{{
                 global.findReachingSavingsTarget(id).amountOfMonths
               }} {{$t('months')}}
+              </span>
            </span>
           </p>
           <br >

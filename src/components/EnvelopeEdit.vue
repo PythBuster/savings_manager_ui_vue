@@ -17,6 +17,7 @@
           :showToggleIcon="true"
         />
         <CurrencyInput :label="$t('savings-amount')" v-model="newSaveAmount" />
+        <v-textarea :label="$t('description')" v-model="newDescription"></v-textarea>  
       </v-col>
       <v-col v-if="!display.mdAndUp" class="d-flex align-end justify-end">
         <v-btn @click="backClicked" class="mr-2">{{
@@ -31,6 +32,7 @@
         >
       </v-col>
     </v-row>
+
     <v-row v-if="display.mdAndUp">
       <v-col class="d-flex justify-end">
         <v-btn @click="backClicked" class="mr-2">{{
@@ -70,6 +72,9 @@ const errorMessage = ref('')
 const originalTitle = global.findMoneyboxById(props.id).name
 const newTitle = ref(originalTitle)
 
+const originalDescription = global.findMoneyboxById(props.id).description
+const newDescription = ref(originalDescription)
+
 let euroSavingsTarget = global.findMoneyboxById(props.id).savingsTarget
 const originalTargetAmount = global.findMoneyboxById(props.id).savingsTarget !== null ? centsToEuroFloat(euroSavingsTarget) : null
 
@@ -95,6 +100,12 @@ async function saveClicked() {
     changes.newName = newTitle.value
   }
 
+  console.log(originalDescription)
+  console.log(newDescription.value)
+  if (newDescription.value !== originalDescription) {
+    changes.newDescription = newDescription.value
+  }
+
   let effectiveNewTargetAmount = newTargetAmount.value
 
   changes.newSavingsTarget = effectiveNewTargetAmount !== null ? euroStringToCents(effectiveNewTargetAmount) : null
@@ -105,6 +116,7 @@ async function saveClicked() {
     showErrorDialog.value = true
   } else {
     try {
+      console.log(changes)
       await updateMoneybox(global.findMoneyboxById(props.id), changes)
       router.back()
     } catch (error) {

@@ -69,6 +69,8 @@ export class Moneybox {
   _id
   /** @member {String} name */
   _name
+  /** @member {String} description */
+  _description
   /** @member {Number} balance */
   _balance
   /** @member {String} createdAt */
@@ -86,6 +88,7 @@ export class Moneybox {
    * Creates an instance of Moneybox.
    * @param {Number} id - The unique identifier for the moneybox
    * @param {String} name - The name of the moneybox
+   * @param {String} description - The description of the moneybox
    * @param {Number} balance - The current balance of the moneybox
    * @param {String} createdAt - The creation ISO8601 time/date of the moneybox
    * @param {String} modifiedAt - The modification ISO8601 time/date of the moneybox
@@ -96,6 +99,7 @@ export class Moneybox {
   constructor(
     id,
     name,
+    description,
     balance,
     createdAt,
     modifiedAt,
@@ -105,6 +109,7 @@ export class Moneybox {
   ) {
     this.id = id
     this.name = name
+    this.description = description
     this.balance = balance
     this.createdAt = createdAt
     this.modifiedAt = modifiedAt
@@ -122,6 +127,7 @@ export class Moneybox {
     return new Moneybox(
       rawMoneybox.id,
       rawMoneybox.name,
+      rawMoneybox.description,
       rawMoneybox.balance,
       rawMoneybox.createdAt,
       rawMoneybox.modifiedAt,
@@ -145,6 +151,14 @@ export class Moneybox {
   set name(value) {
     if (typeof value !== 'string') throw new TypeError('name must be a string')
     this._name = value
+  }
+
+  get description() {
+    return this._description
+  }
+  set description(value) {
+    if (typeof value !== 'string') throw new TypeError('description must be a string')
+    this._description = value
   }
 
   get createdAt() {
