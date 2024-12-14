@@ -16,10 +16,12 @@
     "roboto-fontface": "*",
     "v-click-outside": "^3.2.0",
     "vue": "^3.4.21",
+    "vue-async-computed": "^4.0.1",
     "vue-chartjs": "^5.3.0",
     "vue-currency-input": "^3.1.0",
     "vue-i18n": "^9.10.2",
     "vue-router": "^4.3.0",
+    "vue3-async-computed": "^3.0.0",
     "vuetify": "^3.5.13"
   },
   "devDependencies": {

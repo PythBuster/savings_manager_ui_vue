@@ -17,7 +17,6 @@ import vClickOutside from 'v-click-outside'
 import { createApp } from 'vue'
 
 const app = createApp(App).use(i18n).use(router)
-
 registerPlugins(app)
 
 app.directive('click-outside', vClickOutside.directive)

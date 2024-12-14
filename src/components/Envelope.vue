@@ -51,41 +51,47 @@
                 </span>               
           </v-card-title>
 
-          <v-card-subtitle v-if="global.findMoneyboxById(id).priority != 0"
+          <v-card-subtitle v-if="global.findMoneyboxById(id).priority != 0 && global.settings.value.isAutomatedSavingActive"
             >{{ $t('priority') }}
             {{ global.findMoneyboxById(id).priority }}</v-card-subtitle
           >
         </v-card-item>
         <v-card-text>
+          <span v-if="global.settings.value.isAutomatedSavingActive">
 
-          <p class="text-success" v-if="global.findMoneyboxById(id).priority != 0">
-            {{
-              !global.findMoneyboxById(id).savings_amout
-                ? $t('savings-amount') + formatCurrency(global.findMoneyboxById(id).savingsAmount)
-                : "+" + $t('savings-amount') + $t('no-limit')
-            }}
-          </p>         
-          <p class="text-info" v-if="global.findMoneyboxById(id).priority != 0">
-            {{
-              global.findMoneyboxById(id).savingsTarget !== null
-                ? $t('savings-target') + formatCurrency(global.findMoneyboxById(id).savingsTarget)
-                : $t('savings-target') + $t('no-limit')
-            }}
-          </p>
-          <p v-if="global.findMoneyboxById(id).savingsTarget !== null & global.findMoneyboxById(id).savingsAmount > 0">
-            <span style="font-size: smaller;" v-if="global.findReachingSavingsTarget(id) != null">
-             <span
-              v-if="global.findReachingSavingsTarget(id).amountOfMonths == -1"
-              >
-              {{$t('reached-in')}}: {{$t('never')}}
-              </span>
-              <span v-else>
-                {{$t('reached-in')}}: ~{{
-                global.findReachingSavingsTarget(id).amountOfMonths
-              }} {{$t('months')}}
-              </span>
-           </span>
-          </p>
+            <p class="text-success" v-if="global.findMoneyboxById(id).priority != 0">
+              {{
+                !global.findMoneyboxById(id).savings_amout
+                  ? $t('savings-amount') + formatCurrency(global.findMoneyboxById(id).savingsAmount)
+                  : "+" + $t('savings-amount') + $t('no-limit')
+              }}
+            </p>         
+            <p class="text-info" v-if="global.findMoneyboxById(id).priority != 0">
+              {{
+                global.findMoneyboxById(id).savingsTarget !== null
+                  ? $t('savings-target') + formatCurrency(global.findMoneyboxById(id).savingsTarget)
+                  : $t('savings-target') + $t('no-limit')
+              }}
+            </p>
+            <p v-if="global.findMoneyboxById(id).savingsTarget !== null & global.findMoneyboxById(id).savingsAmount > 0">
+              <span style="font-size: smaller;" v-if="global.findReachingSavingsTarget(id) != null">
+              <span
+                v-if="global.findReachingSavingsTarget(id).amountOfMonths == -1"
+                >
+                {{$t('reached-in')}}: {{$t('never')}}
+                </span>
+                <span v-else>
+                  <span
+                  v-if="global.findReachingSavingsTarget(id).amountOfMonths != 0"
+                  >
+                    {{$t('reached-in')}}: ~{{
+                    global.findReachingSavingsTarget(id).amountOfMonths
+                  }} {{$t('months')}}
+                  </span>
+                </span>
+            </span>
+            </p>
+          </span>
           <br >
           <p class="font-weight-bold text-body-1">
             {{ formatCurrency(global.findMoneyboxById(id).balance) }}

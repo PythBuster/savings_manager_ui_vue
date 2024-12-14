@@ -95,6 +95,7 @@ import Cookies from 'js-cookie'
 import { fetchOrCreateSettings } from '@/utils.js'
 import { useDisplay } from 'vuetify'
 import { getAppMetadata  } from "@/api.js";
+import global from './global'
 
 const display = ref(useDisplay())
 
@@ -118,11 +119,23 @@ const languages = [
   import.meta.env.VITE_VUE_APP_I18N_FALLBACK_LOCALE.toUpperCase()
 ]
 
-const menuItems = computed(() => [
-  { title: t('my-envelopes'), path: '/' },
-  { title: t('priority-list'), path: '/prioritylist' },
-  { title: t('settings'), path: '/settings' }
-])
+
+const menuItems = computed(() => {
+
+  const items = [
+    { title: t('my-envelopes'), path: '/' },
+    { title: t('settings'), path: '/settings' }
+  ];
+
+  if (
+    global.settings.value !== null &&
+    global.settings.value.isAutomatedSavingActive
+  ) {
+    items.splice(1, 0, { title: t('priority-list'), path: '/prioritylist' });
+  }
+
+  return items;
+});
 
 function languageSelected(language) {
   selectedLanguage.value = language
@@ -152,19 +165,18 @@ function goHome() {
 const appName = ref("")
 const appVersion = ref("")
   
-
 onMounted(async () => {
   const appData = await getAppMetadata()
   appName.value = appData.appName
   appVersion.value = appData.appVersion
 
-  fetchOrCreateSettings()
+  fetchOrCreateSettings();
+
   const savedLocale = Cookies.get('locale')
   if (savedLocale) {
     locale.value = savedLocale.toLowerCase()
     selectedLanguage.value = savedLocale
   }
-
 })
 
 </script>
