@@ -51,6 +51,7 @@ let tableItems = computed(() => {
     return total
   }, 0)
 
+  const planned = allocated
   allocated = Math.min(allocated, global.settings.value.savingsAmount)
 
   let uncommitted = Math.max(
@@ -61,6 +62,10 @@ let tableItems = computed(() => {
   const savings_active_status = global.settings.value.isAutomatedSavingActive ? t("activated") : t("deactivated");
 
   return [
+    {
+      name: t('planned'),
+      data: formatCurrency(planned)
+    },
     {
       name: t('savings-amount'),
       data: formatCurrency(global.settings.value.savingsAmount)

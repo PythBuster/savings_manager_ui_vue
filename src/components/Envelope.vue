@@ -12,7 +12,7 @@
           v-if="global.findReachingSavingsTarget(id) != null"
           >
             <span
-            v-if="global.findReachingSavingsTarget(id).amountOfMonths > 0"
+            v-if="global.findReachingSavingsTarget(id).amountOfMonths == -1 || global.findReachingSavingsTarget(id).amountOfMonths > 0"
             > 
                 <span  style="color: #43A047" v-if="global.findNextAutomatedSavingsMoneyboxes(id) != null">
                 {{ global.findMoneyboxById(id).name }}
