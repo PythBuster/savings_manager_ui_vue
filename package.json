@@ -1,9 +1,9 @@
 {
   "name": "savings-manager-frontend",
-  "version": "2.8.0",
+  "version": "2.9.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS='--no-warnings' vite",
+    "dev": "cross-env NODE_OPTIONS='--no-warnings' vite --port 5000",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
