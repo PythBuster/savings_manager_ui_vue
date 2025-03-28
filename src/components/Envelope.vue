@@ -12,9 +12,9 @@
           v-if="global.findMoneyboxesSavingsForecast(id) != null"
           >
             <span
-            v-if="global.findMoneyboxesSavingsForecast(id).reachedInMonths == -1 || global.findMoneyboxesSavingsForecast(id).reachedInMonths > 0"
+            v-if="global.findMoneyboxesSavingsForecast(id).reachedInMonths == null || global.findMoneyboxesSavingsForecast(id).monthlyDistributions.length > 0 && global.findMoneyboxesSavingsForecast(id).monthlyDistributions[0]['month'] == 1"
             > 
-                <span  style="color: #43A047" v-if="global.findMoneyboxesSavingsForecast(id) != null">
+                <span  style="color: #43A047" v-if="global.findMoneyboxesSavingsForecast(id).monthlyDistributions.length > 0 && global.findMoneyboxesSavingsForecast(id).monthlyDistributions[0]['month'] == 1">
                 {{ global.findMoneyboxById(id).name }}
                 </span>
                 <span
@@ -76,7 +76,7 @@
             <p v-if="global.findMoneyboxById(id).savingsTarget !== null & global.findMoneyboxById(id).savingsAmount > 0">
               <span style="font-size: smaller;" v-if="global.findMoneyboxesSavingsForecast(id) != null">
               <span
-                v-if="global.findMoneyboxesSavingsForecast(id).reachedInMonths == -1"
+                v-if="global.findMoneyboxesSavingsForecast(id).reachedInMonths == null"
                 >
                 {{$t('reached-in')}}: {{$t('never')}}
                 </span>
