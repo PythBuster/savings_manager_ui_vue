@@ -9,12 +9,12 @@
       <v-col>
         <v-card-item>
           <v-card-title 
-          v-if="global.findReachingSavingsTarget(id) != null"
+          v-if="global.findMoneyboxesSavingsForecast(id) != null"
           >
             <span
-            v-if="global.findReachingSavingsTarget(id).amountOfMonths == -1 || global.findReachingSavingsTarget(id).amountOfMonths > 0"
+            v-if="global.findMoneyboxesSavingsForecast(id).reachedInMonths == -1 || global.findMoneyboxesSavingsForecast(id).reachedInMonths > 0"
             > 
-                <span  style="color: #43A047" v-if="global.findNextAutomatedSavingsMoneyboxes(id) != null">
+                <span  style="color: #43A047" v-if="global.findMoneyboxesSavingsForecast(id) != null">
                 {{ global.findMoneyboxById(id).name }}
                 </span>
                 <span
@@ -27,7 +27,7 @@
             v-else
             >
               <span
-              v-if="global.findReachingSavingsTarget(id).amountOfMonths == 0"
+              v-if="global.findMoneyboxesSavingsForecast(id).reachedInMonths == 0"
                style="color: #1E88E5"
               > 
               {{ global.findMoneyboxById(id).name }}
@@ -41,7 +41,7 @@
           </v-card-title>
           <v-card-title v-else>
 
-                <span style="color: #43A047" v-if="global.findNextAutomatedSavingsMoneyboxes(id) != null">
+                <span style="color: #43A047" v-if="global.findMoneyboxesSavingsForecast(id) != null">
                 {{ global.findMoneyboxById(id).name }}
                 </span>
                 <span
@@ -74,18 +74,18 @@
               }}
             </p>
             <p v-if="global.findMoneyboxById(id).savingsTarget !== null & global.findMoneyboxById(id).savingsAmount > 0">
-              <span style="font-size: smaller;" v-if="global.findReachingSavingsTarget(id) != null">
+              <span style="font-size: smaller;" v-if="global.findMoneyboxesSavingsForecast(id) != null">
               <span
-                v-if="global.findReachingSavingsTarget(id).amountOfMonths == -1"
+                v-if="global.findMoneyboxesSavingsForecast(id).reachedInMonths == -1"
                 >
                 {{$t('reached-in')}}: {{$t('never')}}
                 </span>
                 <span v-else>
                   <span
-                  v-if="global.findReachingSavingsTarget(id).amountOfMonths != 0"
+                  v-if="global.findMoneyboxesSavingsForecast(id).reachedInMonths != 0"
                   >
                     {{$t('reached-in')}}: ~{{
-                    global.findReachingSavingsTarget(id).amountOfMonths
+                    global.findMoneyboxesSavingsForecast(id).reachedInMonths
                   }} {{$t('months')}}
                   </span>
                 </span>

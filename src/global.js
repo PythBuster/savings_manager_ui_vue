@@ -22,8 +22,7 @@ function createAndSetSettings(jsonData) {
 const moneyboxes = reactive([])
 
 const moneyboxesMap = new Map()
-const reachingSavingTargets = new Map()
-const nextAutomatedSavingsMoneyboxes = new Map()
+const moneyboxesSavingsForecast = new Map()
 
 const moneyboxesLoaded = false
 
@@ -40,21 +39,17 @@ function setMoneyboxes(newMoneyboxes) {
   })
 }
 
-function setReachingSavigsTargets(newReachingSavingTargets) {
-  newReachingSavingTargets.forEach(
-    (newReachingSavingTarget) => {
-      reachingSavingTargets.set(newReachingSavingTarget.moneyboxId, newReachingSavingTarget)
+function setMoneyboxesSavingsForecast(newMoneyboxesSavingsForecast) {
+  newMoneyboxesSavingsForecast.forEach(
+    (newMoneyboxesSavingsForecast) => {
+      moneyboxesSavingsForecast.set(
+        newMoneyboxesSavingsForecast.moneyboxId,
+        newMoneyboxesSavingsForecast
+      )
     }
   )
 }
 
-function setNextAutomatedSavingsMoneyboxes(newNextAutomatedSavingsMoneyboxes) {
-  newNextAutomatedSavingsMoneyboxes.forEach(
-    (newNextAutomatedSavingsMoneybox) => {
-      nextAutomatedSavingsMoneyboxes.set(newNextAutomatedSavingsMoneybox.moneyboxId, newNextAutomatedSavingsMoneybox)
-    }
-  )
-}
 
 function addMoneybox(newMoneybox) {
   const reactiveMoneybox = reactive(newMoneybox)
@@ -76,13 +71,11 @@ function findMoneyboxById(id) {
   return moneyboxesMap.get(id)
 }
 
-function findReachingSavingsTarget(id) {
-  return reachingSavingTargets.get(id)
+function findMoneyboxesSavingsForecast(id) {
+  return moneyboxesSavingsForecast.get(id)
 }
 
-function findNextAutomatedSavingsMoneyboxes(id) {
-  return nextAutomatedSavingsMoneyboxes.get(id)
-}
+
 
 /**
  * Adds a TransactionLogs instance to a specific Moneybox instance.
@@ -103,11 +96,9 @@ export default {
   addMoneybox,
   deleteMoneybox,
   setMoneyboxes,
-  setReachingSavigsTargets,
-  setNextAutomatedSavingsMoneyboxes,
+  setMoneyboxesSavingsForecast,
   findMoneyboxById,
-  findReachingSavingsTarget,
-  findNextAutomatedSavingsMoneyboxes,
+  findMoneyboxesSavingsForecast,
   addTransactionLogsToMoneybox,
   settings: settingsInstance,
   createAndSetSettings

@@ -1,5 +1,5 @@
 import { DataError, APIError } from '@/customerrors.js'
-import { AppMetadata, Prioritylist, Moneybox, TransactionLogs, ReachingSavingsTarget, NextAutomatedSavingsMoneybox } from '@/models.js'
+import { AppMetadata, Prioritylist, Moneybox, TransactionLogs, MoneyboxSavingsForecast } from '@/models.js'
 import global from '@/global.js'
 
 const serverURL = import.meta.env.VITE_BACKEND_URL
@@ -67,8 +67,8 @@ export async function getMoneyboxes() {
  * and updates the global store with these instances. Does not return any value.
  * @returns {Promise<void>}
  */
-export async function getReachigSavingsTargets() {
-  const response = await fetch(`${serverURL}/api/moneyboxes/reaching_savings_targets`, {
+export async function getMoneyboxesSavingsForecast() {
+  const response = await fetch(`${serverURL}/api/moneyboxes/savings_forecast`, {
     method: 'GET',
     headers: receiveJsonHeaders
   })
@@ -83,50 +83,16 @@ export async function getReachigSavingsTargets() {
   if (!jsonData || Object.keys(jsonData).length === 0) {
     throw new DataError('No result from API')
   }
-  if (!jsonData.reachingSavingsTargets) {
+  if (!jsonData.moneyboxForecasts) {
     throw new DataError('Invalid data from API')
   }
 
-  const modifiedReachingSavingsTargets = jsonData.reachingSavingsTargets.map(
-    ReachingSavingsTarget.fromJSON
+  const modifiedMoneyboxForecasts = jsonData.moneyboxForecasts.map(
+    MoneyboxSavingsForecast.fromJSON
   )
 
-  global.setReachingSavigsTargets(modifiedReachingSavingsTargets)
+  global.setMoneyboxesSavingsForecast(modifiedMoneyboxForecasts)
 }
-
-
-/**
- * Fetches NextAutomatedSavingsMoneyboxes from the server, converts them to NextAutomatedSavingsMoneyboxe instances,
- * and updates the global store with these instances. Does not return any value.
- * @returns {Promise<void>}
- */
-export async function getNextAutomatedSavingsMoneyboxes() {
-  const response = await fetch(`${serverURL}/api/moneyboxes/next_automated_savings_moneyboxes`, {
-    method: 'GET',
-    headers: receiveJsonHeaders
-  })
-
-  if (response.status === 204) {
-    return []
-  }
-
-  await checkResponse(response)
-  const jsonData = await response.json()
-
-  if (!jsonData || Object.keys(jsonData).length === 0) {
-    throw new DataError('No result from API')
-  }
-  if (!jsonData.moneyboxIds) {
-    throw new DataError('Invalid data from API')
-  }
-
-  const modifiedNextAutomatedSavingsMoneyboxes = jsonData.moneyboxIds.map(
-    NextAutomatedSavingsMoneybox.fromJSON
-  )
-
-  global.setNextAutomatedSavingsMoneyboxes(modifiedNextAutomatedSavingsMoneyboxes)
-}
-
 
 /**
  * Retrieves the prioritylist.

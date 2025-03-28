@@ -219,34 +219,41 @@ export class Moneybox {
   }
 }
 
-export class ReachingSavingsTarget{
+export class MoneyboxSavingsForecast{
   /** @member {Number} moneyboxId */
   _moneyboxId
+  /** @member {Array} monthlyDistributions */
+  _monthlyDistributions
   /** @member {Number} amountOfMonths */
-  _amountOfMonths
+  _reachedInMonths
+
 
   /**
    * Creates an instance of ReachingSavingsTargetEntry.
    * @param {Number} moneyboxId - The moneybox id of the moneybox
-   * @param {Number} amountOfMonths - The amount of months to reach the savings target
+   * @param {Array} monthlyDistributions - A list of monthly distributions.
+   * @oaram {Number} reachedInMonths - The amount of months to reach savings targets.
    */
   constructor(
     moneyboxId,
-    amountOfMonths
+    monthlyDistributions,
+    reachedInMonths,
   ) {
     this.moneyboxId = moneyboxId
-    this.amountOfMonths = amountOfMonths
+    this.monthlyDistributions = monthlyDistributions
+    this.reachedInMonths = reachedInMonths
   }
 
   /**
    * Static method to create a ReachingSavingsTarget instance from a JSON object.
-   * @param {Object} rawReachingSavingsTarget A JSON object with properties matching the ReachingSavingsTarget class.
-   * @returns {ReachingSavingsTarget} A new instance of ReachingSavingsTarget.
+   * @param {Object} rawMoneyboxSavingsForecast A JSON object with properties matching the MoneyboxSavingsForecast class.
+   * @returns {MoneyboxSavingsForecast} A new instance of MoneyboxSavingsForecast.
    */
-  static fromJSON(rawReachingSavingsTarget) {
-    return new ReachingSavingsTarget(
-      rawReachingSavingsTarget.moneyboxId,
-      rawReachingSavingsTarget.amountOfMonths
+  static fromJSON(rawMoneyboxSavingsForecast) {
+    return new MoneyboxSavingsForecast(
+      rawMoneyboxSavingsForecast.moneyboxId,
+      rawMoneyboxSavingsForecast.monthlyDistributions,
+      rawMoneyboxSavingsForecast.reachedInMonths
     )
   }
 
@@ -259,53 +266,20 @@ export class ReachingSavingsTarget{
     this._moneyboxId = value
   }
 
-  get amountOfMonths() {
-    return this._amountOfMonths
+  get monthlyDistributions() {
+    return this._monthlyDistributions
   }
-  set amountOfMonths(value) {
-    if (!Number.isInteger(value))
-      throw new TypeError('amountOfMonths must be an integer')
-    this._amountOfMonths = value
-  }
-}
-
-
-export class NextAutomatedSavingsMoneybox{
-  /** @member {Number} moneyboxId */
-  _moneyboxId
-
-  /**
-   * Creates an instance of NextAutomatedSavingsMoneybox{.
-   * @param {Number} moneyboxId - The moneybox id of the moneybox
-   */
-  constructor(
-    moneyboxId
-  ) {
-    this.moneyboxId = moneyboxId
+  set monthlyDistributions(value) {
+    this._monthlyDistributions = value
   }
 
-  /**
-   * Static method to create a NextAutomatedSavingsMoneybox instance from a JSON object.
-   * @param {Object} ravNextAutomatedSavingsMoneybox A JSON object with properties matching the NextAutomatedSavingsMoneybox class.
-   * @returns {NextAutomatedSavingsMoneybox} A new instance of NextAutomatedSavingsMoneybox.
-   */
-  static fromJSON(rawNextAutomatedSavingsMoneybox) {
-    return new NextAutomatedSavingsMoneybox(
-      rawNextAutomatedSavingsMoneybox
-    )
+  get reachedInMonths() {
+    return this._reachedInMonths
   }
-
-  get moneyboxId() {
-    return this._moneyboxId
-  }
-  set moneyboxId(value) {
-    if (!Number.isInteger(value))
-
-      throw new TypeError('moneyboxId must be an integer')
-    this._moneyboxId = value
+  set reachedInMonths(value) {
+    this._reachedInMonths = value
   }
 }
-
 
 export class TransactionLogsEntry {
   /** @member {Number} id */

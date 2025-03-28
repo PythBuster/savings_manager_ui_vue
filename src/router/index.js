@@ -2,8 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
 import {
   getMoneyboxes,
-  getReachigSavingsTargets,
-  getNextAutomatedSavingsMoneyboxes,
+  getMoneyboxesSavingsForecast,
   getMoneybox,
   getTransactionLogs
 } from '@/api.js'
@@ -19,8 +18,7 @@ const router = createRouter({
         if (!global.moneyboxesLoaded) {
           try {
             await getMoneyboxes()
-            await getReachigSavingsTargets()
-            await getNextAutomatedSavingsMoneyboxes()
+            await getMoneyboxesSavingsForecast()
 
             global.moneyboxesLoaded = true
 <
@@ -117,8 +115,7 @@ const router = createRouter({
         if (!global.moneyboxesLoaded) {
           try {
             await getMoneyboxes()
-            await getReachigSavingsTargets()
-            await getNextAutomatedSavingsMoneyboxes()
+            await getMoneyboxesSavingsForecast()
             global.moneyboxesLoaded = true
             next()
           } catch (error) {
