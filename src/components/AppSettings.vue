@@ -44,7 +44,7 @@
           <v-col>
           <v-select
             :label="$t('overflow-moneybox-automated-savings-mode')"
-            :items="['collect', 'add', 'fill']"
+            :items="['collect', 'add', 'fill', 'ratio']"
             v-model="selectedOption"
           ></v-select>
           </v-col>
@@ -124,12 +124,14 @@ const saveUsersEmailAddress = ref(usersEmailAddress)
 const modesMap = new Map();
 modesMap.set("collect", "collect")
 modesMap.set("add_to_automated_savings_amount", "add")
-modesMap.set("fill_up_limited_moneyboxes", "fill")
+modesMap.set("fill_up_limited_moneyboxes", )
+modesMap.set("ratio", "ratio")
 
 const reversedModesMap = new Map();
 reversedModesMap.set("collect", "collect")
 reversedModesMap.set("add", "add_to_automated_savings_amount")
 reversedModesMap.set("fill", "fill_up_limited_moneyboxes")
+reversedModesMap.set("ratio", "ratio")
 
 const selectedOption = ref(modesMap.get(overflowMoneyboxAutomatedSavingsMode))
 

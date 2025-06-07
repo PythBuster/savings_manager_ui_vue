@@ -578,7 +578,7 @@ export class Settings {
    * @param {String} createdAt - The creation ISO8601 time/date of the settings
    * @param {String} modifiedAt - The modification ISO8601 time/date of the setting
    * @param {Boolean} isAutomatedSavingActive - The flag to indicate if automated savings is active or not
-   * @param {String} overflowMoneyboxAutomatedSavingsMode - The savings mode (one of 'add-up', 'fill-envelopes', 'collect')
+   * @param {String} overflowMoneyboxAutomatedSavingsMode - The savings mode (one of 'add', 'fill', 'collect', 'ratio')
    * @param {String} savingsAmount - The savings amount for the automated savings
    * @param {String} sendReportsViaEmail - The flag to indicate of user wants to be informed abut automated savings (receiving reports)
    * @param {String} userEmailAddress - The users email address

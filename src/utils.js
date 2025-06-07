@@ -124,7 +124,7 @@ export async function fetchOrCreateSettings() {
         await createSettings({
           savings_amount: 0,
           savings_cycle: 'monthly',
-          savings_mode: 'add-up'
+          savings_mode: 'add'
         })
       }
     }
