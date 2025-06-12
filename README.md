@@ -1,7 +1,7 @@
 # Savings Manager UI (Vue)
 
 This is the Web-UI (forked from https://github.com/Jasmin68k/savings-manager-frontend) for the
-Savings Manager v2.40.0 (https://github.com/PythBuster/savings_manager).
+Savings Manager >=v2.41.0 (https://github.com/PythBuster/savings_manager).
 
 
 ## Configuration
