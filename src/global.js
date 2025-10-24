@@ -24,7 +24,7 @@ const moneyboxes = reactive([])
 const moneyboxesMap = new Map()
 const moneyboxesSavingsForecast = new Map()
 
-const moneyboxesLoaded = false
+let moneyboxesLoaded = false
 
 // reactive() below tracks changes to the moneybox instances themselves, like changing name or balance
 

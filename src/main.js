@@ -22,3 +22,17 @@ registerPlugins(app)
 app.directive('click-outside', vClickOutside.directive)
 
 app.mount('#app')
+
+app.config.errorHandler = (err, instance, info) => {
+  console.error('Global error caught:', err, info)
+
+  // Wenn es ein Navigations- oder API-Fehler ist:
+  if (err?.response?.status === 404) {
+    // 💡 komplette App + Router-Historie zurücksetzen:
+    window.location.href = '/'
+    return
+  }
+
+  // oder (wenn du nur innerhalb der SPA redirecten willst):
+  router.replace('/')
+}
