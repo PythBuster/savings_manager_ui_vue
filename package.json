@@ -1,6 +1,6 @@
 {
   "name": "savings-manager-frontend",
-  "version": "2.13.0",
+  "version": "2.13.1",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_OPTIONS='--no-warnings' vite --port 5000",
