@@ -27,12 +27,8 @@ const router = createRouter({
             next()
           } catch (error) {
             console.error(`Failed to fetch transaction logs for moneybox ${id}:`, error)
-            if (error.response?.status === 404) {
-              global.moneyboxesLoaded = false
-              window.location.href = '/'
-              return
-            }
-            next(false)
+            global.moneyboxesLoaded = false
+            window.location.href = '/'
           }
         } else {
           next()
@@ -51,12 +47,8 @@ const router = createRouter({
             next()
           } catch (error) {
             console.error(`Failed to fetch transaction logs for moneybox ${id}:`, error)
-            if (error.response?.status === 404) {
-              global.moneyboxesLoaded = false
-              window.location.href = '/'
-              return
-            }
-            next(false)
+            global.moneyboxesLoaded = false
+            window.location.href = '/'
           }
         } else {
           next()
@@ -86,12 +78,8 @@ const router = createRouter({
             next()
           } catch (error) {
             console.error(`Failed to fetch moneybox with id ${id}:`, error)
-            if (error.response?.status === 404) {
-              global.moneyboxesLoaded = false
-              window.location.href = '/'
-              return
-            }
-            next(false)
+            global.moneyboxesLoaded = false
+            window.location.href = '/'
           }
         } else {
           next()
