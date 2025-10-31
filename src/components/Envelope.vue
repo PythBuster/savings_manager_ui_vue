@@ -8,13 +8,10 @@
     <v-row>
       <v-col>
         <v-card-item>
-          <!-- Titel-Logik identisch, aber klarer mit Klassen -->
+          <!-- Titel-Logik: unverändert im Verhalten -->
           <v-card-title v-if="forecast">
             <span v-if="isEarlyOrNoForecast">
-              <span
-                v-if="isMonthOne"
-                class="text-green"
-              >
+              <span v-if="isMonthOne" class="text-green">
                 {{ moneybox.name }}
               </span>
               <span v-else>{{ moneybox.name }}</span>
@@ -32,16 +29,13 @@
             {{ moneybox.name }}
           </v-card-title>
 
-          <v-card-subtitle
-            v-if="moneybox.priority != 0 &&
-              global.settings.value.isAutomatedSavingActive"
-          >
+          <v-card-subtitle v-if="moneybox.priority != 0 && isAutomated">
             {{ $t('priority') }} {{ moneybox.priority }}
           </v-card-subtitle>
         </v-card-item>
 
         <v-card-text>
-          <span v-if="global.settings.value.isAutomatedSavingActive">
+          <span v-if="isAutomated">
             <p class="text-success" v-if="moneybox.priority != 0">
               {{
                 !moneybox.savingsAmount
@@ -97,29 +91,54 @@ const props = defineProps({
   id: Number
 })
 
-const forecast = computed(() => global.findMoneyboxesSavingsForecast(props.id))
-const moneybox = computed(() => global.findMoneyboxById(props.id))
+// --- safer computed defaults ---
+const forecast = computed(
+  () =>
+    global.findMoneyboxesSavingsForecast(props.id) || {
+      reachedInMonths: null,
+      monthlyDistributions: []
+    }
+)
 
-// --- exakt gleiche Logik, aber einzeln benannt ---
+const moneybox = computed(
+  () =>
+    global.findMoneyboxById(props.id) || {
+      name: '',
+      balance: 0,
+      priority: 0,
+      savingsAmount: 0,
+      savingsTarget: null
+    }
+)
+
+// --- helper for readability ---
+const isAutomated = computed(() => global.settings.value.isAutomatedSavingActive)
+
+/**
+ * Forecast is "early" when reachedInMonths is null
+ * or the first distribution month is 1
+ */
 const isEarlyOrNoForecast = computed(() => {
   const f = forecast.value
-  if (!f) return false
+  if (!f || !Array.isArray(f.monthlyDistributions)) return false
   return (
     f.reachedInMonths == null ||
-    (f.monthlyDistributions.length > 0 &&
-      f.monthlyDistributions[0]['month'] == 1)
+    (f.monthlyDistributions.length > 0 && f.monthlyDistributions[0].month == 1)
   )
 })
 
+/** First month distribution (month === 1) */
 const isMonthOne = computed(() => {
   const f = forecast.value
   return (
     f &&
+    Array.isArray(f.monthlyDistributions) &&
     f.monthlyDistributions.length > 0 &&
-    f.monthlyDistributions[0]['month'] == 1
+    f.monthlyDistributions[0].month == 1
   )
 })
 
+/** Reached now (reachedInMonths === 0) */
 const isReachedNow = computed(() => {
   const f = forecast.value
   return f && f.reachedInMonths == 0
