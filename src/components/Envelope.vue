@@ -38,9 +38,7 @@
           <span v-if="isAutomated">
             <p class="text-success" v-if="moneybox.priority != 0">
               {{
-                !moneybox.savingsAmount
-                  ? $t('savings-amount') + formatCurrency(moneybox.savingsAmount)
-                  : $t('savings-amount') + $t('no-limit')
+                $t('savings-amount') + formatCurrency(moneybox.savingsAmount)
               }}
             </p>
 
