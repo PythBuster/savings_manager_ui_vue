@@ -1,38 +1,47 @@
 /**
  * main.js
  *
- * Bootstraps Vuetify and other plugins then mounts the App`
+ * Bootstraps Vuetify, i18n, Router, and custom directives, then mounts the App.
  */
 
-// Plugins
-import { registerPlugins } from '@/plugins/index.js'
-
-// Components
+import { createApp } from 'vue'
 import App from '@/App.vue'
+
+// --- Plugins & setup ---
+import { registerPlugins } from '@/plugins/index.js'
 import i18n from '@/i18n.js'
 import router from '@/router/index.js'
 import vClickOutside from 'v-click-outside'
 
-// Composables
-import { createApp } from 'vue'
+// --- Create app instance ---
+const app = createApp(App)
 
-const app = createApp(App).use(i18n).use(router)
+// --- Register plugins ---
+app.use(i18n)
+app.use(router)
 registerPlugins(app)
 
+// --- Custom directives ---
 app.directive('click-outside', vClickOutside.directive)
 
-app.mount('#app')
-
+// --- Global error handler ---
 app.config.errorHandler = (err, instance, info) => {
   console.error('Global error caught:', err, info)
 
-  // Wenn es ein Navigations- oder API-Fehler ist:
+  // Handle 404 or navigation-related errors
   if (err?.response?.status === 404) {
-    // 💡 komplette App + Router-Historie zurücksetzen:
-    window.location.href = '/'
+    // Full reload to reset all state (matches intended behavior)
+    window.location.replace('/')
     return
   }
 
-  // oder (wenn du nur innerhalb der SPA redirecten willst):
-  router.replace('/')
+  // Fallback redirect for unexpected errors within the SPA
+  if (router && router.replace) {
+    router.replace('/').catch(() => {
+      // swallow redundant navigation errors
+    })
+  }
 }
+
+// --- Mount app ---
+app.mount('#app')
