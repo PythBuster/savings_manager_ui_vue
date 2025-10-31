@@ -8,16 +8,12 @@
     <v-row>
       <v-col>
         <v-card-item>
+          <!-- Titel-Logik identisch, aber klarer mit Klassen -->
           <v-card-title v-if="forecast">
-            <span
-              v-if="forecast.reachedInMonths == null ||
-                (forecast.monthlyDistributions.length > 0 &&
-                 forecast.monthlyDistributions[0]['month'] == 1)"
-            >
+            <span v-if="isEarlyOrNoForecast">
               <span
-                style="color: #43A047"
-                v-if="forecast.monthlyDistributions.length > 0 &&
-                  forecast.monthlyDistributions[0]['month'] == 1"
+                v-if="isMonthOne"
+                class="text-green"
               >
                 {{ moneybox.name }}
               </span>
@@ -25,10 +21,7 @@
             </span>
 
             <span v-else>
-              <span
-                v-if="forecast.reachedInMonths == 0"
-                style="color: #1E88E5"
-              >
+              <span v-if="isReachedNow" class="text-blue">
                 {{ moneybox.name }}
               </span>
               <span v-else>{{ moneybox.name }}</span>
@@ -65,8 +58,11 @@
               }}
             </p>
 
-            <p v-if="moneybox.savingsTarget !== null && moneybox.savingsAmount > 0">
-              <span style="font-size: smaller;" v-if="forecast">
+            <p
+              v-if="moneybox.savingsTarget !== null && moneybox.savingsAmount > 0"
+              class="forecast-info"
+            >
+              <span v-if="forecast">
                 <span v-if="forecast.reachedInMonths == null">
                   {{ $t('reached-in') }}: {{ $t('never') }}
                 </span>
@@ -104,9 +100,46 @@ const props = defineProps({
 const forecast = computed(() => global.findMoneyboxesSavingsForecast(props.id))
 const moneybox = computed(() => global.findMoneyboxById(props.id))
 
+// --- exakt gleiche Logik, aber einzeln benannt ---
+const isEarlyOrNoForecast = computed(() => {
+  const f = forecast.value
+  if (!f) return false
+  return (
+    f.reachedInMonths == null ||
+    (f.monthlyDistributions.length > 0 &&
+      f.monthlyDistributions[0]['month'] == 1)
+  )
+})
+
+const isMonthOne = computed(() => {
+  const f = forecast.value
+  return (
+    f &&
+    f.monthlyDistributions.length > 0 &&
+    f.monthlyDistributions[0]['month'] == 1
+  )
+})
+
+const isReachedNow = computed(() => {
+  const f = forecast.value
+  return f && f.reachedInMonths == 0
+})
+
 function envelopeClicked() {
-  router.push({
-    path: `/envelope/${props.id}`
-  })
+  router.push({ path: `/envelope/${props.id}` })
 }
 </script>
+
+<style scoped>
+.text-green {
+  color: #43a047;
+}
+
+.text-blue {
+  color: #1e88e5;
+}
+
+.forecast-info {
+  font-size: smaller;
+}
+</style>
