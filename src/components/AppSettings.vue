@@ -146,13 +146,13 @@ async function saveClicked() {
   }
 
   if (Object.keys(updates).length === 0) {
-    await router.replace('/')
+    router.replace('/')
     return
   }
 
   try {
     await updateSettings(updates)
-    await router.replace('/')
+    router.replace('/')
   } catch (error) {
     errorMessage.value = "Error while updating."
     showErrorDialog.value = true
