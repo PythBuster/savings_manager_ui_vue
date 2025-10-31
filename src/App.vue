@@ -1,59 +1,61 @@
 <template>
   <v-app>
-    <v-app-bar :density="display.smAndDown ? 'compact' : ''">
+    <v-app-bar :density="display.smAndDown ? 'compact' : undefined">
       <v-app-bar-title>
         <v-btn v-if="!display.xs" @click="goHome">
           <v-icon size="x-large" class="mr-2">mdi-home</v-icon>
-          {{ appName }} v{{ appVersion }}</v-btn
-        >
-        <v-btn v-if="display.xs" @click="goHome">
-          <v-icon size="x-large">mdi-home</v-icon></v-btn
-        >
+          {{ appName }} v{{ appVersion }}
+        </v-btn>
+        <v-btn v-else @click="goHome">
+          <v-icon size="x-large">mdi-home</v-icon>
+        </v-btn>
       </v-app-bar-title>
+
+      <!-- Theme toggle -->
       <v-menu>
-        <template v-slot:activator="{ props }">
-          <v-btn v-bind="props" class="mr-2"
-            ><v-icon size="x-large">mdi-theme-light-dark</v-icon></v-btn
-          >
+        <template #activator="{ props }">
+          <v-btn v-bind="props" class="mr-2">
+            <v-icon size="x-large">mdi-theme-light-dark</v-icon>
+          </v-btn>
         </template>
         <v-list>
-          <v-list-item
-            class="d-flex justify-center"
-            @click="themeSelected('dark')"
-          >
+          <v-list-item class="justify-center" @click="themeSelected('dark')">
             <v-icon>mdi-weather-night</v-icon>
           </v-list-item>
-          <v-list-item
-            class="d-flex justify-center"
-            @click="themeSelected('light')"
-          >
+          <v-list-item class="justify-center" @click="themeSelected('light')">
             <v-icon>mdi-white-balance-sunny</v-icon>
           </v-list-item>
         </v-list>
       </v-menu>
+
+      <!-- Language switch -->
       <v-menu>
-        <template v-slot:activator="{ props }">
+        <template #activator="{ props }">
           <v-btn v-bind="props" class="mr-2">{{ selectedLanguage }}</v-btn>
         </template>
         <v-list>
           <v-list-item
-            v-for="(language, index) in languages"
-            :key="index"
-            :value="language"
-            class="d-flex justify-center"
+            v-for="language in languages"
+            :key="language"
+            class="justify-center"
             @click="languageSelected(language)"
-            >{{ language }}</v-list-item
           >
+            {{ language }}
+          </v-list-item>
         </v-list>
       </v-menu>
+
+      <!-- Navigation menu -->
       <v-menu>
-        <template v-slot:activator="{ props }">
-          <v-btn v-bind="props"><v-icon size="x-large">mdi-menu</v-icon></v-btn>
+        <template #activator="{ props }">
+          <v-btn v-bind="props">
+            <v-icon size="x-large">mdi-menu</v-icon>
+          </v-btn>
         </template>
         <v-list>
           <v-list-item
-            v-for="(item, index) in menuItems"
-            :key="index"
+            v-for="item in menuItems"
+            :key="item.path"
             @click="selectMenuItem(item)"
           >
             <v-list-item-title>{{ item.title }}</v-list-item-title>
@@ -61,28 +63,29 @@
         </v-list>
       </v-menu>
     </v-app-bar>
+
+    <!-- Drawer for larger screens -->
     <v-navigation-drawer>
       <v-container class="fill-height">
         <v-row class="fill-height">
           <v-col class="d-flex flex-column">
             <v-list>
               <v-list-item
-                v-for="(item, index) in menuItems"
-                :key="index"
+                v-for="item in menuItems"
+                :key="item.path"
                 @click="selectMenuItem(item)"
               >
                 <v-list-item-title>{{ item.title }}</v-list-item-title>
               </v-list-item>
             </v-list>
-            <div class="flex-grow-1"></div>
+            <div class="flex-grow-1" />
             <SavingsSettingsOverview />
           </v-col>
         </v-row>
       </v-container>
     </v-navigation-drawer>
 
-    <RouterLink to="/"></RouterLink>
-
+    <RouterLink to="/" />
     <RouterView />
   </v-app>
 </template>
@@ -90,52 +93,27 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import router from '@/router/index.js'
-import { useTheme } from 'vuetify'
+import { useTheme, useDisplay } from 'vuetify'
 import Cookies from 'js-cookie'
 import { fetchOrCreateSettings } from '@/utils.js'
-import { useDisplay } from 'vuetify'
-import { getAppMetadata  } from "@/api.js";
-import global from './global'
-
-const display = ref(useDisplay())
-
-// t used for menuItems and languageSelected(), otherwise $t globally available
+import { getAppMetadata } from '@/api.js'
+import global from '@/global.js'
 import { useI18n } from 'vue-i18n'
 
+const display = useDisplay()
 const theme = useTheme()
-
-const savedTheme = Cookies.get('theme')
-if (savedTheme) {
-  theme.global.name.value = savedTheme
-}
-
 const { t, locale } = useI18n({})
 
-const selectedLanguage = ref(
-  import.meta.env.VITE_VUE_APP_I18N_LOCALE.toUpperCase()
-)
+// --- Theme setup ---
+const savedTheme = Cookies.get('theme')
+if (savedTheme) theme.global.name.value = savedTheme
+
+// --- Language setup ---
+const selectedLanguage = ref(import.meta.env.VITE_VUE_APP_I18N_LOCALE.toUpperCase())
 const languages = [
   import.meta.env.VITE_VUE_APP_I18N_LOCALE.toUpperCase(),
   import.meta.env.VITE_VUE_APP_I18N_FALLBACK_LOCALE.toUpperCase()
 ]
-
-
-const menuItems = computed(() => {
-
-  const items = [
-    { title: t('my-envelopes'), path: '/' },
-    { title: t('settings'), path: '/settings' }
-  ];
-
-  if (
-    global.settings.value !== null &&
-    global.settings.value.isAutomatedSavingActive
-  ) {
-    items.splice(1, 0, { title: t('priority-list'), path: '/prioritylist' });
-  }
-
-  return items;
-});
 
 function languageSelected(language) {
   selectedLanguage.value = language
@@ -143,12 +121,22 @@ function languageSelected(language) {
   locale.value = language.toLowerCase()
 }
 
-const selectMenuItem = (item) => {
-  if (item.path) {
-    router.push({
-      path: item.path
-    })
+// --- Menu setup ---
+const menuItems = computed(() => {
+  const base = [
+    { title: t('my-envelopes'), path: '/' },
+    { title: t('settings'), path: '/settings' }
+  ]
+
+  const settings = global.settings.value
+  if (settings?.isAutomatedSavingActive) {
+    base.splice(1, 0, { title: t('priority-list'), path: '/prioritylist' })
   }
+  return base
+})
+
+function selectMenuItem(item) {
+  if (item.path) router.push({ path: item.path })
 }
 
 function themeSelected(selectedTheme) {
@@ -157,20 +145,23 @@ function themeSelected(selectedTheme) {
 }
 
 function goHome() {
-  router.push({
-    path: '/'
-  })
+  router.push({ path: '/' })
 }
 
-const appName = ref("")
-const appVersion = ref("")
-  
-onMounted(async () => {
-  const appData = await getAppMetadata()
-  appName.value = appData.appName
-  appVersion.value = appData.appVersion
+// --- App metadata ---
+const appName = ref('')
+const appVersion = ref('')
 
-  fetchOrCreateSettings();
+onMounted(async () => {
+  try {
+    const appData = await getAppMetadata()
+    appName.value = appData.appName || ''
+    appVersion.value = appData.appVersion || ''
+  } catch (error) {
+    console.error('Failed to fetch app metadata:', error)
+  }
+
+  fetchOrCreateSettings()
 
   const savedLocale = Cookies.get('locale')
   if (savedLocale) {
@@ -178,5 +169,4 @@ onMounted(async () => {
     selectedLanguage.value = savedLocale
   }
 })
-
 </script>
