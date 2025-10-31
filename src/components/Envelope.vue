@@ -8,98 +8,83 @@
     <v-row>
       <v-col>
         <v-card-item>
-          <v-card-title 
-          v-if="global.findMoneyboxesSavingsForecast(id) != null"
-          >
+          <v-card-title v-if="forecast">
             <span
-            v-if="global.findMoneyboxesSavingsForecast(id).reachedInMonths == null || global.findMoneyboxesSavingsForecast(id).monthlyDistributions.length > 0 && global.findMoneyboxesSavingsForecast(id).monthlyDistributions[0]['month'] == 1"
-            > 
-                <span  style="color: #43A047" v-if="global.findMoneyboxesSavingsForecast(id).monthlyDistributions.length > 0 && global.findMoneyboxesSavingsForecast(id).monthlyDistributions[0]['month'] == 1">
-                {{ global.findMoneyboxById(id).name }}
-                </span>
-                <span
-                v-else
-                >
-                {{ global.findMoneyboxById(id).name }}
-                </span> 
-            </span>
-            <span
-            v-else
+              v-if="forecast.reachedInMonths == null ||
+                (forecast.monthlyDistributions.length > 0 &&
+                 forecast.monthlyDistributions[0]['month'] == 1)"
             >
               <span
-              v-if="global.findMoneyboxesSavingsForecast(id).reachedInMonths == 0"
-               style="color: #1E88E5"
-              > 
-              {{ global.findMoneyboxById(id).name }}
+                style="color: #43A047"
+                v-if="forecast.monthlyDistributions.length > 0 &&
+                  forecast.monthlyDistributions[0]['month'] == 1"
+              >
+                {{ moneybox.name }}
               </span>
+              <span v-else>{{ moneybox.name }}</span>
+            </span>
+
+            <span v-else>
               <span
-              v-else
-              > 
-              {{ global.findMoneyboxById(id).name }}
-              </span> 
+                v-if="forecast.reachedInMonths == 0"
+                style="color: #1E88E5"
+              >
+                {{ moneybox.name }}
+              </span>
+              <span v-else>{{ moneybox.name }}</span>
             </span>
           </v-card-title>
-          <v-card-title v-else>
 
-                <span style="color: #43A047" v-if="global.findMoneyboxesSavingsForecast(id) != null">
-                {{ global.findMoneyboxById(id).name }}
-                </span>
-                <span
-                v-else
-                >
-                {{ global.findMoneyboxById(id).name }}
-                </span>               
+          <v-card-title v-else>
+            {{ moneybox.name }}
           </v-card-title>
 
-          <v-card-subtitle v-if="global.findMoneyboxById(id).priority != 0 && global.settings.value.isAutomatedSavingActive"
-            >{{ $t('priority') }}
-            {{ global.findMoneyboxById(id).priority }}</v-card-subtitle
+          <v-card-subtitle
+            v-if="moneybox.priority != 0 &&
+              global.settings.value.isAutomatedSavingActive"
           >
+            {{ $t('priority') }} {{ moneybox.priority }}
+          </v-card-subtitle>
         </v-card-item>
+
         <v-card-text>
           <span v-if="global.settings.value.isAutomatedSavingActive">
-
-            <p class="text-success" v-if="global.findMoneyboxById(id).priority != 0">
+            <p class="text-success" v-if="moneybox.priority != 0">
               {{
-                !global.findMoneyboxById(id).savings_amout
-                  ? $t('savings-amount') + formatCurrency(global.findMoneyboxById(id).savingsAmount)
-                  : "+" + $t('savings-amount') + $t('no-limit')
+                !moneybox.savingsAmount
+                  ? $t('savings-amount') + formatCurrency(moneybox.savingsAmount)
+                  : $t('savings-amount') + $t('no-limit')
               }}
-            </p>         
-            <p class="text-info" v-if="global.findMoneyboxById(id).priority != 0">
+            </p>
+
+            <p class="text-info" v-if="moneybox.priority != 0">
               {{
-                global.findMoneyboxById(id).savingsTarget !== null
-                  ? $t('savings-target') + formatCurrency(global.findMoneyboxById(id).savingsTarget)
+                moneybox.savingsTarget !== null
+                  ? $t('savings-target') + formatCurrency(moneybox.savingsTarget)
                   : $t('savings-target') + $t('no-limit')
               }}
             </p>
-            <p v-if="global.findMoneyboxById(id).savingsTarget !== null & global.findMoneyboxById(id).savingsAmount > 0">
-              <span style="font-size: smaller;" v-if="global.findMoneyboxesSavingsForecast(id) != null">
-              <span
-                v-if="global.findMoneyboxesSavingsForecast(id).reachedInMonths == null"
-                >
-                {{$t('reached-in')}}: {{$t('never')}}
+
+            <p v-if="moneybox.savingsTarget !== null && moneybox.savingsAmount > 0">
+              <span style="font-size: smaller;" v-if="forecast">
+                <span v-if="forecast.reachedInMonths == null">
+                  {{ $t('reached-in') }}: {{ $t('never') }}
                 </span>
                 <span v-else>
-                  <span
-                  v-if="global.findMoneyboxesSavingsForecast(id).reachedInMonths != 0"
-                  >
-                    {{$t('reached-in')}}: ~{{
-                    global.findMoneyboxesSavingsForecast(id).reachedInMonths
-                  }} {{$t('months')}}
+                  <span v-if="forecast.reachedInMonths != 0">
+                    {{ $t('reached-in') }}: ~{{ forecast.reachedInMonths }}
+                    {{ $t('months') }}
                   </span>
                 </span>
-            </span>
+              </span>
             </p>
           </span>
-          <br >
+
+          <br />
           <p class="font-weight-bold text-body-1">
-            {{ formatCurrency(global.findMoneyboxById(id).balance) }}
+            {{ formatCurrency(moneybox.balance) }}
           </p>
-
-          <br >
-
-
+          <br />
         </v-card-text>
       </v-col>
     </v-row>
@@ -107,6 +92,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import global from '@/global.js'
 import router from '@/router/index.js'
 import { formatCurrency } from '@/utils.js'
@@ -114,6 +100,9 @@ import { formatCurrency } from '@/utils.js'
 const props = defineProps({
   id: Number
 })
+
+const forecast = computed(() => global.findMoneyboxesSavingsForecast(props.id))
+const moneybox = computed(() => global.findMoneyboxById(props.id))
 
 function envelopeClicked() {
   router.push({
