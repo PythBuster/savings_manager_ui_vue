@@ -62,7 +62,7 @@ export async function getMoneyboxesSavingsForecast() {
     headers: receiveJsonHeaders
   })
 
-  if (!jsonData?.moneyboxForecasts) throw new DataError('Invalid data from API')
+  if (!jsonData?.moneyboxForecasts) return
 
   const forecasts = jsonData.moneyboxForecasts.map(MoneyboxSavingsForecast.fromJSON)
   global.setMoneyboxesSavingsForecast(forecasts)
