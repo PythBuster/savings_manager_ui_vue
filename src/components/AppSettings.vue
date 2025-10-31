@@ -90,7 +90,9 @@ import { updateSettings } from '@/api.js'
 import { useDisplay } from 'vuetify'
 import { euroStringToCents, centsToEuroFloat } from '@/utils.js'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const display = useDisplay()
 const { t } = useI18n({})
 
@@ -144,14 +146,13 @@ async function saveClicked() {
   }
 
   if (Object.keys(updates).length === 0) {
-    errorMessage.value = t('error-no-changes')
-    showErrorDialog.value = true
+    await router.replace('/')
     return
   }
 
   try {
     await updateSettings(updates)
-    window.location.href = '/' // full reload for global settings update
+    await router.replace('/')
   } catch (error) {
     errorMessage.value = "Error while updating."
     showErrorDialog.value = true
