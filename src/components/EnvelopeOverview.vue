@@ -115,12 +115,14 @@
     <ErrorDialog v-model="showErrorDialog" :error-message="errorMessage" />
     <TransactionDialog
       v-model="showTransactionDialog"
+      :availableBalance="moneybox.balance"
       :action="currentActionType"
       :id="id"
       @confirm="handleTransactionConfirm"
     />
     <TransferDialog
       v-model="showTransferDialog"
+      :availableBalance="moneybox.balance"
       :sourceId="id"
       @confirm="handleTransferConfirm"
     />
@@ -144,6 +146,9 @@ import { useI18n } from 'vue-i18n'
 import { APIError } from '@/customerrors.js'
 import { useDisplay } from 'vuetify'
 import { useRoute } from 'vue-router'
+import TransactionDialog from '@/components/TransactionDialog.vue'
+import TransferDialog from '@/components/TransferDialog.vue'
+import ErrorDialog from '@/components/ErrorDialog.vue'
 
 const display = useDisplay()
 const { t } = useI18n({})

@@ -74,6 +74,7 @@ export function centsToEuroFloat(cents) {
   return safeStringToFloat(euroString)
 }
 
+
 /**
  * Converts a comma-based decimal string into a float.
  * @param {string} str - The numeric string (e.g., "12,34").

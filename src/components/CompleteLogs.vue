@@ -31,6 +31,7 @@ import global from '@/global.js'
 import router from '@/router/index.js'
 import { useRoute } from 'vue-router'
 import { useDisplay } from 'vuetify'
+import TransactionLogs from '@/components/TransactionLogs.vue'
 
 const display = useDisplay()
 const route = useRoute()

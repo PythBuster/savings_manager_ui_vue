@@ -7,6 +7,10 @@
 
       <v-form ref="form" v-model="valid">
         <v-card-text>
+          <p style="display: inline-block">{{ " " + $t('available-balance-title')  }}</p>
+          <v-label style="margin-left: 5px;">{{formatCurrency(props.availableBalance)}}</v-label>
+          <br><br>
+
           <p>{{ $t('transfer-how-much') }}</p>
           <CurrencyInput :label="$t('amount')" v-model="amount" />
 
@@ -48,11 +52,17 @@ import { ref, computed, watch } from 'vue'
 import global from '@/global.js'
 import { getMoneyboxes } from '@/api.js'
 import { useI18n } from 'vue-i18n'
+import CurrencyInput from '@/components/CurrencyInput.vue'
+import { formatCurrency } from '@/utils'
 
 const { t } = useI18n({})
 
 const props = defineProps({
-  sourceId: Number
+  sourceId: Number,
+  availableBalance: {
+    type: Number,
+    default: 0
+  }
 })
 
 const dialogVisible = defineModel()
