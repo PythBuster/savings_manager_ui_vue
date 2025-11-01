@@ -7,10 +7,12 @@ import {
   MoneyboxSavingsForecast
 } from '@/models.js'
 import global from '@/global.js'
+import router from '@/router'
 
+// --- Server URL ---
 const serverURL = import.meta.env.VITE_BACKEND_URL
 
-// --- shared headers ---
+// --- Shared headers ---
 const receiveJsonHeaders = new Headers({
   accept: 'application/json'
 })
@@ -20,8 +22,42 @@ const sendReceiveJsonHeaders = new Headers({
   'content-type': 'application/json'
 })
 
-// --- helpers ---
+// --- Redirect guard (prevents multiple concurrent redirects) ---
+let isRedirecting = false
+
+// --- Global fallback handler ---
+async function handleApiFallback(error, context) {
+  if (isRedirecting) return
+  isRedirecting = true
+
+  console.error(`Critical API failure during ${context}:`, error)
+  global.moneyboxesLoaded = false
+
+  try {
+    await router.replace('/')
+  } catch (fallbackError) {
+    console.error('Router redirect failed, performing hard reload:', fallbackError)
+    window.location.href = '/'
+  } finally {
+    isRedirecting = false
+  }
+}
+
+// --- Helpers ---
 async function checkResponse(response) {
+  const contentType = response.headers.get('content-type') || ''
+  const isHtmlResponse = contentType.includes('text/html')
+
+  // Detect HTML instead of JSON (e.g. unresolved route returning index.html)
+  if (isHtmlResponse) {
+    console.warn('Backend returned HTML instead of JSON – redirecting to root.')
+    await handleApiFallback(
+      new Error(`Unexpected HTML response at ${response.url}`),
+      'checkResponse'
+    )
+    throw new APIError('Unexpected HTML response from backend', response.status)
+  }
+
   if (!response.ok) {
     let errorDetails = null
     if (response.status !== 500) {
@@ -37,13 +73,29 @@ async function checkResponse(response) {
 }
 
 async function fetchJson(url, options = {}) {
-  const response = await fetch(url, options)
-  await checkResponse(response)
-  return response.status === 204 ? null : await response.json()
+  try {
+    const response = await fetch(url, options)
+    await checkResponse(response)
+
+    // If backend still sends HTML with 200 status
+    const contentType = response.headers.get('content-type') || ''
+    if (contentType.includes('text/html')) {
+      console.warn('Received HTML payload with 200 status – redirecting to root.')
+      await handleApiFallback(
+        new Error(`Invalid HTML payload for ${url}`),
+        'fetchJson'
+      )
+      throw new APIError('Invalid HTML payload returned by backend')
+    }
+
+    return response.status === 204 ? null : await response.json()
+  } catch (error) {
+    await handleApiFallback(error, `fetching ${url}`)
+    throw error
+  }
 }
 
 // --- API functions ---
-
 export async function getMoneyboxes() {
   const jsonData = await fetchJson(`${serverURL}/api/moneyboxes`, {
     method: 'GET',
@@ -251,7 +303,8 @@ export async function updateSettings(patchData) {
     global.settings.value.sendReportsViaEmail = jsonData.sendReportsViaEmail
 
   if (patchData.overflowMoneyboxAutomatedSavingsMode !== undefined)
-    global.settings.value.overflowMoneyboxAutomatedSavingsMode = jsonData.overflowMoneyboxAutomatedSavingsMode
+    global.settings.value.overflowMoneyboxAutomatedSavingsMode =
+      jsonData.overflowMoneyboxAutomatedSavingsMode
 
   if (patchData.userEmailAddress !== undefined)
     global.settings.value.userEmailAddress = jsonData.userEmailAddress

@@ -3,7 +3,6 @@ import Home from '@/views/Home.vue'
 import * as api from '@/api.js'
 import global from '@/global.js'
 
-// --- Helper: zentrale Fehlerbehandlung ---
 async function handleCriticalError(error, context, router) {
   console.error(`Failed during ${context}:`, error)
   global.moneyboxesLoaded = false
@@ -15,7 +14,6 @@ async function handleCriticalError(error, context, router) {
   }
 }
 
-// --- Helper: Ladefunktionen ---
 async function loadMoneyboxes() {
   if (!global.moneyboxesLoaded) {
     await api.getMoneyboxes()
@@ -38,20 +36,31 @@ async function ensureMoneyboxFetched(id) {
   }
 }
 
-// --- Router-Konfiguration ---
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', component: Home },
-
+    {
+      path: '/', component: Home
+    },
     {
       path: '/envelope/:id',
       component: () => import('@/views/Envelope.vue'),
       beforeEnter: async (to, _from, next) => {
         const id = Number(to.params.id)
         if (isNaN(id)) return next('/')
+
         const box = global.findMoneyboxById(id)
-        if (!box) return next()
+        if (!box) {
+          console.warn(`Moneybox with ID ${id} not found — redirecting to root.`)
+          try {
+            await router.replace('/')
+          } catch (error) {
+            console.error('Router replace failed, falling back to hard reload:', error)
+            window.location.href = '/'
+          }
+          return
+        }
+
         try {
           await api.getTransactionLogs(box)
           next()
@@ -60,7 +69,6 @@ const router = createRouter({
         }
       }
     },
-
     {
       path: '/logs/:id',
       component: () => import('@/views/Logs.vue'),
@@ -97,7 +105,6 @@ const router = createRouter({
   ]
 })
 
-// --- Globaler Guard: lädt Moneyboxes, falls nötig ---
 router.beforeEach(async (_to, _from, next) => {
   try {
     await loadMoneyboxes()
