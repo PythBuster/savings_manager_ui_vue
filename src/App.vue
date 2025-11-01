@@ -1,8 +1,8 @@
 <template>
   <v-app>
-    <v-app-bar :density="display.smAndDown ? 'compact' : undefined">
+    <v-app-bar :density="display.smAndDown.value ? 'compact' : ''">
       <v-app-bar-title>
-        <v-btn v-if="!display.xs" @click="goHome">
+        <v-btn v-if="!display.xs.value" @click="goHome">
           <v-icon size="x-large" class="mr-2">mdi-home</v-icon>
           {{ appName }} v{{ appVersion }}
         </v-btn>
@@ -35,8 +35,8 @@
         </template>
         <v-list>
           <v-list-item
-            v-for="language in languages"
-            :key="language"
+            v-for="(language, index) in languages"
+            :key="index"
             class="justify-center"
             @click="languageSelected(language)"
           >
@@ -54,8 +54,8 @@
         </template>
         <v-list>
           <v-list-item
-            v-for="item in menuItems"
-            :key="item.path"
+            v-for="(item, index) in menuItems"
+            :key="index"
             @click="selectMenuItem(item)"
           >
             <v-list-item-title>{{ item.title }}</v-list-item-title>
@@ -64,21 +64,21 @@
       </v-menu>
     </v-app-bar>
 
-    <!-- Drawer for larger screens -->
+    <!-- Navigation Drawer -->
     <v-navigation-drawer>
       <v-container class="fill-height">
         <v-row class="fill-height">
           <v-col class="d-flex flex-column">
             <v-list>
               <v-list-item
-                v-for="item in menuItems"
-                :key="item.path"
+                v-for="(item, index) in menuItems"
+                :key="index"
                 @click="selectMenuItem(item)"
               >
                 <v-list-item-title>{{ item.title }}</v-list-item-title>
               </v-list-item>
             </v-list>
-            <div class="flex-grow-1" />
+            <div class="flex-grow-1"></div>
             <SavingsSettingsOverview />
           </v-col>
         </v-row>
@@ -97,16 +97,20 @@ import { useTheme, useDisplay } from 'vuetify'
 import Cookies from 'js-cookie'
 import { fetchOrCreateSettings } from '@/utils.js'
 import { getAppMetadata } from '@/api.js'
-import global from '@/global.js'
+import global from './global'
+import SavingsSettingsOverview from '@/components/SavingsSettingsOverview.vue'
 import { useI18n } from 'vue-i18n'
 
+// --- Vuetify reactive display ---
 const display = useDisplay()
 const theme = useTheme()
 const { t, locale } = useI18n({})
 
 // --- Theme setup ---
 const savedTheme = Cookies.get('theme')
-if (savedTheme) theme.global.name.value = savedTheme
+if (savedTheme) {
+  theme.global.name.value = savedTheme
+}
 
 // --- Language setup ---
 const selectedLanguage = ref(import.meta.env.VITE_VUE_APP_I18N_LOCALE.toUpperCase())
@@ -121,22 +125,24 @@ function languageSelected(language) {
   locale.value = language.toLowerCase()
 }
 
-// --- Menu setup ---
+// --- Menu items ---
 const menuItems = computed(() => {
-  const base = [
+  const items = [
     { title: t('my-envelopes'), path: '/' },
     { title: t('settings'), path: '/settings' }
   ]
 
-  const settings = global.settings.value
-  if (settings?.isAutomatedSavingActive) {
-    base.splice(1, 0, { title: t('priority-list'), path: '/prioritylist' })
+  if (global.settings.value && global.settings.value.isAutomatedSavingActive) {
+    items.splice(1, 0, { title: t('priority-list'), path: '/prioritylist' })
   }
-  return base
+
+  return items
 })
 
 function selectMenuItem(item) {
-  if (item.path) router.push({ path: item.path })
+  if (item.path) {
+    router.push({ path: item.path })
+  }
 }
 
 function themeSelected(selectedTheme) {
@@ -152,15 +158,18 @@ function goHome() {
 const appName = ref('')
 const appVersion = ref('')
 
-onMounted(async () => {
+async function loadAppMetadata() {
   try {
     const appData = await getAppMetadata()
-    appName.value = appData.appName || ''
-    appVersion.value = appData.appVersion || ''
+    appName.value = appData?.appName ?? ''
+    appVersion.value = appData?.appVersion ?? ''
   } catch (error) {
-    console.error('Failed to fetch app metadata:', error)
+    console.error('Fehler beim Laden der App-Metadaten:', error)
   }
+}
 
+onMounted(async () => {
+  await loadAppMetadata()
   fetchOrCreateSettings()
 
   const savedLocale = Cookies.get('locale')
