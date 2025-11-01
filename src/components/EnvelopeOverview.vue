@@ -38,13 +38,30 @@
       </v-col>
 
       <v-col cols="auto" class="d-flex flex-column">
-        <v-btn color="success" @click="handleTransactionDialog('deposit')" class="mb-2">
+        <v-btn
+          color="success"
+          @click="handleTransactionDialog('deposit')"
+          class="mb-2"
+        >
           {{ $t('deposit') }}
         </v-btn>
-        <v-btn color="warning" @click="handleTransactionDialog('withdraw')" class="mb-2">
+
+        <v-btn
+          color="warning"
+          class="mb-2"
+          @click="handleTransactionDialog('withdraw')"
+          :disabled="moneybox.balance === 0"
+        >
           {{ $t('withdraw') }}
         </v-btn>
-        <v-btn color="info" @click="handleTransferDialog">{{ $t('transfer') }}</v-btn>
+
+        <v-btn
+          color="info"
+          @click="handleTransferDialog"
+          :disabled="moneybox.balance === 0"
+        >
+          {{ $t('transfer') }}
+        </v-btn>
       </v-col>
 
       <v-col v-if="moneybox.priority != 0" cols="auto" class="d-flex flex-column">
@@ -240,4 +257,3 @@ function viewCompleteClicked() {
   router.push(`/logs/${id.value}`)
 }
 </script>
-
