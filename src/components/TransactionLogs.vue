@@ -5,13 +5,15 @@
         <v-card-item>
           <v-card-title>{{ $t('last-transactions') }}</v-card-title>
         </v-card-item>
+
         <v-row v-if="showAll" class="align-center" no-gutters>
           <v-col cols="auto">
             <DateRangePicker
-              @selected-date-range="dateRangeSelected($event)"
+              @selected-date-range="dateRangeSelected"
               v-model="dateFilterEnabled"
             />
           </v-col>
+
           <v-col :cols="dateFilterEnabled && display.smAndDown ? 12 : ''">
             <v-text-field
               v-model="search"
@@ -19,9 +21,10 @@
               prepend-inner-icon="mdi-magnify"
               variant="solo-filled"
               hide-details
-            ></v-text-field>
+            />
           </v-col>
         </v-row>
+
         <v-data-table
           :headers="tableHeaders"
           :items="transactionItems"
@@ -37,18 +40,17 @@
 
           <template v-slot:[`item.rawAmount`]="{ item }">
             <span
-              :class="
-                item.amount !== '---'
-                  ? item.rawAmount >= 0
-                    ? 'text-success'
-                    : 'text-error'
-                  : ''
-              "
+              :class="item.amount !== '---'
+                ? item.rawAmount >= 0
+                  ? 'text-success'
+                  : 'text-error'
+                : ''"
             >
               {{ item.amount }}
             </span>
           </template>
-          <!-- hide-default-footer and disable-pagination not implemented yet in Vuetify 3 - https://github.com/vuetifyjs/vuetify/issues/17651 -->
+
+          <!-- hide-default-footer workaround -->
           <template v-slot:bottom v-if="!showAll"></template>
           <template v-slot:no-data></template>
         </v-data-table>
@@ -62,117 +64,82 @@ import { computed, ref } from 'vue'
 import { useDisplay } from 'vuetify'
 import global from '@/global.js'
 import { formatCurrency, formatDateTime } from '@/utils.js'
-import { useRoute } from 'vue-router';
-
-// t used for table, otherwise $t globally available
+import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-const { t } = useI18n({})
 
-const display = ref(useDisplay())
-const route = useRoute();
+const { t } = useI18n({})
+const display = useDisplay()
+const route = useRoute()
 
 const search = ref('')
+const dateFilterEnabled = ref(false)
+const selectedDateRange = ref({ startDate: null, endDate: null })
+const numberOfEntries = 4
 
 const props = defineProps({
   id: { type: Number, default: undefined },
-  showAll: { type: Boolean, default: false } // Show all transactions, instead of just numberOfEntries
+  showAll: { type: Boolean, default: false }
 })
-const id = computed(() => props.id || route.params.id); // Nutzt die ID aus den Props oder der Route
 
-const dateFilterEnabled = ref(false)
-
-const selectedDateRange = ref({ startDate: null, endDate: null })
-
-// How many transaction log entries to show
-const numberOfEntries = 4
+const id = computed(() => props.id || route.params.id)
 
 const generatePlaceholderData = (count) =>
-  Array.from({ length: count }, () => ({
-    dateTime: '---',
-    description: '---',
-    trigger: '---',
-    type: '---',
-    amount: '---',
-    total: '---'
-  }))
+  count > 0
+    ? Array.from({ length: count }, () => ({
+      dateTime: '---',
+      description: '---',
+      trigger: '---',
+      type: '---',
+      amount: '---',
+      total: '---'
+    }))
+    : []
 
 const tableHeaders = computed(() => {
-  let headers = [
-    {
-      title: t('date-time'),
-      value: 'dateTime',
-      key: 'rawDateTime',
-      sortable: props.showAll
-    },
+  const baseHeaders = [
+    { title: t('date-time'), value: 'dateTime', key: 'rawDateTime', sortable: props.showAll },
     { title: t('type'), value: 'type', sortable: props.showAll },
-
     { title: t('trigger'), value: 'trigger', sortable: props.showAll },
-
-    { title: t('description'), value: 'description', sortable: props.showAll },
+    { title: t('description'), value: 'description', sortable: props.showAll }
   ]
 
-  if(props.showAll) {
-    headers =  headers.concat([
-      {
-        title: t('origin'),
-        value: 'origin',
-        key: 'origin',
-        sortable: props.showAll,
-        align: 'end'
-      },
-    ])
-  }
+  const extraHeaders = props.showAll
+    ? [{ title: t('origin'), value: 'origin', key: 'origin', sortable: props.showAll, align: 'end' }]
+    : []
 
-  headers = headers.concat([
-    {
-      title: t('amount'),
-      value: 'amount',
-      key: 'rawAmount',
-      sortable: props.showAll,
-      align: 'end'
-    },
-    {
-      title: t('total'),
-      value: 'total',
-      key: 'rawTotal',
-      sortable: props.showAll,
-      align: 'end'
-    }
-  ])
+  const amountHeaders = [
+    { title: t('amount'), value: 'amount', key: 'rawAmount', sortable: props.showAll, align: 'end' },
+    { title: t('total'), value: 'total', key: 'rawTotal', sortable: props.showAll, align: 'end' }
+  ]
 
-  return headers
+  return [...baseHeaders, ...extraHeaders, ...amountHeaders]
 })
 
 const transactionItems = computed(() => {
+  const moneybox = global.findMoneyboxById(id.value)
 
-  if (!id.value || !global.findMoneyboxById(id.value) || !("transactionLogs" in global.findMoneyboxById(id.value)) || global.findMoneyboxById(id.value).transactionLogs === null) {
+  if (!moneybox || !moneybox.transactionLogs) {
     return props.showAll ? [] : generatePlaceholderData(numberOfEntries)
   }
 
-  const transactionData = global.findMoneyboxById(id.value).transactionLogs
-
   const entries = props.showAll
-    ? transactionData.entries
-    : transactionData.entries.slice(0, numberOfEntries)
+    ? moneybox.transactionLogs.entries
+    : moneybox.transactionLogs.entries.slice(0, numberOfEntries)
 
   let items = entries.map((entry) => {
-    const trigger =
-      entry.transactionTrigger === 'manually' ? t('manual') : t('automatic')
+    const trigger = entry.transactionTrigger === 'manually' ? t('manual') : t('automatic')
+    const type = entry.transactionType === 'direct' ? t('direct') : t('distribution')
 
-    const type =entry.transactionType === 'direct' ? t('direct') : t('distribution')
-
-    let origin = ''
-
-    if (entry.counterpartyMoneyboxName !== null){
-      origin = entry.counterpartyMoneyboxName + " (ID: " + entry.counterpartyMoneyboxId + ")"
-    }
+    const origin = entry.counterpartyMoneyboxName
+      ? `${entry.counterpartyMoneyboxName} (ID: ${entry.counterpartyMoneyboxId})`
+      : ''
 
     return {
       dateTime: formatDateTime(entry.createdAt),
       description: entry.description,
-      origin: origin,
-      trigger: trigger,
-      type: type,
+      origin,
+      trigger,
+      type,
       amount: formatCurrency(entry.amount),
       total: formatCurrency(entry.balance),
       rawAmount: entry.amount,
@@ -183,24 +150,18 @@ const transactionItems = computed(() => {
 
   if (
     dateFilterEnabled.value &&
-    selectedDateRange.value &&
     selectedDateRange.value.startDate &&
     selectedDateRange.value.endDate
   ) {
-    items = items.filter((item) => {
-      return (
+    items = items.filter(
+      (item) =>
         item.rawDateTime >= selectedDateRange.value.startDate &&
         item.rawDateTime <= selectedDateRange.value.endDate
-      )
-    })
+    )
   }
 
-  // Only add placeholders if not showing all entries and there are fewer items than numberOfEntries
   if (!props.showAll && items.length < numberOfEntries) {
-    items = [
-      ...items,
-      ...generatePlaceholderData(numberOfEntries - items.length)
-    ]
+    items = [...items, ...generatePlaceholderData(numberOfEntries - items.length)]
   }
 
   return items
@@ -208,8 +169,7 @@ const transactionItems = computed(() => {
 
 function dateRangeSelected(range) {
   if (range.startDate && range.endDate) {
-    selectedDateRange.value.startDate = range.startDate
-    selectedDateRange.value.endDate = range.endDate
+    selectedDateRange.value = { startDate: range.startDate, endDate: range.endDate }
   }
 }
 </script>

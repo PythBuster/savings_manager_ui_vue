@@ -3,33 +3,34 @@
 import { reactive, readonly, ref } from 'vue'
 import { Settings } from '@/models.js'
 
-// Singleton instance, not created initially
-let settingsInstance = ref(null)
+// --- Settings Singleton ---
+const settingsInstance = ref(null)
 
+/**
+ * Initializes a single Settings instance from JSON data.
+ * Throws if already initialized (enforces singleton behavior).
+ */
 function createAndSetSettings(jsonData) {
-  // Singleton
-
   if (!settingsInstance.value) {
     const instance = Settings.fromJSON(jsonData)
-
     settingsInstance.value = reactive(instance)
   } else {
     throw new Error('Settings instance already exists')
   }
 }
 
-// this reactive() tracks changes to the array itself, like adding/removing moneyboxes
-const moneyboxes = reactive([])
+// --- Moneyboxes and Forecasts ---
+const moneyboxes = reactive([]) // reactive array to track add/remove operations
+const moneyboxesMap = new Map() // fast lookup by ID
+const moneyboxesSavingsForecast = new Map() // forecast data keyed by ID
 
-const moneyboxesMap = new Map()
-const moneyboxesSavingsForecast = new Map()
+let moneyboxesLoaded = false // global indicator for API loading state
 
-let moneyboxesLoaded = false
-
-// reactive() below tracks changes to the moneybox instances themselves, like changing name or balance
-
+/**
+ * Sets (adds) moneyboxes from the backend response without overwriting existing ones,
+ * preserving transaction logs and reactivity.
+ */
 function setMoneyboxes(newMoneyboxes) {
-  // preserve existing moneyboxes in order not to lose their transaction logs, if already fetched
   newMoneyboxes.forEach((newMoneybox) => {
     if (!findMoneyboxById(newMoneybox.id)) {
       const reactiveMoneybox = reactive(newMoneybox)
@@ -39,24 +40,27 @@ function setMoneyboxes(newMoneyboxes) {
   })
 }
 
+/**
+ * Sets savings forecast data for moneyboxes.
+ */
 function setMoneyboxesSavingsForecast(newMoneyboxesSavingsForecast) {
-  newMoneyboxesSavingsForecast.forEach(
-    (newMoneyboxesSavingsForecast) => {
-      moneyboxesSavingsForecast.set(
-        newMoneyboxesSavingsForecast.moneyboxId,
-        newMoneyboxesSavingsForecast
-      )
-    }
-  )
+  newMoneyboxesSavingsForecast.forEach((forecast) => {
+    moneyboxesSavingsForecast.set(forecast.moneyboxId, forecast)
+  })
 }
 
-
+/**
+ * Adds a new moneybox to the global store.
+ */
 function addMoneybox(newMoneybox) {
   const reactiveMoneybox = reactive(newMoneybox)
   moneyboxes.push(reactiveMoneybox)
   moneyboxesMap.set(newMoneybox.id, reactiveMoneybox)
 }
 
+/**
+ * Deletes a moneybox from the global store.
+ */
 function deleteMoneybox(moneyboxToDelete) {
   const index = moneyboxes.findIndex(
     (moneybox) => moneybox.id === moneyboxToDelete.id
@@ -67,29 +71,36 @@ function deleteMoneybox(moneyboxToDelete) {
   }
 }
 
+/**
+ * Finds a moneybox by its ID.
+ * @param {number} id
+ * @returns {Object|undefined}
+ */
 function findMoneyboxById(id) {
   return moneyboxesMap.get(id)
 }
 
+/**
+ * Finds a savings forecast entry by its moneybox ID.
+ * @param {number} id
+ * @returns {Object|undefined}
+ */
 function findMoneyboxesSavingsForecast(id) {
   return moneyboxesSavingsForecast.get(id)
 }
 
-
-
 /**
- * Adds a TransactionLogs instance to a specific Moneybox instance.
- * @param {Number} moneyboxId The ID of the Moneybox to which the TransactionLogs will be added
- * @param {TransactionLogs} transactionLogs The TransactionLogs instance to add
+ * Adds a TransactionLogs instance to a specific Moneybox.
+ * @param {number} moneyboxId
+ * @param {TransactionLogs} transactionLogs
  */
 function addTransactionLogsToMoneybox(moneyboxId, transactionLogs) {
   const moneybox = findMoneyboxById(moneyboxId)
-  if (!moneybox) {
-    return
-  }
+  if (!moneybox) return
   moneybox.transactionLogs = transactionLogs
 }
 
+// --- Exports (keep shape identical) ---
 export default {
   moneyboxes: readonly(moneyboxes),
   moneyboxesLoaded,

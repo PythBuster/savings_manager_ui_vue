@@ -4,10 +4,12 @@
       <v-card-title class="text-wrap">
         {{ transferTitle }}
       </v-card-title>
+
       <v-form ref="form" v-model="valid">
         <v-card-text>
           <p>{{ $t('transfer-how-much') }}</p>
           <CurrencyInput :label="$t('amount')" v-model="amount" />
+
           <p>{{ $t('transfer-where') }}</p>
           <v-autocomplete
             :label="$t('envelope')"
@@ -17,21 +19,24 @@
             v-model="selectedId"
             :no-data-text="$t('error-no-envelopes-found')"
             :rules="[validateAutocomplete]"
-          ></v-autocomplete>
+          />
+
           <p>{{ $t('description') + $t('for-transfer') }}</p>
           <v-text-field :label="$t('description')" v-model="description" />
         </v-card-text>
+
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="surface-variant" @click="cancel">{{
-            $t('cancel')
-          }}</v-btn>
+          <v-btn color="surface-variant" @click="cancel">
+            {{ $t('cancel') }}
+          </v-btn>
           <v-btn
             color="info"
-            :disabled="!valid || !(amount > 0)"
+            :disabled="!valid || amount <= 0"
             @click="confirm"
-            >OK</v-btn
           >
+            OK
+          </v-btn>
         </v-card-actions>
       </v-form>
     </v-card>
@@ -39,13 +44,11 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import global from '@/global.js'
 import { getMoneyboxes } from '@/api.js'
-
 import { useI18n } from 'vue-i18n'
 
-// t used for validation message, otherwise $t globally available
 const { t } = useI18n({})
 
 const props = defineProps({
@@ -53,37 +56,31 @@ const props = defineProps({
 })
 
 const dialogVisible = defineModel()
-
 const emit = defineEmits(['confirm'])
 
 const amount = ref(0)
 const selectedId = ref(undefined)
 const description = ref('')
 const valid = ref(false)
-import { centsToEuroString, euroStringToCents } from '@/utils.js'
 
-const transferTitle = computed(() => {
-  return global.findMoneyboxById(props.sourceId).name
-})
+const sourceMoneybox = computed(() => global.findMoneyboxById(props.sourceId))
 
-const validMoneyboxes = computed(() => {
-  return global.moneyboxes
-    .filter((obj) => obj.id !== props.sourceId)
-    .map((moneybox) => ({
-      id: moneybox.id,
-      name: moneybox.name
-    }))
+const transferTitle = computed(() => sourceMoneybox.value?.name || '')
+
+const validMoneyboxes = computed(() =>
+  global.moneyboxes
+    .filter((m) => m.id !== props.sourceId)
+    .map((m) => ({ id: m.id, name: m.name }))
     .sort((a, b) => a.name.localeCompare(b.name))
-})
+)
 
 function validateAutocomplete(value) {
-  const isValid = validMoneyboxes.value.some(
-    (moneybox) => moneybox.id === value
+  return (
+    validMoneyboxes.value.some((m) => m.id === value) ||
+    t('invalid-selection')
   )
-  return isValid || t('invalid-selection')
 }
 
-// need all moneyboxes to show complete list
 async function loadMoneyboxes() {
   if (!global.moneyboxesLoaded) {
     try {
@@ -91,15 +88,21 @@ async function loadMoneyboxes() {
       global.moneyboxesLoaded = true
     } catch (error) {
       console.error('Failed to fetch moneyboxes:', error)
-      // TODO: Show error message to user or redirect to error page
     }
   }
 }
 
-watch(dialogVisible, (newVal) => {
-  // Specifically check for the dialog opening
-  if (newVal) {
+function resetForm() {
+  amount.value = 0
+  description.value = ''
+  selectedId.value = undefined
+}
+
+watch(dialogVisible, (isOpen) => {
+  if (isOpen) {
     loadMoneyboxes()
+  } else {
+    resetForm()
   }
 })
 
@@ -115,12 +118,4 @@ function confirm() {
   })
   dialogVisible.value = false
 }
-
-watch(dialogVisible, (newValue) => {
-  if (!newValue) {
-    amount.value = 0
-    description.value = ''
-    selectedId.value = undefined
-  }
-})
 </script>

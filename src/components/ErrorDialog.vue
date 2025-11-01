@@ -12,10 +12,14 @@
 </template>
 
 <script setup>
-defineProps({
-  errorMessage: String
+const props = defineProps({
+  errorMessage: {
+    type: String,
+    default: ''
+  }
 })
 
+// Keep same v-model binding as before
 const dialogVisible = defineModel()
 
 function closeDialog() {

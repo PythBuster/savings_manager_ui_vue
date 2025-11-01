@@ -1,126 +1,118 @@
 <template>
-  <v-container>
-    <v-row
-      v-if="global.findMoneyboxById(id)"
-      class="d-flex justify-space-between align-center"
-    >
+  <v-container v-if="moneybox">
+    <v-row class="d-flex justify-space-between align-center">
       <v-col cols="auto" md="auto">
-        <h1 :class="display.mdAndUp ? 'text-h4' : 'text-h5'"
-        v-if="global.findMoneyboxById(id).priority != 0">
-          {{ $t('envelope') + ': ' + global.findMoneyboxById(id).name }}
-        </h1>
-        <h1 :class="display.mdAndUp ? 'text-h4' : 'text-h5'" 
-        v-if="global.findMoneyboxById(id).priority == 0">
-          {{ $t('envelope') + ': ' + $t("overflow-moneybox") }}
+        <h1 :class="display.mdAndUp ? 'text-h4' : 'text-h5'">
+          {{ $t('envelope') + ': ' + (moneybox.priority === 0 ? $t('overflow-moneybox') : moneybox.name) }}
         </h1>
       </v-col>
       <v-col cols="auto" class="d-flex justify-end">
-        <v-btn @click="viewCompleteClicked">{{
-          $t('view-complete-logs')
-        }}</v-btn>
+        <v-btn @click="viewCompleteClicked">{{ $t('view-complete-logs') }}</v-btn>
       </v-col>
     </v-row>
-    <v-row v-if="global.findMoneyboxById(id)" justify="space-between">
+
+    <v-row justify="space-between">
       <v-col cols="auto">
         <v-table>
           <tbody>
-            <tr>
-              <td>{{ $t('balance') }}</td>
-              <td>{{ formatCurrency(global.findMoneyboxById(id).balance) }}</td>
-            </tr>
-            <tr v-if="global.findMoneyboxById(id).priority != 0">
-              <td>{{ $t('savings-target') }}</td>
-              <td>
-                {{
-                  global.findMoneyboxById(id).savingsTarget !== null
-                    ? formatCurrency(global.findMoneyboxById(id).savingsTarget)
-                    : $t('no-limit')
-                }}
-              </td>
-            </tr>
-            <tr v-if="global.findMoneyboxById(id).priority != 0">
-              <td>{{ $t('savings-amount') }}:</td>
-              <td>
-                {{ formatCurrency(global.findMoneyboxById(id).savingsAmount) }}
-              </td>
-            </tr>
+          <tr>
+            <td>{{ $t('balance') }}</td>
+            <td>{{ formatCurrency(moneybox.balance) }}</td>
+          </tr>
+          <tr v-if="moneybox.priority != 0">
+            <td>{{ $t('savings-target') }}</td>
+            <td>
+              {{
+                moneybox.savingsTarget !== null
+                  ? formatCurrency(moneybox.savingsTarget)
+                  : $t('no-limit')
+              }}
+            </td>
+          </tr>
+          <tr v-if="moneybox.priority != 0">
+            <td>{{ $t('savings-amount') }}</td>
+            <td>{{ formatCurrency(moneybox.savingsAmount) }}</td>
+          </tr>
           </tbody>
         </v-table>
       </v-col>
+
       <v-col cols="auto" class="d-flex flex-column">
         <v-btn
           color="success"
           @click="handleTransactionDialog('deposit')"
           class="mb-2"
-          >{{ $t('deposit') }}</v-btn
         >
+          {{ $t('deposit') }}
+        </v-btn>
+
         <v-btn
           color="warning"
-          @click="handleTransactionDialog('withdraw')"
           class="mb-2"
-          >{{ $t('withdraw') }}</v-btn
+          @click="handleTransactionDialog('withdraw')"
+          :disabled="moneybox.balance === 0"
         >
-        <v-btn color="info" @click="handleTransferDialog">{{
-          $t('transfer')
-        }}</v-btn>
+          {{ $t('withdraw') }}
+        </v-btn>
+
+        <v-btn
+          color="info"
+          @click="handleTransferDialog"
+          :disabled="moneybox.balance === 0"
+        >
+          {{ $t('transfer') }}
+        </v-btn>
       </v-col>
-      <v-col v-if="global.findMoneyboxById(id).priority != 0" cols="auto" class="d-flex flex-column">
-        <v-btn @click="changeSettingsClicked" class="mb-2">{{
-          $t('change-settings')
-        }}</v-btn>
-        <v-btn @click="deleteClicked" color="error">{{
-          $t('delete-envelope')
-        }}</v-btn>
+
+      <v-col v-if="moneybox.priority != 0" cols="auto" class="d-flex flex-column">
+        <v-btn @click="changeSettingsClicked" class="mb-2">
+          {{ $t('change-settings') }}
+        </v-btn>
+        <v-btn @click="deleteClicked" color="error">
+          {{ $t('delete-envelope') }}
+        </v-btn>
       </v-col>
     </v-row>
 
     <v-row>
       <v-col cols="12" lg="9">
-        <v-textarea 
-        :label="$t('description')" 
-        :model-value=global.findMoneyboxById(id).description 
-        variant="filled"
-        auto-grow
-        readonly>
-        </v-textarea>                
+        <v-textarea
+          :label="$t('description')"
+          :model-value="moneybox.description"
+          variant="filled"
+          auto-grow
+          readonly
+        />
       </v-col>
     </v-row>
 
     <v-row>
       <v-col cols="12" lg="9">
         <TransactionLogs :id="id" :showAll="false" />
-      </v-col> 
+      </v-col>
     </v-row>
 
-    <v-dialog
-      v-if="global.findMoneyboxById(id)"
-      v-model="showDeleteDialog"
-      max-width="500px"
-    >
+    <v-dialog v-model="showDeleteDialog" max-width="500px">
       <v-card>
         <v-card-title>{{ $t('delete-envelope') }}</v-card-title>
         <v-card-text>
           {{ $t('delete-envelope-question-1') }}
-          <span class="font-weight-bold">{{
-            global.findMoneyboxById(id).name
-          }}</span
-          >{{ $t('delete-envelope-question-2') }}
+          <span class="font-weight-bold">{{ moneybox.name }}</span>
+          {{ $t('delete-envelope-question-2') }}
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="surface-variant" @click="showDeleteDialog = false">{{
-            $t('cancel')
-          }}</v-btn>
-          <v-btn color="error" @click="handleDeleteConfirm">{{
-            $t('delete')
-          }}</v-btn>
+          <v-spacer />
+          <v-btn color="surface-variant" @click="showDeleteDialog = false">
+            {{ $t('cancel') }}
+          </v-btn>
+          <v-btn color="error" @click="handleDeleteConfirm">
+            {{ $t('delete') }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <ErrorDialog
-      v-model="showErrorDialog"
-      :error-message="errorMessage"
-    ></ErrorDialog>
+
+    <ErrorDialog v-model="showErrorDialog" :error-message="errorMessage" />
     <TransactionDialog
       v-model="showTransactionDialog"
       :action="currentActionType"
@@ -131,62 +123,59 @@
       v-model="showTransferDialog"
       :sourceId="id"
       @confirm="handleTransferConfirm"
-    ></TransferDialog>
+    />
   </v-container>
 </template>
+
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, computed } from 'vue'
 import global from '@/global.js'
 import router from '@/router/index.js'
-import { formatCurrency } from '@/utils.js'
+import { formatCurrency, euroStringToCents } from '@/utils.js'
 import {
   deleteMoneybox,
   depositIntoMoneybox,
-  getTransactionLogs,
-  transferFromMoneyboxToMoneybox,
   withdrawFromMoneybox,
+  transferFromMoneyboxToMoneybox,
+  getTransactionLogs,
   updateMoneybox
 } from '@/api.js'
 import { useI18n } from 'vue-i18n'
 import { APIError } from '@/customerrors.js'
 import { useDisplay } from 'vuetify'
-import { useRoute } from 'vue-router';
-import { computed } from 'vue';
-import { centsToEuroString, euroStringToCents } from '@/utils.js'
+import { useRoute } from 'vue-router'
 
-
-const route = useRoute();
-const display = ref(useDisplay())
-
-// t used for dialogs, otherwise $t globally available
+const display = useDisplay()
 const { t } = useI18n({})
+const route = useRoute()
+
+const props = defineProps({ id: Number })
+const id = computed(() => props.id || route.params.id)
+
+const moneybox = computed(() => global.findMoneyboxById(id.value))
 
 const showDeleteDialog = ref(false)
-
-const props = defineProps({
-  id: Number
-})
-
-const id = computed(() => props.id || route.params.id); // Nutzt die ID aus den Props oder der Route
-
 const showTransactionDialog = ref(false)
 const showTransferDialog = ref(false)
-
-const currentActionType = ref('')
-
 const showErrorDialog = ref(false)
 const errorMessage = ref('')
+const currentActionType = ref('')
 
-watch(showErrorDialog, (newValue) => {
-  if (!newValue) {
-    showDeleteDialog.value = false
+function handleApiError(error, nameKey) {
+  if (error instanceof APIError) {
+    const map = {
+      404: () => t('error-not-found', { name: nameKey }),
+      405: () => t('error-not-enough-money', { name: nameKey }),
+      422: () => t('error-negative-amount'),
+      500: () => error.message
+    }
+    return map[error.status]?.() || error.message
   }
-})
+  return `${error.name}: ${error.message}`
+}
 
 function changeSettingsClicked() {
-  router.push({
-    path: `/editenvelope/${id.value}`
-  })
+  router.push(`/editenvelope/${id.value}`)
 }
 
 function deleteClicked() {
@@ -202,167 +191,69 @@ function handleTransferDialog() {
   showTransferDialog.value = true
 }
 
-async function handleTransactionConfirm(transactionDetails) {
-  if (transactionDetails.action === 'deposit') {
-    try {
-      await depositIntoMoneybox(
-        global.findMoneyboxById(id.value),
-        euroStringToCents(transactionDetails.amount),
-        transactionDetails.description
-      )
-      // update transaction logs
-      await getTransactionLogs(global.findMoneyboxById(id.value))
-    } catch (error) {
-      if (error instanceof APIError) {
-        if (error.status === 404) {
-          errorMessage.value = t('error-not-found', {
-            name: global.findMoneyboxById(id.value).name
-          })
-        } else if (error.status === 405) {
-          errorMessage.value = t('error-not-enough-money', {
-            name: global.findMoneyboxById(id.value).name
-          })
-        } else if (error.status === 422) {
-          errorMessage.value = t('error-negative-amount')
-        } else if (error.status === 500) {
-          errorMessage.value = error.message
-        }
-      } else {
-        errorMessage.value = error.name + ': ' + error.message
-      }
-      showErrorDialog.value = true
-    }
-  } else {
-    try {
-      await withdrawFromMoneybox(
-        global.findMoneyboxById(id.value),
-        euroStringToCents(transactionDetails.amount),
-        transactionDetails.description
-      )
-      // update transaction logs
-      await getTransactionLogs(global.findMoneyboxById(id.value))
-    } catch (error) {
-      if (error instanceof APIError) {
-        if (error.status === 404) {
-          errorMessage.value = t('error-not-found', {
-            name: global.findMoneyboxById(id.value).name
-          })
-        } else if (error.status === 405) {
-          errorMessage.value = t('error-not-enough-money', {
-            name: global.findMoneyboxById(id.value).name
-          })
-        } else if (error.status === 422) {
-          errorMessage.value = t('error-negative-amount')
-        } else if (error.status === 500) {
-          errorMessage.value = error.message
-        }
-      } else {
-        errorMessage.value = error.name + ': ' + error.message
-      }
-      showErrorDialog.value = true
-    }
+async function handleTransactionConfirm(details) {
+  try {
+    const method =
+      details.action === 'deposit' ? depositIntoMoneybox : withdrawFromMoneybox
+    await method(
+      moneybox.value,
+      euroStringToCents(details.amount),
+      details.description
+    )
+    await getTransactionLogs(moneybox.value)
+  } catch (error) {
+    errorMessage.value = handleApiError(error, moneybox.value.name)
+    showErrorDialog.value = true
   }
 }
 
-async function handleTransferConfirm(transferSelection) {
+async function handleTransferConfirm(transfer) {
   try {
     await transferFromMoneyboxToMoneybox(
-      global.findMoneyboxById(id.value),
-      euroStringToCents(transferSelection.amount),
-      global.findMoneyboxById(transferSelection.selectedId),
-      transferSelection.description
+      moneybox.value,
+      euroStringToCents(transfer.amount),
+      global.findMoneyboxById(transfer.selectedId),
+      transfer.description
     )
-    // update transaction logs
-    await getTransactionLogs(global.findMoneyboxById(id.value))
-    await getTransactionLogs(
-      global.findMoneyboxById(transferSelection.selectedId)
-    )
+    await getTransactionLogs(moneybox.value)
+    await getTransactionLogs(global.findMoneyboxById(transfer.selectedId))
   } catch (error) {
-    if (error instanceof APIError) {
-      if (error.status === 404) {
-        errorMessage.value = t('error-not-found', {
-          name: global.findMoneyboxById(id.value).name
-        })
-      } else if (error.status === 405) {
-        errorMessage.value = t('error-not-enough-money', {
-          name: global.findMoneyboxById(id.value).name
-        })
-      } else if (error.status === 422) {
-        errorMessage.value = t('error-negative-amount')
-      } else if (error.status === 500) {
-        errorMessage.value = error.message
-      }
-    } else {
-      errorMessage.value = error.name + ': ' + error.message
-    }
+    errorMessage.value = handleApiError(error, moneybox.value.name)
     showErrorDialog.value = true
   }
 }
 
 async function handleDeleteConfirm() {
-  const deletedMoneyboxId = id.value
-  const deletedMoneybox = global.findMoneyboxById(deletedMoneyboxId)
-
-  if (deletedMoneybox.balance > 0) {
+  const target = moneybox.value
+  if (target.balance > 0) {
     errorMessage.value = t('error-delete-with-balance')
     showErrorDialog.value = true
-  } else {
-    try {
-      const deletedMoneyboxPriority = deletedMoneybox
-        ? deletedMoneybox.priority
-        : null
+    return
+  }
 
-      await deleteMoneybox(deletedMoneybox)
+  try {
+    const deletedPriority = target.priority
+    await deleteMoneybox(target)
 
-      if (deletedMoneyboxPriority !== null) {
-        // Adjust priorities for remaining moneyboxes
-        // global.findMoneyboxById() needed for mutability and reactivity
-        const moneyboxesToUpdate = global.moneyboxes
-          .filter((mb) => mb.priority > deletedMoneyboxPriority)
-          .map((mb) => global.findMoneyboxById(mb.id))
+    if (deletedPriority !== null) {
+      const moneyboxesToUpdate = global.moneyboxes
+        .filter((mb) => mb.priority > deletedPriority)
+        .map((mb) => global.findMoneyboxById(mb.id))
 
-        for (const moneybox of moneyboxesToUpdate) {
-          const updatedPriority = moneybox.priority - 1
-          await updateMoneybox(moneybox, { newPriority: updatedPriority })
-        }
+      for (const mb of moneyboxesToUpdate) {
+        await updateMoneybox(mb, { newPriority: mb.priority - 1 })
       }
-
-      showDeleteDialog.value = false
-
-      router.back();
-
-    } catch (error) {
-      if (error instanceof APIError) {
-        if (error.status === 404) {
-          errorMessage.value = t('error-not-found', {
-            name: global.findMoneyboxById(id.value).name
-          })
-        } else if (error.status === 405) {
-          errorMessage.value = t('error-delete-with-balance')
-        } else if (error.status === 422) {
-          errorMessage.value = t('error-must-be-string')
-        } else if (error.status === 500) {
-          errorMessage.value = error.message
-        }
-      } else {
-        errorMessage.value = error.name + ': ' + error.message
-      }
-      showErrorDialog.value = true
     }
+
+    showDeleteDialog.value = false
+    router.back()
+  } catch (error) {
+    errorMessage.value = handleApiError(error, moneybox.value.name)
+    showErrorDialog.value = true
   }
 }
 
 function viewCompleteClicked() {
-  router.push({
-    path: `/logs/${id.value}`
-  })
+  router.push(`/logs/${id.value}`)
 }
 </script>
-<style scoped>
-.pt-50-percent {
-  padding-top: 50%; /* 2:1 Aspect Ratio */
-}
-.top-0 {
-  top: 0;
-}
-</style>

@@ -1,15 +1,19 @@
 import { createI18n } from 'vue-i18n'
-/*
- * The i18n resources in the path specified in the plugin `include` option can be read
- * as vue-i18n optimized locale messages using the import syntax
- */
+
+// --- Import language resources ---
 import en from './locales/en.json'
 import de from './locales/de.json'
 
+// --- Normalize environment locales ---
+const defaultLocale = (import.meta.env.VITE_VUE_APP_I18N_LOCALE || 'en').split('-')[0]
+const fallbackLocale = (import.meta.env.VITE_VUE_APP_I18N_FALLBACK_LOCALE || 'en').split('-')[0]
+
+// --- Create i18n instance ---
 const i18n = createI18n({
-  locale: import.meta.env.VITE_VUE_APP_I18N_LOCALE || 'en',
-  fallbackLocale: import.meta.env.VITE_VUE_APP_I18N_FALLBACK_LOCALE || 'en',
-  legacy: false,
+  legacy: false,              // use Composition API mode
+  globalInjection: true,      // allows using $t in templates without manual import
+  locale: defaultLocale,      // current language
+  fallbackLocale,             // fallback if translation missing
   messages: {
     en,
     de

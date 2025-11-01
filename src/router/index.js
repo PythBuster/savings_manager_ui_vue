@@ -1,117 +1,119 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
-import {
-  getMoneyboxes,
-  getMoneyboxesSavingsForecast,
-  getMoneybox,
-  getTransactionLogs
-} from '@/api.js'
+import * as api from '@/api.js'
 import global from '@/global.js'
 
+// --- Helper: zentrale Fehlerbehandlung ---
+async function handleCriticalError(error, context, router) {
+  console.error(`Failed during ${context}:`, error)
+  global.moneyboxesLoaded = false
+  try {
+    await router.replace('/')
+  } catch (fallbackError) {
+    console.error('Router replacement failed, falling back to hard reload:', fallbackError)
+    window.location.href = '/'
+  }
+}
+
+// --- Helper: Ladefunktionen ---
+async function loadMoneyboxes() {
+  if (!global.moneyboxesLoaded) {
+    await api.getMoneyboxes()
+    await api.getMoneyboxesSavingsForecast()
+    global.moneyboxesLoaded = true
+  }
+}
+
+async function ensureTransactionLogs(id) {
+  const box = global.findMoneyboxById(id)
+  if (box && (!('transactionLogs' in box) || box.transactionLogs === null)) {
+    await api.getTransactionLogs(box)
+  }
+}
+
+async function ensureMoneyboxFetched(id) {
+  if (!global.findMoneyboxById(id)) {
+    const newBox = await api.getMoneybox(id)
+    if (newBox?.id) global.addMoneybox(newBox)
+  }
+}
+
+// --- Router-Konfiguration ---
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: '/',
-      component: Home
-    },
+    { path: '/', component: Home },
+
     {
       path: '/envelope/:id',
       component: () => import('@/views/Envelope.vue'),
       beforeEnter: async (to, _from, next) => {
         const id = Number(to.params.id)
-        const moneybox = global.findMoneyboxById(id)
-        if (moneybox) {
-          try {
-            await getTransactionLogs(moneybox)
-            next()
-          } catch (error) {
-            console.error(`Failed to fetch transaction logs for moneybox ${id}:`, error)
-            global.moneyboxesLoaded = false
-            window.location.href = '/'
-          }
-        } else {
+        if (isNaN(id)) return next('/')
+        const box = global.findMoneyboxById(id)
+        if (!box) return next()
+        try {
+          await api.getTransactionLogs(box)
           next()
+        } catch (error) {
+          await handleCriticalError(error, `fetching transaction logs for ${id}`, router)
         }
       }
     },
+
     {
       path: '/logs/:id',
       component: () => import('@/views/Logs.vue'),
       beforeEnter: async (to, _from, next) => {
         const id = Number(to.params.id)
-        const moneybox = global.findMoneyboxById(id)
-        if (moneybox && (!('transactionLogs' in moneybox) || moneybox.transactionLogs === null)) {
-          try {
-            await getTransactionLogs(global.findMoneyboxById(id))
-            next()
-          } catch (error) {
-            console.error(`Failed to fetch transaction logs for moneybox ${id}:`, error)
-            global.moneyboxesLoaded = false
-            window.location.href = '/'
-          }
-        } else {
+        try {
+          await ensureTransactionLogs(id)
           next()
+        } catch (error) {
+          await handleCriticalError(error, `fetching transaction logs for ${id}`, router)
         }
       }
     },
-    {
-      path: '/prioritylist',
-      component: () => import('@/views/Priority.vue')
-    },
-    {
-      path: '/settings',
-      component: () => import('@/views/Settings.vue')
-    },
-    {
-      path: '/createenvelope',
-      component: () => import('@/views/CreateEnvelope.vue')
-    },
+
+    { path: '/prioritylist', component: () => import('@/views/Priority.vue') },
+    { path: '/settings', component: () => import('@/views/Settings.vue') },
+    { path: '/createenvelope', component: () => import('@/views/CreateEnvelope.vue') },
+
     {
       path: '/editenvelope/:id',
       component: () => import('@/views/EditEnvelope.vue'),
       beforeEnter: async (to, _from, next) => {
         const id = Number(to.params.id)
-        if (!global.findMoneyboxById(id)) {
-          try {
-            global.addMoneybox(await getMoneybox(id))
-            next()
-          } catch (error) {
-            console.error(`Failed to fetch moneybox with id ${id}:`, error)
-            global.moneyboxesLoaded = false
-            window.location.href = '/'
-          }
-        } else {
+        try {
+          await ensureMoneyboxFetched(id)
           next()
+        } catch (error) {
+          await handleCriticalError(error, `fetching moneybox ${id}`, router)
         }
       }
     },
-    {
-      path: '/:pathMatch(.*)*',
-      redirect: '/'
-    }
+
+    { path: '/:pathMatch(.*)*', redirect: '/' }
   ]
 })
 
-
+// --- Globaler Guard: lädt Moneyboxes, falls nötig ---
 router.beforeEach(async (_to, _from, next) => {
-  if (!global.moneyboxesLoaded) {
-    try {
-      await getMoneyboxes()
-      await getMoneyboxesSavingsForecast()
-      global.moneyboxesLoaded = true
-      next()
-    } catch (error) {
-      console.error('Failed to fetch moneyboxes:', error)
-      if (error.response?.status === 404) {
-        global.moneyboxesLoaded = false
-        window.location.href = '/'
-        return
-      }
-      next(false)
-    }
-  } else {
+  try {
+    await loadMoneyboxes()
     next()
+  } catch (error) {
+    console.error('Failed to fetch moneyboxes:', error)
+    if (error.response?.status === 404) {
+      global.moneyboxesLoaded = false
+      try {
+        await router.replace('/')
+      } catch {
+        window.location.href = '/'
+      }
+      return
+    }
+    next(false)
   }
 })
 
