@@ -8,7 +8,6 @@
     <v-row>
       <v-col>
         <v-card-item>
-          <!-- Titel-Logik: unverändert im Verhalten -->
           <v-card-title v-if="forecast">
             <span v-if="isEarlyOrNoForecast">
               <span v-if="isMonthOne" class="text-green">

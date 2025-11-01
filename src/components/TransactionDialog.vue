@@ -6,9 +6,11 @@
       </v-card-title>
 
       <v-card-text>
-        <p style="display: inline-block">{{ " " + $t('available-balance-title')  }}</p>
-        <v-label style="margin-left: 5px;">{{formatCurrency(props.availableBalance)}}</v-label>
-        <br><br>
+        <span v-if="props.action !== 'deposit'">
+          <p style="display: inline-block">{{ " " + $t('available-balance-title')  }}</p>
+          <v-label style="margin-left: 5px;">{{formatCurrency(props.availableBalance)}}</v-label>
+          <br><br>
+        </span>
 
         <p>{{ message }}</p>
 
