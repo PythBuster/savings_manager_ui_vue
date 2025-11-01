@@ -13,6 +13,7 @@
 <script setup>
 import { useCurrencyInput } from 'vue-currency-input'
 import { watch } from 'vue'
+import { centsToEuroFloat } from '@/utils'
 
 const props = defineProps({
   modelValue: {
@@ -26,6 +27,10 @@ const props = defineProps({
   showToggleIcon: {
     type: Boolean,
     default: false
+  },
+  maxAmount: {
+    type: Number,
+    default: null
   }
 })
 
@@ -40,6 +45,11 @@ const currencyOptions = {
   locale: 'de-DE'
 }
 
+if (props.maxAmount !== null) {
+  currencyOptions.valueRange.max = centsToEuroFloat(props.maxAmount)
+}
+
+console.log(currencyOptions)
 const { inputRef, formattedValue, setValue } = useCurrencyInput(currencyOptions)
 
 // keep currency input in sync with parent value

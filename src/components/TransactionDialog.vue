@@ -14,7 +14,11 @@
 
         <p>{{ message }}</p>
 
-        <CurrencyInput :label="$t('amount')" v-model="amount" />
+        <CurrencyInput
+          :maxAmount="props.action !== 'deposit' ? props.availableBalance : null"
+          :label="$t('amount')"
+          v-model="amount"
+        />
 
         <p>
           {{

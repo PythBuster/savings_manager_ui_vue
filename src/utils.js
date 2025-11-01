@@ -62,18 +62,22 @@ export function isValidISO8601(dateString) {
 }
 
 /**
- * Converts an amount in cents to a float Euro value.
- * @param {number} cents - Amount in cents.
- * @returns {number} Euro value as float.
+ * Converts an integer amount in cents to an exact Euro float.
+ * Works purely on string-level to avoid floating-point rounding errors.
+ * @param {number} cents - Integer representing amount in cents (e.g., 1090)
+ * @returns {number} Euro value as precise float (e.g., 10.9)
  */
 export function centsToEuroFloat(cents) {
-  const euro = Math.floor(cents / 100)
-  const cent = cents % 100
-  const formattedCent = cent.toString().padStart(2, '0')
-  const euroString = `${euro},${formattedCent}`
-  return safeStringToFloat(euroString)
-}
+  if (typeof cents !== 'number' || isNaN(cents)) return 0
 
+  const sign = cents < 0 ? '-' : ''
+  const absCents = Math.abs(cents)
+  const euro = Math.floor(absCents / 100)
+  const cent = absCents % 100
+  const euroString = `${sign}${euro}.${cent.toString().padStart(2, '0')}`
+
+  return Number(euroString)
+}
 
 /**
  * Converts a comma-based decimal string into a float.
