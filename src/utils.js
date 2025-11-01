@@ -80,23 +80,6 @@ export function centsToEuroFloat(cents) {
 }
 
 /**
- * Converts a comma-based decimal string into a float.
- * @param {string} str - The numeric string (e.g., "12,34").
- * @returns {number} Parsed float value.
- * @throws {Error} If string cannot be parsed.
- */
-const safeStringToFloat = (str) => {
-  const normalizedStr = str.replace(',', '.')
-  const floatNumber = parseFloat(normalizedStr)
-
-  if (isNaN(floatNumber)) {
-    throw new Error('Der String konnte nicht in eine Zahl umgewandelt werden.')
-  }
-
-  return floatNumber
-}
-
-/**
  * Normalizes a string to exactly two decimal places, using comma as separator.
  * @param {string} str - The numeric string.
  * @returns {string} The formatted string with two decimals.
