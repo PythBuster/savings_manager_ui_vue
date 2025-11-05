@@ -57,20 +57,16 @@
 
       </v-col>
 
-      <v-col
-        v-if="!display.mdAndUp"
-        cols="12"
-        sm="6"
-        md="4"
-        offset-md="1"
-        class="d-flex flex-column"
-      >
-        <SavingsSettingsOverview />
-        <v-spacer />
-        <v-btn class="align-self-end mt-2" @click="saveClicked">
-          {{ $t('save') }}
-        </v-btn>
-      </v-col>
+        <v-col
+          cols="12"
+          sm="6"
+          md="4"
+          offset-md="1"
+          class="d-flex flex-column justify-center"
+        >
+          <SavingsSettingsOverview showSettings=true />
+        </v-col>
+
     </v-row>
 
     <v-row v-if="display.mdAndUp">
@@ -91,10 +87,11 @@ import { useDisplay } from 'vuetify'
 import { euroStringToCents, centsToEuroFloat } from '@/utils.js'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import SavingsSettingsOverview from '@/components/SavingsSettingsOverview.vue'
+import ErrorDialog from '@/components/ErrorDialog.vue'
 
 const router = useRouter()
 const display = useDisplay()
-const { t } = useI18n({})
 
 const showErrorDialog = ref(false)
 const errorMessage = ref('')

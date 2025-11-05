@@ -1,10 +1,12 @@
 <template>
-  <v-card variant="outlined">
-    <v-card-item>
+  <v-card
+    :variant="props.showSettings ? 'outlined' : 'flat'"
+  >
+    <v-card-item v-if="props.showSettings">
       <v-card-title>{{ $t('settings') }}</v-card-title>
     </v-card-item>
 
-    <v-card-text>
+    <v-card-text v-if="props.showSettings">
       <v-row v-for="item in tableItems" :key="item.name">
         <v-col class="text-truncate pr-0">
           {{ item.name }}
@@ -31,9 +33,15 @@ import { computed } from 'vue'
 import { formatCurrency } from '@/utils.js'
 import global from '@/global.js'
 import { useI18n } from 'vue-i18n'
+import TotalSavings from '@/components/TotalSavings.vue'
 
 const { t } = useI18n({})
-
+const props = defineProps({
+  showSettings: {
+    type: Boolean,
+    default: false
+  }
+})
 const tableItems = computed(() => {
   const settings = global.settings.value
   const moneyboxes = global.moneyboxes
