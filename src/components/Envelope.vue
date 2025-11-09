@@ -50,20 +50,21 @@
             </p>
 
             <p
-              v-if="moneybox.savingsTarget !== null && moneybox.savingsAmount > 0"
               class="forecast-info"
+              v-if="forecast && moneybox.priority != 0"
             >
-              <span v-if="forecast">
-                <span v-if="forecast.reachedInMonths == null">
-                  {{ $t('reached-in') }}: {{ $t('never') }}
-                </span>
-                <span v-else>
-                  <span v-if="forecast.reachedInMonths != 0">
+                  <span v-if="forecast.reachedInMonths == null">
+                    {{ $t('reached-in') }}: {{ $t('never') }}
+                  </span>
+
+                  <span v-else-if="forecast.reachedInMonths != 0">
                     {{ $t('reached-in') }}: ~{{ forecast.reachedInMonths }}
                     {{ $t('months') }}
                   </span>
-                </span>
-              </span>
+
+                 <span v-else>
+                   <br>
+                 </span>
             </p>
           </span>
 
