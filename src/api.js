@@ -186,7 +186,7 @@ export async function updateMoneybox(moneyboxInstance, {
   })
 }
 
-export async function addMoneybox({ name, savingsAmount, savingsTarget }) {
+export async function addMoneybox({ name, savingsAmount, savingsTarget, description }) {
   if (!name || savingsAmount === undefined) {
     throw new Error('Missing required fields for new moneybox.')
   }
@@ -194,7 +194,7 @@ export async function addMoneybox({ name, savingsAmount, savingsTarget }) {
   const jsonData = await fetchJson(`${serverURL}/api/moneybox`, {
     method: 'POST',
     headers: sendReceiveJsonHeaders,
-    body: JSON.stringify({ name, savingsTarget, savingsAmount })
+    body: JSON.stringify({ name, savingsTarget, savingsAmount, description })
   })
 
   const newBox = Moneybox.fromJSON(jsonData)

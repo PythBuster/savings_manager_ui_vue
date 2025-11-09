@@ -23,6 +23,11 @@
           :label="$t('savings-amount')"
           v-model="saveAmount"
         />
+
+        <v-textarea
+          :label="$t('description')"
+          v-model="description"
+        ></v-textarea>
       </v-col>
 
       <v-col v-if="!display.mdAndUp" class="d-flex align-end justify-end">
@@ -71,6 +76,8 @@ const { t, locale } = useI18n({})
 const envelopeName = ref(t('new-envelope2'))
 const saveAmount = ref(0)
 const targetAmount = ref(0)
+const description = ref('')
+
 const noLimit = ref(false)
 
 const showErrorDialog = ref(false)
@@ -111,9 +118,10 @@ async function createClicked() {
       name: envelopeName.value,
       savingsTarget:
         targetAmount.value !== null ? euroStringToCents(targetAmount.value) : null,
-      savingsAmount: euroStringToCents(saveAmount.value)
+      savingsAmount: euroStringToCents(saveAmount.value),
+      description: description.value,
     })
-    router.back()
+    await router.replace("/")
   } catch (error) {
     if (noLimit.value) targetAmount.value = null
 
