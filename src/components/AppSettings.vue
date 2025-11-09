@@ -62,7 +62,7 @@
           sm="6"
           md="4"
           offset-md="1"
-          class="d-flex flex-column justify-center"
+          class="d-flex flex-column justify-top"
         >
           <SavingsSettingsOverview showSettings=true />
         </v-col>
