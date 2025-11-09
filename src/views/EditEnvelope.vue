@@ -3,8 +3,10 @@
     <EnvelopeEdit :id="id" />
   </v-main>
 </template>
+
 <script setup>
 import { useRoute } from 'vue-router'
+import EnvelopeEdit from '@/components/EnvelopeEdit.vue'
 
 const route = useRoute()
 

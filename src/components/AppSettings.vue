@@ -85,10 +85,10 @@ import global from '@/global.js'
 import { updateSettings } from '@/api.js'
 import { useDisplay } from 'vuetify'
 import { euroStringToCents, centsToEuroFloat } from '@/utils.js'
-import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import SavingsSettingsOverview from '@/components/SavingsSettingsOverview.vue'
 import ErrorDialog from '@/components/ErrorDialog.vue'
+import CurrencyInput from '@/components/CurrencyInput.vue'
 
 const router = useRouter()
 const display = useDisplay()

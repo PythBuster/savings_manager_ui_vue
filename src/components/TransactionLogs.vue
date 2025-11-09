@@ -66,6 +66,7 @@ import global from '@/global.js'
 import { formatCurrency, formatDateTime } from '@/utils.js'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import DateRangePicker from '@/components/DateRangePicker.vue'
 
 const { t } = useI18n({})
 const display = useDisplay()

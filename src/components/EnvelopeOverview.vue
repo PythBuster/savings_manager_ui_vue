@@ -149,6 +149,7 @@ import { useRoute } from 'vue-router'
 import TransactionDialog from '@/components/TransactionDialog.vue'
 import TransferDialog from '@/components/TransferDialog.vue'
 import ErrorDialog from '@/components/ErrorDialog.vue'
+import TransactionLogs from '@/components/TransactionLogs.vue'
 
 const display = useDisplay()
 const { t } = useI18n({})

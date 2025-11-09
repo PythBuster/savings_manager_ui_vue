@@ -10,7 +10,7 @@
 
     <v-row>
       <v-col
-        v-for="(card, index) in sortedMoneyboxes.slice(1)"
+        v-for="card in sortedMoneyboxes.slice(1)"
         :key="card.id"
         cols="12"
         sm="6"
@@ -42,6 +42,8 @@
 import { computed } from 'vue'
 import global from '@/global.js'
 import { useDisplay } from 'vuetify'
+import Envelope from '@/components/Envelope.vue'
+import NewEnvelope from '@/components/NewEnvelope.vue'
 
 const display = useDisplay()
 

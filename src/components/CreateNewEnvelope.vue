@@ -58,6 +58,8 @@ import { useI18n } from 'vue-i18n'
 import { APIError } from '@/customerrors.js'
 import { useDisplay } from 'vuetify'
 import { euroStringToCents } from '@/utils.js'
+import CurrencyInput from '@/components/CurrencyInput.vue'
+import ErrorDialog from '@/components/ErrorDialog.vue'
 
 const display = useDisplay()
 const { t, locale } = useI18n({})
