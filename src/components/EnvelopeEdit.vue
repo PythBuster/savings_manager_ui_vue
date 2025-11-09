@@ -48,7 +48,10 @@
         <v-btn @click="backClicked" class="mr-2">
           {{ $t('back-to-overview') }}
         </v-btn>
-        <v-btn @click="saveClicked">{{ $t('save') }}</v-btn>
+        <v-btn
+          @click="saveClicked"
+          :disabled="isInvalidSaveAmount || newTitle === ''"
+        >{{ $t('save') }}</v-btn>
       </v-col>
     </v-row>
 
@@ -106,19 +109,10 @@ watch(newNoLimit, (currentValue) => {
 })
 
 // --- Validation computed fields ---
-const isInvalidSaveAmount = computed(() => {
-  return (
-    newSaveAmount.value === null ||
-    isNaN(newSaveAmount.value) ||
-    newSaveAmount.value < 0
-  )
-})
-
-watch(newSaveAmount, (value) => {
-  if (value === undefined || value === null || value < 0) {
-    newSaveAmount.value = 0
-  }
-})
+// computed for validation
+const isInvalidSaveAmount = computed(() =>
+  newSaveAmount.value === null || isNaN(newSaveAmount.value) || newSaveAmount.value < 0
+)
 
 watch(newTargetAmount, (value) => {
   if (value !== null && value < 0) {

@@ -37,7 +37,10 @@
 
     <v-row v-if="display.mdAndUp">
       <v-col class="d-flex justify-end">
-        <v-btn @click="createClicked">
+        <v-btn
+          @click="createClicked"
+          :disabled="isInvalidSaveAmount || envelopeName === ''"
+        >
           {{ $t('create-continue-priorities') }}
         </v-btn>
       </v-col>
@@ -74,9 +77,13 @@ const showErrorDialog = ref(false)
 const errorMessage = ref('')
 
 // computed for validation
-const isInvalidSaveAmount = computed(() =>
-  saveAmount.value === null || isNaN(saveAmount.value) || saveAmount.value < 0
-)
+const isInvalidSaveAmount = computed(() => {
+  console.log(saveAmount.value)
+
+  const v = saveAmount.value
+  return v === null || v === '' || v === undefined || isNaN(Number(v)) || Number(v) < 0
+})
+
 
 // update name when locale changes
 watch(() => locale.value, () => {
